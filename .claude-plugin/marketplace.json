@@ -1,0 +1,15 @@
+{
+  "name": "hammerstad-skills",
+  "description": "Personal marketplace exposing the hammerstad-skills plugin (skills + custom agents)",
+  "owner": {
+    "name": "Eirik Mildestveit Hammerstad",
+    "email": "emhammerstad@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "hammerstad-skills",
+      "description": "Personal collection of AI/LLM skills and custom agents",
+      "source": "./"
+    }
+  ]
+}
