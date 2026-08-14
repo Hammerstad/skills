@@ -1,6 +1,6 @@
 # hammerstad-skills
 
-Personal collection of AI/LLM **skills** and **custom agents**.
+Personal collection of AI/LLM **skills** and **custom agents**. Several skills are borrowed from [Matt Pocock](https://github.com/mattpocock/skills) and adapted to my use where appropriate.
 
 ## Installing
 
