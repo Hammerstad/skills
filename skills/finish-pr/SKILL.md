@@ -46,9 +46,11 @@ If anything above needs a call — a debatable follow-up, a non-trivial conflict
 gh pr merge <n> --rebase --delete-branch
 ```
 
-This deletes the remote branch; when the branch is checked out locally it also switches back to the base branch and deletes the local one. Verify the local side (`git branch --list <headRefName>`) — if it survived (e.g. invoked from another branch), `git branch -D <headRefName>`. Finish with `git pull` on the base branch.
+This deletes the remote branch; when the branch is checked out locally it also switches back to the base branch and deletes the local one. If the branch lives in a leftover `implement` worktree (`git worktree list`), remove that worktree first — a branch checked out in a worktree can't be deleted. Verify the local side (`git branch --list <headRefName>`) — if it survived (e.g. invoked from another branch), `git branch -D <headRefName>`. Finish with `git pull` on the base branch.
 
 ### 5. Suggest next work
+
+Trust note for solo repos: GitHub forbids self-approval, so `reviewDecision` never reads `APPROVED` on your own PRs — the **`ready-to-merge` label is the verdict signal**, and approval state is only meaningful when a second account reviews. Steps 1-4 are deliberately label-independent (threads, CI, conflicts all work without the taxonomy); this step is not. If the repo lacks the taxonomy: interactively, offer to run `setup-repo`; unattended, state plainly that no suggestions are possible until the repo is set up — never present an empty list as "nothing to do".
 
 ```sh
 gh issue list --state open --label ready-for-agent --json number,title,labels,createdAt,body,url
@@ -56,6 +58,7 @@ gh issue list --state open --label ready-for-agent --json number,title,labels,cr
 
 - Apply the user's prioritization from the invocation if given; otherwise oldest first.
 - Verify each candidate really is unblocked: no `blocked` label, no `Blocked by #N` / `Depends on #N` in the body pointing at a still-open issue. A mislabeled one gets fixed (swap `ready-for-agent` for `blocked` per the `labels` skill) and skipped.
+- Run the reverse check too: `gh issue list --state open --label blocked` — any issue whose blockers have all closed loses the flag; if it carries no `needs-*` state it becomes `ready-for-agent` and joins this round's candidates. (The just-merged PR often closed a blocker.)
 - Present the top 3-5: number, title, age, one line on what it involves, and mark one as recommended (with why).
 - Secondary list, clearly separated: open `needs-input` issues, each with the specific question it's waiting on — the user can unblock these with an answer.
 
