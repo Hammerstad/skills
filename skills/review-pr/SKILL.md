@@ -40,6 +40,8 @@ git show FETCH_HEAD:<path>              # any file exactly as the PR has it
 
 For every non-trivial hunk: read the surrounding function/module at PR state, check callers of changed signatures, check whether tests cover the changed behavior, and check whether comments/docs/names elsewhere became stale because of this change (those become body findings). Do not run builds or tests — CI owns that.
 
+When the PR touches auth, input handling, secrets, storage, or CI config, apply the `review-security` lens; when it touches hot paths, data access, or new I/O, apply `review-performance`. Their findings flow into this review's comments.
+
 ### 3. Decide findings
 
 For each candidate finding, keep it only if you can say concretely what to improve and why it matters. Drop anything you cannot defend. Map each survivor to:
@@ -59,7 +61,7 @@ Build one review payload: `event` (`APPROVE` if clean per the contract, else `CO
 
 Note: GitHub rejects approving your own PR — if that happens, report the PR is clean in the terminal instead.
 
-Then flip the PR's state label per the `labels` skill: findings → `gh pr edit <n> --add-label review-feedback --remove-label ready-for-review`; approved/clean → `--add-label ready-to-merge --remove-label ready-for-review` (also remove `review-feedback` if present). Skip silently if the repo doesn't have these labels.
+Then flip the PR's state label per the `labels` skill: findings → `gh pr edit <n> --add-label review-feedback --remove-label ready-for-review`; approved/clean → `--add-label ready-to-merge --remove-label ready-for-review` (also remove `review-feedback` if present). If the repo lacks these labels, still do the full review — just skip the flip and note "label taxonomy not set up in this repo (see `setup-repo`)" in the terminal report.
 
 ### 6. Report
 
