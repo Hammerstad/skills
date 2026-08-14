@@ -59,6 +59,8 @@ Build one review payload: `event` (`APPROVE` if clean per the contract, else `CO
 
 Note: GitHub rejects approving your own PR — if that happens, report the PR is clean in the terminal instead.
 
+Then flip the PR's state label per the `labels` skill: findings → `gh pr edit <n> --add-label review-feedback --remove-label ready-for-review`; approved/clean → `--add-label ready-to-merge --remove-label ready-for-review` (also remove `review-feedback` if present). Skip silently if the repo doesn't have these labels.
+
 ### 6. Report
 
 Tell the user in the terminal, briefly: how many inline comments, body findings, threads resolved/left open, and the verdict. Link the review. This is a status line, not a second copy of the review.

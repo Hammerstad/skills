@@ -51,6 +51,8 @@ git push
 
 Then, per thread: reply with `Fixed in <sha>.` (plus one line of what changed, if the fix isn't self-evident) or the pushback reasoning. Finally post the single quote-reply comment for any non-inline points. API calls: `reference/github-api.md`.
 
+Flip the PR's state label per the `labels` skill: `gh pr edit <n> --add-label ready-for-review --remove-label review-feedback` — the ball is back in the reviewer's court. Skip silently if the repo doesn't have these labels.
+
 ### 6. Report
 
 Terminal status line: N fixed (with commits), M pushed back, quote-reply posted or not, plus anything you couldn't respond to and why. Not a second copy of the responses.
