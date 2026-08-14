@@ -51,7 +51,7 @@ git push
 
 Then, per thread: reply with `Fixed in <sha>.` (plus one line of what changed, if the fix isn't self-evident) or the pushback reasoning. Finally post the single quote-reply comment for any non-inline points. API calls: `reference/github-api.md`.
 
-Flip the PR's state label per the `labels` skill: `gh pr edit <n> --add-label ready-for-review --remove-label review-feedback` — the ball is back in the reviewer's court. Skip silently if the repo doesn't have these labels.
+Flip the PR's state label per the `labels` skill: `gh pr edit <n> --add-label ready-for-review --remove-label review-feedback` — the ball is back in the reviewer's court. If the repo lacks these labels, still respond in full — just skip the flip and note "label taxonomy not set up in this repo (see `setup-repo`)" in the terminal report.
 
 ### 6. Report
 

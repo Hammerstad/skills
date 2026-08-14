@@ -13,7 +13,7 @@ One label taxonomy shared by all repos, designed around the skill pipeline. Labe
 |---|---|---|
 | `needs-grilling` | Captured, but under-specified — scope/design not settled | `/grill-with-docs` (or `/grill-me`) it into a spec |
 | `needs-diagnosis` | Bug with unknown root cause — no point spec'ing a fix yet | `/diagnose` to find the cause, then re-label |
-| `needs-input` | A **named question** waits on the maintainer | Maintainer answers, then re-label |
+| `needs-input` | A **named question** waits on a human — maintainer or reporter | They answer, then re-label (the `triage` sweep re-surfaces these) |
 | `ready-for-agent` | Spec complete **and** unblocked — an agent can start now | Implement |
 
 `ready-for-agent` is a guarantee, not a hope: everything needed to implement is in the issue (or linked docs), and it depends on no open issue. If either stops being true, the label must come off immediately.
@@ -23,7 +23,8 @@ One label taxonomy shared by all repos, designed around the skill pipeline. Labe
 `blocked` sits **alongside** a state (e.g. `blocked` + `needs-grilling`) when the issue depends on another open issue. The body must name the dependency: `Blocked by #N`. Remove the flag when #N closes.
 
 - `blocked` and `ready-for-agent` are mutually exclusive by definition.
-- `needs-input` is **not** blocked — waiting on the maintainer's answer is normal flow.
+- `needs-input` is **not** blocked — waiting on a human's answer is normal flow.
+- An issue that is fully specified and waits **only** on its dependency carries `blocked` alone (no state label). When the blocker closes, the flag comes off and it becomes `ready-for-agent`. An issue that is blocked *and* under-specified carries `blocked` plus the fitting `needs-*` state.
 
 ## Categories (optional flavor)
 
@@ -58,18 +59,11 @@ gh pr edit <n> --add-label review-feedback --remove-label ready-for-review
 
 ## Setting up a repo
 
-Idempotent — `--force` updates color/description if the label exists:
+Run the `setup-repo` skill — it owns the creation procedure (idempotent label creation, plus optional branch protection aligned with this taxonomy).
 
-```sh
-gh label create needs-grilling   --force --color D93F0B --description "Under-specified - grill into a spec first"
-gh label create needs-diagnosis  --force --color E99695 --description "Bug with unknown root cause - diagnose first"
-gh label create needs-input      --force --color FBCA04 --description "A named question waits on the maintainer"
-gh label create ready-for-agent  --force --color 0E8A16 --description "Spec complete and unblocked - implementable now"
-gh label create blocked          --force --color B60205 --description "Depends on an open issue - see 'Blocked by #N' in body"
-gh label create ready-for-review --force --color 1D76DB --description "PR: implementation complete, review requested"
-gh label create review-feedback  --force --color 5319E7 --description "PR: review left unresolved findings"
-gh label create ready-to-merge   --force --color 0E8A16 --description "PR: review clean - merge via finish-pr"
-```
+## When the taxonomy is missing
+
+Skills degrade loudly, never silently and never fatally: `review-pr` and `answer-review` do their job, skip label flips, and say so in their report; `implement` and `finish-pr` (whose semantics depend on the labels) stop at the affected step and offer to run `setup-repo` when the user is present.
 
 ## Consistency rules
 
