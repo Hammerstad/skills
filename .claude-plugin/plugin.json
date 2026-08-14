@@ -1,7 +1,7 @@
 {
   "name": "hammerstad-skills",
-  "version": "0.1.0",
-  "description": "Personal collection of AI/LLM skills and custom agents",
+  "version": "1.0.0",
+  "description": "Personal collection of AI/LLM skills for a GitHub issue-and-PR development workflow",
   "author": {
     "name": "Eirik Mildestveit Hammerstad",
     "email": "emhammerstad@gmail.com"
