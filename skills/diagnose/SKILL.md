@@ -9,6 +9,10 @@ A discipline for hard bugs. Skip phases only when explicitly justified.
 
 When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
+## Tracked issues
+
+If this diagnosis belongs to a tracker issue (the user names one, or it carries the `needs-diagnosis` label per the `labels` skill), read the issue and its comments first — repro reports and earlier attempts live there. When the root cause is found, post it back as an issue comment: the repro command, the cause, and the evidence. Then flip the label: `ready-for-agent` if the fix is now obvious enough to implement directly, `needs-grilling` if it opens a design discussion. If the session ends without a cause, post what was tried and what evidence is missing, and flip to `needs-input` when a specific question for the maintainer emerged.
+
 ## Redact
 
 This skill has you show commands, outputs and captured artifacts. **Redact every secret first** — write `<REDACTED>` in its place. Build loops against env vars, so the credential stays in the environment rather than in what you show. Captured artifacts carry auth headers: quote only the lines that carry the signal.

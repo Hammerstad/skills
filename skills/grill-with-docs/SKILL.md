@@ -19,4 +19,6 @@ Each round the user answers reshapes the tree — settled decisions push the fro
 
 Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), dispatch a sub-agent to find it — don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report — ask the rest of the frontier now. The _decisions_ are the user's — put each to them and wait.
 
+As decisions settle, run the `domain-modeling` skill alongside: challenge terms against `CONTEXT.md`, sharpen fuzzy language, and write the docs inline the moment something crystallises — resolved terms into `CONTEXT.md`, hard-to-reverse trade-offs into ADRs. That is what puts the docs in grill-with-docs; a session that only produces chat has lost its output.
+
 The session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed. Do not act on it until the user confirms you have reached a shared understanding.
