@@ -26,14 +26,20 @@ gh issue view <n> --json title,body,labels,url,comments
 
 Read the full issue including comments — later comments often amend the spec. Read `CONTEXT.md` (if it exists) and ADRs touching the area. Then run the readiness check from the contract.
 
-### 2. Set up
+If the repo has no label taxonomy at all (`gh label list` shows none of the workflow labels), the spec guarantee cannot exist: interactively, offer to run `setup-repo` and to triage this issue properly first — with explicit user confirmation the implementation may proceed anyway, treating the issue body as the spec at the user's risk. Unattended: stop and report; never treat an unlabeled issue as ready.
 
-Clean working tree required. Branch off the freshly-pulled default branch:
+### 2. Set up — isolated worktree
+
+Work in a dedicated git worktree so the main checkout is never touched and parallel `implement` runs can't collide:
 
 ```sh
-gh issue develop <n> --checkout    # creates a branch linked to the issue
+git fetch origin
+gh issue develop <n>                                   # creates a branch linked to the issue
+git worktree add ../<repo>-issue-<n> <branch-name>     # sibling dir, own checkout
 gh issue edit <n> --add-assignee @me
 ```
+
+**All subsequent work happens inside the worktree directory.** No clean-tree requirement on the main checkout — its state is irrelevant. If a worktree for this issue already exists, resume in it instead of creating another.
 
 The assignment is the in-progress signal — the label stays `ready-for-agent` until the PR closes the issue.
 
@@ -70,6 +76,14 @@ gh pr create --title "<imperative summary>" --body "<what & why, notable decisio
 Closes #<n>"
 gh pr edit --add-label ready-for-review   # skip silently if the repo lacks the label
 ```
+
+4. Remove the worktree — the branch lives on remote and locally; only the checkout goes:
+
+```sh
+git worktree remove ../<repo>-issue-<n>
+```
+
+Exception: a run that stops early (spec gap, unattended halt) **leaves its worktree in place** so the next run resumes exactly where it stopped.
 
 ### 7. Report
 
