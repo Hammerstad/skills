@@ -1,42 +1,69 @@
 # hammerstad-skills
 
-Personal collection of AI/LLM **skills** and **custom agents**. Several skills are borrowed from [Matt Pocock](https://github.com/mattpocock/skills) and adapted to my use where appropriate.
+Personal collection of AI/LLM **skills** for software development. Several are
+borrowed from [Matt Pocock](https://github.com/mattpocock/skills) and adapted;
+the rest are built around one workflow.
+
+## The workflow
+
+The skills form a pipeline around GitHub issues and PRs, driven by the label
+state machine defined in [skills/labels](skills/labels/SKILL.md):
+
+```
+idea/bug
+  → create-issue / triage             (capture and route onto the board)
+  → grill-with-docs / diagnose        (settle the design / find the cause)
+  → to-issues                         (tracer-bullet slices, labeled)
+  → implement                         (ready-for-agent issue → PR)
+  → review-pr ⇄ answer-review         (ready-for-review ⇄ review-feedback)
+  → finish-pr                         (ready-to-merge → merged, next work suggested)
+```
+
+`review-security` and `review-performance` are deep lenses `review-pr` pulls
+in when a PR touches their domains. `grill-me` is a user-invoked-only
+quick-grill; `domain-modeling` keeps `CONTEXT.md` and ADRs honest during
+grill sessions.
+
+**These skills are a system.** They reference each other (`finish-pr` reuses
+`review-pr`'s queries, `implement` trusts the `labels` guarantees, the lenses
+deliver through `review-pr`). Install them as a set — cherry-picking
+individual skills leaves dangling references.
 
 ## Installing
 
-There are two distribution routes, and they serve different content:
-
-### 1. `skills` CLI (cross-agent, **skills only**)
-
-The [Vercel `skills` CLI](https://github.com/vercel-labs/skills) works with
-75+ coding agents (Claude Code, Cursor, Codex, ...) but only distributes
-skills - it discovers `skills/<name>/SKILL.md` and installs them into the
-target agent. It does **not** handle custom agents.
+### Vercel `skills` CLI (works across 75+ coding agents)
 
 ```sh
-npx skills@latest add <github-user>/skills
+npx skills@latest add Hammerstad/skills
 ```
 
-### 2. Claude Code plugin (skills **and** agents)
-
-This repo doubles as a Claude Code plugin marketplace. Installing the plugin
-gives you everything: skills from `skills/` AND custom agents from `agents/`
-(plus commands/hooks if added later).
+### As a Claude Code plugin
 
 ```sh
-claude plugin marketplace add <github-user>/skills
+claude plugin marketplace add Hammerstad/skills
 claude plugin install hammerstad-skills@hammerstad-skills
 ```
 
 For local development, add the marketplace from disk instead:
 
 ```sh
-claude plugin marketplace add /your/code/folder/skills
+claude plugin marketplace add <path-to-this-repo>
 ```
 
-## Skills vs. agents, in one line each
+## Per-repo setup
 
-- **Skill**: instructions loaded *into the current conversation* when relevant
-  - same context, same model.
-- **Agent**: a separate subprocess with its own context window, system prompt,
-  and tool restrictions, which reports back when done.
+The workflow skills expect the label taxonomy to exist in the target repo —
+run the [setup-repo](skills/setup-repo/SKILL.md) skill once per repo (labels,
+plus optional branch protection aligned with the workflow). Skills degrade
+loudly but not fatally on repos without it: reviews still work, while
+`implement` and `finish-pr` offer setup instead of guessing.
+
+## Adding a skill
+
+1. Create `skills/<skill-name>/SKILL.md` with `name` and `description`
+   frontmatter.
+2. The `description` carries the triggers — it is the only part an agent sees
+   before deciding to load the skill. Add `disable-model-invocation: true` for
+   skills that should only run when explicitly invoked.
+3. Keep `SKILL.md` short; push long material into files next to it
+   (`reference/`, formats, scripts) and link them.
