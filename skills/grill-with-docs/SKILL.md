@@ -5,9 +5,17 @@ description: Grill the user relentlessly about a plan, decision, or idea. Use wh
 
 Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
 
-Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled — the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier in one round: number each question and give your recommended answer. Then wait for the user's answers before the next round.
+Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled — the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier each round, then wait for the user's answers before the next round.
 
-Each question should be formatted like so:
+## Presenting a round
+
+**Never dump a round as a wall of text.** When the harness has a structured question capability (e.g. AskUserQuestion in Claude Code — the option cards in VS Code), present the round through it:
+
+- Chunk the frontier into consecutive calls of up to 4 questions until the round is exhausted; only then recompute the frontier.
+- Per question: 2-4 concrete options, your recommended answer as the **first** option with "(Recommended)" appended, and the trade-off of each option in its description. Use multi-select where choices aren't mutually exclusive.
+- A genuinely open-ended question (naming, describing an experience) that has no natural options is asked as plain text in the same round instead of being forced into cards.
+
+When no structured question capability exists, fall back to numbered text:
 
 ```
 ❓ **Q1** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
