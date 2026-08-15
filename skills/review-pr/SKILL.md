@@ -27,7 +27,9 @@ gh pr view <n> --json number,title,body,state,headRefOid,baseRefName,files,autho
 gh pr diff <n>
 ```
 
-Fetch existing review threads (see `reference/github-api.md` for the GraphQL query). Note which are unresolved, their path/line, and what they asked for.
+Fetch existing review threads (see `reference/github-api.md` for the GraphQL query) **before anything else** — their state decides what kind of round this is. Note which are unresolved, their path/line, what they asked for, and who replied last.
+
+**A previous review by you does not mean this pass is done.** Every invocation is a full review round. If unresolved threads carry author replies since your last review, this is a **re-review round**: the primary work is verifying those replies (below), plus reviewing whatever commits landed since your last review — not re-deriving round one.
 
 ### 2. Investigate
 
@@ -55,13 +57,15 @@ Skip findings already raised by an existing open thread — handle those via the
 
 For each unresolved thread: if the PR's current state answers the concern (fixed, made moot, or you verified it was a non-issue), reply with one line of reasoning, then resolve it. Otherwise leave it open.
 
+An author reply claiming "Fixed in `<sha>`" is a claim, not a settlement: read that commit and the file at the PR head, and confirm the fix actually addresses the finding. Confirmed → reply-confirm and resolve. Not actually fixed → reply in the thread saying what's still missing and leave it open (that open thread is a finding for the verdict — do not also post a duplicate new comment).
+
 ### 5. Submit
 
 Build one review payload: `event` (`APPROVE` if clean per the contract, else `COMMENT`), `body` (PR-wide findings only, or empty), `comments` (all inline findings). Submit it, then run the thread replies/resolutions. Exact API calls: `reference/github-api.md`.
 
 Note: GitHub rejects approving your own PR — if that happens, report the PR is clean in the terminal instead.
 
-Then flip the PR's state label per the `labels` skill: findings → `gh pr edit <n> --add-label review-feedback --remove-label ready-for-review`; approved/clean → `--add-label ready-to-merge --remove-label ready-for-review` (also remove `review-feedback` if present). If the repo lacks these labels, still do the full review — just skip the flip and note "label taxonomy not set up in this repo (see `setup-repo`)" in the terminal report.
+Then flip the PR's state label per the `labels` skill: findings → `gh pr edit <n> --add-label review-feedback --remove-label ready-for-review`; approved/clean → `--add-label ready-to-merge --remove-label ready-for-review` (also remove `review-feedback` if present). "Findings" means findings from **this round**: new comments posted now, or threads left open as still-valid now. Comments from an earlier round whose threads you just resolved are settled, not findings — never flip to `review-feedback` on their account. If the repo lacks these labels, still do the full review — just skip the flip and note "label taxonomy not set up in this repo (see `setup-repo`)" in the terminal report.
 
 ### 6. Report
 
