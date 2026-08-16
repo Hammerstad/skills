@@ -58,7 +58,7 @@ gh issue list --state open --label ready-for-agent --json number,title,labels,cr
 
 - Apply the user's prioritization from the invocation if given; otherwise oldest first.
 - Verify each candidate really is unblocked: no `blocked` label, no `Blocked by #N` / `Depends on #N` in the body pointing at a still-open issue. A mislabeled one gets fixed (swap `ready-for-agent` for `blocked` per the `labels` skill) and skipped.
-- Run the reverse check too: `gh issue list --state open --label blocked` — any issue whose blockers have all closed loses the flag; if it carries no `needs-*` state it becomes `ready-for-agent` and joins this round's candidates. (The just-merged PR often closed a blocker.)
+- If this PR closed an issue, check what that issue was blocking (`gh issue list --state open --label blocked --search "Blocked by #<closed>"`): any issue whose blockers have now all closed loses the flag, and if it carries no `needs-*` state it becomes `ready-for-agent` and joins this round's candidates. Blocked issues unrelated to this merge are `triage`'s sweep, not this skill's.
 - Present the top 3-5: number, title, age, one line on what it involves, and mark one as recommended (with why).
 - Secondary list, clearly separated: open `needs-input` issues, each with the specific question it's waiting on — the user can unblock these with an answer.
 

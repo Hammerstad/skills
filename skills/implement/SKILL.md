@@ -66,8 +66,8 @@ Only then the next task. If a later task invalidates an earlier decision, that's
 
 ### 6. Finish
 
-1. Final full build + test + format run — zero failures.
-2. Rebase onto the latest default branch (`git fetch`, `git rebase origin/<base>`). On conflicts: understand what each side changed before resolving — integrate both where possible, never blindly take one side; if genuinely ambiguous, treat it as a spec gap (contract above).
+1. Rebase onto the latest default branch (`git fetch`, `git rebase origin/<base>`). On conflicts: understand what each side changed before resolving — integrate both where possible, never blindly take one side; if genuinely ambiguous, treat it as a spec gap (contract above).
+2. Final full build + test + format run — zero failures. It runs **after** the rebase, not before: every task already went green on its own, so the only thing this run can still catch is the base moving underneath you — including a conflict that resolved cleanly but wrongly.
 3. Push, then:
 
 ```sh

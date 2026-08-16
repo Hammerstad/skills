@@ -20,7 +20,9 @@ idea/bug
 ```
 
 `review-security` and `review-performance` are deep lenses `review-pr` pulls
-in when a PR touches their domains. `grill-me` is a user-invoked-only
+in when a PR touches their domains. `improve-codebase-architecture` enters the
+pipeline from the side: it surveys for shallow modules, grills the chosen one,
+and hands the design to `to-issues`. `grill-me` is a user-invoked-only
 quick-grill; `domain-modeling` keeps `CONTEXT.md` and ADRs honest during
 grill sessions.
 
@@ -31,13 +33,9 @@ individual skills leaves dangling references.
 
 ## Installing
 
-### Vercel `skills` CLI (works across 75+ coding agents)
-
-```sh
-npx skills@latest add Hammerstad/skills
-```
-
-### As a Claude Code plugin
+Built for Claude — the CLI, the desktop app, and the VS Code extension. The
+skills assume Claude Code capabilities (AskUserQuestion option cards, Artifacts)
+rather than a lowest-common-denominator harness.
 
 ```sh
 claude plugin marketplace add Hammerstad/skills
