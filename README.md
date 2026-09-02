@@ -26,6 +26,12 @@ and hands the design to `to-issues`. `grill-me` is a user-invoked-only
 quick-grill; `domain-modeling` keeps `CONTEXT.md` and ADRs honest during
 grill sessions.
 
+[work-loop](skills/work-loop/SKILL.md) drives the right-hand half of the
+pipeline unattended — oldest `ready-for-agent` issue → `implement` →
+`review-pr` ⇄ `answer-review` in fresh sub-agents → `finish-pr` → `triage` →
+repeat until the pool is empty. It is user-invoked only, since it runs until
+the backlog is drained.
+
 **These skills are a system.** They reference each other (`finish-pr` reuses
 `review-pr`'s queries, `implement` trusts the `labels` guarantees, the lenses
 deliver through `review-pr`). Install them as a set — cherry-picking
