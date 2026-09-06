@@ -1,21 +1,31 @@
 ---
 name: grill-with-docs
-description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.
+description: Grill the user about a plan, decision, or idea until every open question is decided, and write the outcome into CONTEXT.md and ADRs as you go. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.
 ---
 
-Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
+# Grill With Docs
 
-Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled — the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier each round, then wait for the user's answers before the next round.
+Interview the user until the two of you agree on the whole plan, and write the decisions down as they are made.
+
+## How to talk to the user
+
+Write to the user in plain, direct English, the way you would explain the work to a colleague. Use full sentences and everyday words, with no slogans and no invented terms. Lead with what you found, what you did, and what happens next. The full guide is [STYLE.md](../../STYLE.md).
+
+## The method
+
+Treat the plan as a set of decisions where some depend on others. Deciding one thing opens up the questions that hang off it.
+
+Work in rounds. In each round, ask every question whose prerequisites are already decided, so that you are never guessing at an answer you have not heard yet. Then wait for the user's answers before starting the next round. A question that depends on another question still open in this round waits for a later round.
 
 ## Presenting a round
 
-**Never dump a round as a wall of text.** Present the round through AskUserQuestion — the option cards:
+Do not present a round as a long block of text. Use AskUserQuestion, which shows the questions as option cards:
 
-- Chunk the frontier into consecutive calls of up to 4 questions until the round is exhausted; only then recompute the frontier.
-- Per question: 2-4 concrete options, your recommended answer as the **first** option with "(Recommended)" appended, and the trade-off of each option in its description. Use multi-select where choices aren't mutually exclusive.
-- A genuinely open-ended question (naming, describing an experience) that has no natural options is asked as plain text in the same round instead of being forced into cards.
+- Split the round into consecutive calls of up to 4 questions each until the round is done. Only then work out the next round.
+- For each question, give 2-4 concrete options. Put your recommended answer first with "(Recommended)" after it, and give the trade-off of each option in its description. Use multi-select where the choices are not mutually exclusive.
+- An open-ended question with no natural options (naming something, describing an experience) is asked as plain text in the same round instead of being forced into cards.
 
-In the rare harness without it, fall back to numbered text:
+If the harness does not have AskUserQuestion, fall back to numbered text:
 
 ```
 ❓ **Q1** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
@@ -23,10 +33,18 @@ In the rare harness without it, fall back to numbered text:
 ➡️ <your recommended answer>
 ```
 
-Each round the user answers reshapes the tree — settled decisions push the frontier outward and unblock questions that depended on them. Recompute the frontier and ask the next round. A question whose answer depends on another question still open in this round belongs to a _later_ round, not this one.
+Each set of answers changes the picture: decided questions unblock the questions that depended on them. Work out the new set of askable questions and run the next round.
 
-Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, etc.), look it up yourself — never ask the user for anything you could find. Delegate to a sub-agent only when the lookup is a wide multi-file investigation that would otherwise stall the round; one sub-agent, not several, and never for something a handful of tool calls settles. While a delegated exploration runs it is an unsettled prerequisite: only the questions downstream of it wait — ask the rest of the frontier now. The _decisions_ are the user's — put each to them and wait.
+## Facts are yours to find, decisions are the user's
 
-As decisions settle, run the `domain-modeling` skill alongside: challenge terms against `CONTEXT.md`, sharpen fuzzy language, and write the docs inline the moment something crystallises — resolved terms into `CONTEXT.md`, hard-to-reverse trade-offs into ADRs. That is what puts the docs in grill-with-docs; a session that only produces chat has lost its output.
+When a question needs a fact from the environment (the filesystem, tools, and so on), look it up yourself. Do not ask the user for anything you could find. Use a sub-agent only when the lookup is a wide investigation across many files that would otherwise hold up the round. One sub-agent is enough, and a lookup that a few tool calls would settle does not need one at all. While that investigation runs, only the questions that depend on it wait. Ask the rest of the round now.
 
-The session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed. Do not act on it until the user confirms you have reached a shared understanding.
+Every decision goes to the user. Put it to them and wait for the answer.
+
+## Writing the docs
+
+As decisions are made, run the `domain-modeling` skill alongside: check the user's terms against `CONTEXT.md`, sharpen vague language, and write the docs the moment something is decided. Resolved terms go into `CONTEXT.md`, and hard-to-reverse trade-offs go into ADRs. This is what the "with docs" in the name means. A session that only produces chat has lost its output.
+
+## When you are done
+
+The session is done when there are no askable questions left: every decision has been visited and nothing is left silently assumed. Do not act on the plan until the user confirms that you share the same understanding of it.

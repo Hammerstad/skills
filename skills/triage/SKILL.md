@@ -1,44 +1,48 @@
 ---
 name: triage
-description: Sweep the issue tracker and route existing issues through the label state machine - unlabeled issues, answered needs-input, stale states, dead blockers. Use when the user says "triage", "what needs my attention on the tracker", "go through the issues", or names an issue to triage.
+description: Sweep the issue tracker and give existing issues the correct workflow label - unlabeled issues, needs-input issues that got an answer, stale states, blockers that have closed. Use when the user says "triage", "what needs my attention on the tracker", "go through the issues", or names an issue to triage.
 ---
 
 # Triage
 
-Keep the tracker truthful. Every open issue should carry a state that names its next action (`labels` skill); triage is the sweep that makes that so — for issues that arrived from outside, went stale, or changed under their labels.
+Keep the tracker accurate. Every open issue should carry a state label that names its next action (see the `labels` skill). Triage is the sweep that makes that true for issues that came in from outside, went stale, or changed under their labels.
 
-New thoughts don't come here — that's `create-issue`. Triage works on what already exists.
+New thoughts do not come here; that is `create-issue`. Triage works on what already exists.
+
+## How to talk to the user
+
+Write to the user in plain, direct English, the way you would explain the work to a colleague. Use full sentences and everyday words, with no slogans and no invented terms. Lead with what you found, what you did, and what happens next. The full guide is [STYLE.md](../../STYLE.md).
 
 ## Disclaimer rule
 
-Comments posted on issues **authored by someone else** start with:
+Comments posted on issues written by someone else start with:
 
 ```
 > *This comment was written by an AI agent during triage.*
 ```
 
-Comments on the maintainer's own issues are posted plainly.
+Comments on the maintainer's own issues are posted without it.
 
-## Bare invocation — the sweep
+## Invoked without arguments: the sweep
 
-Present four buckets, oldest first, with counts and a one-line summary per issue; the user picks what to work through:
+Present four groups, oldest first, with counts and a one-line summary per issue. The user picks what to work through:
 
-1. **Unlabeled** — never triaged.
-2. **`needs-input` with a human answer** since the label was applied — someone replied; re-route.
-3. **Stale** — `needs-grilling` / `needs-diagnosis` sitting untouched long enough that they rot; also `ready-for-agent` issues older than the rest of the pool (are they still true?).
-4. **Dead blockers** — `blocked` issues whose named blockers have closed, and any illegal label combination (two states, `blocked`+`ready-for-agent`). Fix these directly per the `labels` skill; they need no discussion.
+1. **Unlabeled**: never triaged.
+2. **`needs-input` with a human answer** since the label was applied. Someone replied, so the issue needs re-routing.
+3. **Stale**: `needs-grilling` and `needs-diagnosis` issues that have sat untouched long enough to go out of date, and `ready-for-agent` issues that are older than the rest of the pool (are they still true?).
+4. **Blockers that have closed**: `blocked` issues whose named blockers are closed, plus any label combination that should not exist (two states, or `blocked` plus `ready-for-agent`). Fix these directly as the `labels` skill describes; they need no discussion.
 
 ## Triaging one issue
 
-1. **Gather** — full body, all comments, labels, author, dates. Parse prior triage notes so nothing gets re-asked. Ground in the codebase (domain vocabulary, ADRs in the area).
-2. **Reality checks** — (a) *redundancy*: search the codebase for the requested behavior by domain concept, not just the reporter's wording — already built means close-with-pointer; (b) *claim verification* for bugs: attempt a cheap reproduction from the reported steps. Reproduces → strong basis; doesn't → a specific question for the reporter; needs real investigation → that's `needs-diagnosis`, not triage work.
-3. **Recommend** — category and state with one-paragraph reasoning; wait for the user's call. Quick override applies: "move #42 to ready-for-agent" is trusted and applied without ceremony.
+1. **Gather**: the full body, all comments, labels, author, and dates. Read any earlier triage notes so that nothing gets asked twice. Check the codebase (the project's vocabulary, and the ADRs in the area).
+2. **Reality checks**: (a) Is it already built? Search the codebase for the requested behavior by concept, and not only by the reporter's wording. If it exists, close with a pointer. (b) For bugs, verify the claim: try a cheap reproduction from the reported steps. If it reproduces, that is a strong basis. If it does not, that gives you a specific question for the reporter. If it needs real investigation, that is `needs-diagnosis`, and not triage work.
+3. **Recommend** a category and state with one paragraph of reasoning, and wait for the user's decision. A quick instruction like "move #42 to ready-for-agent" is trusted and applied without further discussion.
 4. **Apply the outcome:**
-   - `ready-for-agent` — the issue body must pass the label's guarantee first; fold in anything established during triage.
-   - `needs-grilling` / `needs-diagnosis` — label, plus a comment only if triage established something worth recording.
-   - `needs-input` — label, plus a comment with the questions (template below).
-   - **Close** — rejected or already implemented: polite one-paragraph explanation (pointer to the existing implementation when that's the reason), then close.
-   - `blocked` — flag plus `Blocked by #N` in the body, per the `labels` skill.
+   - `ready-for-agent`: the issue body must meet the label's definition first; fold in anything established during triage.
+   - `needs-grilling` or `needs-diagnosis`: the label, plus a comment only if triage established something worth recording.
+   - `needs-input`: the label, plus a comment with the questions (template below).
+   - **Close**: rejected or already implemented. A polite one-paragraph explanation (with a pointer to the existing implementation when that is the reason), then close.
+   - `blocked`: the label plus `Blocked by #N` in the body, as the `labels` skill describes.
 
 ## Needs-input comment template
 
@@ -52,8 +56,8 @@ Present four buckets, oldest first, with counts and a one-line summary per issue
 - specific, answerable question 1
 ```
 
-Never "please provide more info" — every question must be answerable in one reply.
+Never write "please provide more info". Every question must be answerable in one reply.
 
-## Repos without the taxonomy
+## Repos without the workflow labels
 
-Sweep buckets degrade to what exists (unlabeled issues can still be listed and discussed); label application is skipped with a note pointing at `setup-repo`.
+The sweep groups fall back to what exists (unlabeled issues can still be listed and discussed). Applying labels is skipped, with a note pointing at `setup-repo`.

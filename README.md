@@ -6,34 +6,35 @@ the rest are built around one workflow.
 
 ## The workflow
 
-The skills form a pipeline around GitHub issues and PRs, driven by the label
-state machine defined in [skills/labels](skills/labels/SKILL.md):
+The skills form a pipeline around GitHub issues and PRs, driven by the labels
+defined in [skills/labels](skills/labels/SKILL.md):
 
 ```
 idea/bug
   → create-issue / triage             (capture and route onto the board)
   → grill-with-docs / diagnose        (settle the design / find the cause)
-  → to-issues                         (tracer-bullet slices, labeled)
+  → to-issues                         (thin end-to-end slices, labeled)
   → implement                         (ready-for-agent issue → PR)
   → review-pr ⇄ answer-review         (ready-for-review ⇄ review-feedback)
   → finish-pr                         (ready-to-merge → merged, next work suggested)
 ```
 
-`review-security` and `review-performance` are deep lenses `review-pr` pulls
-in when a PR touches their domains. `improve-codebase-architecture` enters the
-pipeline from the side: it surveys for shallow modules, grills the chosen one,
-and hands the design to `to-issues`. `grill-me` is a user-invoked-only
-quick-grill; `domain-modeling` keeps `CONTEXT.md` and ADRs honest during
-grill sessions.
+`review-security` and `review-performance` are focused reviews that `review-pr`
+runs when a PR touches their areas. `improve-codebase-architecture` enters the
+pipeline from the side: it surveys the codebase for modules that leak their
+internals, grills the chosen one with the user, and hands the design to
+`to-issues`. `grill-me` is a quick grill that only the user can invoke;
+`domain-modeling` keeps `CONTEXT.md` and the ADRs up to date during grill
+sessions.
 
 **These skills are a system.** They reference each other (`finish-pr` reuses
-`review-pr`'s queries, `implement` trusts the `labels` guarantees, the lenses
-deliver through `review-pr`). Install them as a set — cherry-picking
-individual skills leaves dangling references.
+`review-pr`'s queries, `implement` trusts what the `labels` mean, the focused
+reviews deliver through `review-pr`). Install them as a set. Picking individual
+skills leaves references pointing at skills that are not there.
 
 ## Installing
 
-Built for Claude — the CLI, the desktop app, and the VS Code extension. The
+Built for Claude: the CLI, the desktop app, and the VS Code extension. The
 skills assume Claude Code capabilities (AskUserQuestion option cards, Artifacts)
 rather than a lowest-common-denominator harness.
 
@@ -50,18 +51,27 @@ claude plugin marketplace add <path-to-this-repo>
 
 ## Per-repo setup
 
-The workflow skills expect the label taxonomy to exist in the target repo —
-run the [setup-repo](skills/setup-repo/SKILL.md) skill once per repo (labels,
-plus optional branch protection aligned with the workflow). Skills degrade
-loudly but not fatally on repos without it: reviews still work, while
-`implement` and `finish-pr` offer setup instead of guessing.
+The workflow skills expect the labels to exist in the target repo. Run the
+[setup-repo](skills/setup-repo/SKILL.md) skill once per repo (labels, plus
+optional branch protection that matches the workflow). On repos without the
+labels, the skills still do what they can and say what they skipped: reviews
+still work, while `implement` and `finish-pr` offer to run setup instead of
+guessing.
+
+## Writing style
+
+The skills, and Claude's replies while running them, are written in plain
+English. The rules are in [STYLE.md](STYLE.md). Every skill has a short "How to
+talk to the user" section near the top that points there.
 
 ## Adding a skill
 
 1. Create `skills/<skill-name>/SKILL.md` with `name` and `description`
    frontmatter.
-2. The `description` carries the triggers — it is the only part an agent sees
+2. The `description` carries the triggers. It is the only part an agent sees
    before deciding to load the skill. Add `disable-model-invocation: true` for
    skills that should only run when explicitly invoked.
-3. Keep `SKILL.md` short; push long material into files next to it
+3. Copy the "How to talk to the user" section from an existing skill and follow
+   [STYLE.md](STYLE.md) for the rest.
+4. Keep `SKILL.md` short; push long material into files next to it
    (`reference/`, formats, scripts) and link them.

@@ -1,64 +1,70 @@
 ---
 name: improve-codebase-architecture
-description: Survey a codebase for shallow modules worth deepening, then grill the chosen one into a design decision. Use when the user says "improve the architecture", "/improve-codebase-architecture", asks what's architecturally rotting, or when diagnose finds a bug the architecture allowed.
+description: Survey a codebase for modules whose interfaces expose too much of their insides, then grill the user about the chosen one until it becomes a design decision. Use when the user says "improve the architecture", "/improve-codebase-architecture", asks which parts of the codebase are in the worst shape, or when diagnose finds a bug that the code's structure allowed.
 ---
 
 # Improve Codebase Architecture
 
-Find places where the codebase makes future work harder than it needs to be, pick one with the user, and grill it into a decision the pipeline can act on. **This skill never changes code** — not during the survey, not during the grilling. Its output is a settled design that `to-issues` turns into slices and `implement` builds.
+Find the places where the codebase makes future work harder than it needs to be, pick one together with the user, and grill it into a decision the rest of the pipeline can act on. This skill never changes code, neither during the survey nor during the grilling. Its output is an agreed design that `to-issues` turns into slices and `implement` builds.
 
-Read `CONTEXT.md` (if it exists) and the ADRs before surveying: candidates are named in the project's own domain vocabulary, and an ADR that already rejected a deepening means it does not come back as a candidate.
+## How to talk to the user
 
-## Deep and shallow
+Write to the user in plain, direct English, the way you would explain the work to a colleague. Use full sentences and everyday words, with no slogans and no invented terms. Lead with what you found, what you did, and what happens next. The full guide is [STYLE.md](../../STYLE.md).
 
-A **deep** module hides substantial behavior behind a small, stable interface. A **shallow** one exposes an interface nearly as complex as its implementation, leaking its details across the seam. Shallowness is what this skill hunts — not size, not ugliness, not test coverage.
+## Before you start
 
-**The deletion test decides.** For each candidate ask: if this module vanished and its callers absorbed it, would complexity *concentrate* or *scatter*? Only "concentrates" is a real candidate — everything else is a module doing its job, or a preference dressed up as architecture.
+Read `CONTEXT.md` if it exists and the ADRs before surveying. Candidates are named in the project's own vocabulary, and a module that an ADR already decided to leave as it is does not come back as a candidate.
+
+## What counts as a candidate
+
+A module is doing its job when it hides a lot of behavior behind a small, stable interface. A module is a candidate when its interface is nearly as complicated as its implementation, so that callers have to know its internals to use it correctly. That is what this skill looks for. Size, ugliness, and test coverage are not what it looks for.
+
+The deciding question for each candidate: if this module disappeared and its callers absorbed its work, would the complexity end up concentrated in one place, or spread across all of them? Only "concentrated" makes a real candidate. Anything else is either a module doing its job or a matter of taste presented as architecture.
 
 ## 1. Survey
 
-Whole repo unless the user names a path. **Do not bias by recency** — the worst architecture is worth knowing about wherever it lives, and code that looks dormant is often dormant *because* touching it is unpleasant.
+Cover the whole repo unless the user names a path. Do not favor recently changed code. The worst structure is worth knowing about wherever it is, and code that looks dormant is often dormant because touching it is unpleasant.
 
-Friction signals worth chasing:
+Signs worth chasing:
 
-- **Interface ≈ implementation** — a module whose callers must know its internals to use it correctly.
-- **Testability-only extraction** — pure functions carved out purely to be testable, leaving the caller holding the real logic.
-- **Cross-seam leakage** — types, error shapes, or invariants from one module's insides appearing in another's signatures.
-- **Scattered concept** — one domain idea whose rules live in three files that must change together, with nothing naming the idea.
-- **Pass-through layers** — a module that mostly forwards, translating names without adding meaning.
-- **Repeated caller ceremony** — the same setup/teardown/error-handling dance at every call site.
+- **Interface as complicated as the implementation.** Callers must know the module's internals to use it correctly.
+- **Extracted only to be testable.** Pure functions pulled out so they can be tested, leaving the caller holding the real logic.
+- **Internals leaking across the boundary.** Types, error shapes, or invariants from one module's insides appearing in another module's signatures.
+- **One concept spread over many files.** A single domain idea whose rules live in three files that must change together, with nothing that names the idea.
+- **Pass-through layers.** A module that mostly forwards calls, translating names without adding meaning.
+- **Repeated boilerplate at every call site.** The same setup, teardown, or error handling around every call.
 
-Rank by deletion-test strength × friction, and badge each candidate:
+Rank candidates by how clearly the deciding question comes out in their favor and by how much friction they cause today, and give each one a rating:
 
-| Badge | Meaning |
+| Rating | Meaning |
 |---|---|
-| **Strong** | Deletion test passes clearly, friction is real and observable in the code |
-| **Worth exploring** | Plausible deepening; the payoff depends on where the project goes next |
-| **Speculative** | Surfaced for completeness — generally safe to ignore |
+| **Strong** | The deciding question comes out clearly, and the friction is real and visible in the code |
+| **Worth exploring** | A plausible improvement whose payoff depends on where the project goes next |
+| **Speculative** | Listed for completeness, generally safe to ignore |
 
 ## 2. Report and stop
 
-Publish the survey as an **Artifact**: one card per candidate with its badge, the files involved, the friction in one or two sentences, the proposed deepening in plain English, and what the deletion test showed. Load the `artifact-design` skill before writing it. If the Artifact capability isn't available, deliver the same content as a numbered terminal list — never silently drop candidates to fit.
+Publish the survey as an Artifact: one card per candidate with its rating, the files involved, the friction in one or two sentences, the proposed change in plain English, and how the deciding question came out. Load the `artifact-design` skill before writing it. If Artifacts are not available, deliver the same content as a numbered list in the terminal. Never drop candidates to make it fit.
 
-Then ask which one to explore, via AskUserQuestion: the top candidates as options, badge and one-line payoff in each description, your recommendation first. **No forward motion without an explicit pick** — not into design, and never into code.
+Then ask which one to explore, with AskUserQuestion: the top candidates as options, the rating and a one-line payoff in each description, your recommendation first. Do not move forward without an explicit pick, either into design or into code.
 
 ## 3. Grill the chosen candidate
 
-Interview the user in rounds, exactly as `grill-with-docs` works the frontier — AskUserQuestion, 2-4 options per question, your recommended answer first with "(Recommended)", trade-offs in the descriptions. Finding facts is your job; the decisions are the user's.
+Interview the user in rounds, the way `grill-with-docs` does: AskUserQuestion, 2-4 options per question, your recommended answer first with "(Recommended)", trade-offs in the descriptions. Finding facts is your job; the decisions are the user's.
 
-The frontier for a deepening is architecture-specific. Work it roughly in this order, each round unblocking the next:
+The questions for this kind of change follow a rough order, where each round unblocks the next:
 
-1. **Constraints** — what must not change: public API, wire format, persistence shape, performance envelope, deployment boundaries.
-2. **The seam** — where exactly does the new interface sit, and what ends up behind it? Name it in domain vocabulary.
-3. **Interface shape** — the smallest surface that serves every current caller. Walk the awkward callers explicitly; one caller that doesn't fit is how a deep module turns back into a shallow one.
-4. **What gets simpler** — name the caller ceremony, the leaked type, or the scattered rule this removes. If nothing concrete goes away, the candidate was speculative — say so and stop.
-5. **Test implications** — what becomes testable through the interface that currently needs internals, and which existing tests are testing the seam rather than the behavior.
-6. **Migration** — one move or incremental? What lands first, what can co-exist, what is the blast radius per step.
+1. **Constraints.** What must not change: public API, wire format, storage layout, performance requirements, deployment boundaries.
+2. **The boundary.** Where exactly does the new interface sit, and what ends up behind it? Name it in the project's vocabulary.
+3. **The interface.** The smallest surface that serves every current caller. Walk through the awkward callers explicitly; one caller that does not fit is how a good interface turns back into a leaky one.
+4. **What gets simpler.** Name the boilerplate, the leaked type, or the scattered rule that this removes. If nothing concrete goes away, the candidate was speculative. Say so and stop.
+5. **Tests.** What becomes testable through the interface that currently needs internals, and which existing tests test the boundary rather than the behavior.
+6. **Migration.** One move or several steps? What lands first, what can coexist, and how much could break at each step.
 
-Run `domain-modeling` alongside: resolved terms go into `CONTEXT.md` as they crystallise, and the deepening itself is exactly the hard-to-reverse, non-obvious, genuine-trade-off decision that earns an ADR.
+Run `domain-modeling` alongside: resolved terms go into `CONTEXT.md` as they are decided, and the change itself is exactly the kind of hard-to-reverse, non-obvious trade-off that deserves an ADR.
 
 ## 4. Hand off
 
-Confirm the shared understanding, then hand the settled design to `to-issues` — tracer-bullet slices, labeled per the `labels` skill. The migration order from the grilling is the slice order.
+Confirm the shared understanding, then hand the agreed design to `to-issues` for thin end-to-end slices, labeled as the `labels` skill describes. The migration order from the grilling is the slice order.
 
-**Record rejections too.** A candidate the user rejects on its merits (not merely deferred) gets an ADR saying what was proposed and why it was turned down. That is what stops the next survey from resurfacing it.
+Record rejections too. A candidate the user rejects on its merits (rather than just postponing) gets an ADR saying what was proposed and why it was turned down. That is what stops the next survey from bringing it up again.

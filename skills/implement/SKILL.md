@@ -1,36 +1,40 @@
 ---
 name: implement
-description: Implement a ready-for-agent GitHub issue end to end - branch, build in small verified increments, and open a PR labeled ready-for-review. Use when the user says "implement issue 42", "/implement 42", "pick up issue 42", or asks to build the change an issue describes.
+description: Implement a ready-for-agent GitHub issue end to end - branch, build in small verified steps, and open a PR labeled ready-for-review. Use when the user says "implement issue 42", "/implement 42", "pick up issue 42", or asks to build the change an issue describes.
 ---
 
 # Implement
 
-Take a `ready-for-agent` issue (see the `labels` skill) to a PR that is genuinely ready for review. The issue is the spec — it was grilled into shape before it got that label. The output is a branch and a PR; **merging is `finish-pr`'s job, never this skill's**.
+Take an issue labeled `ready-for-agent` (see the `labels` skill) to a PR that is ready for review. The issue is the spec; it was grilled into shape before it got that label. The output is a branch and a PR. This skill does not merge; that is `finish-pr`'s job.
 
-## Contract
+## How to talk to the user
 
-- **The label is the spec guarantee.** Before writing code, verify the issue carries `ready-for-agent` and actually passes its test: everything needed to implement is in the issue or its linked docs, and it depends on no open issue. If it doesn't, fix the label to the truthful state per the `labels` skill and stop — implementing an unready issue produces the wrong thing efficiently.
-- **Every task lands in isolation.** The sequence for every task is: **code → build → test → format → stage named files → commit**. Never batch tasks into one commit. Never proceed while build, tests, or format check fail. The repo is green after every single commit.
-- **Tests are part of the task, not a phase.** Each task includes the tests that prove its behavior. Never claim done for work whose verification commands you have not actually run.
-- **Scope is the issue.** No invented features, no drive-by refactors beyond what the task needs. Adjacent improvements you notice become follow-up issue candidates in the PR body, not code.
-- **Spec gaps:** if a real ambiguity blocks a decision mid-flight — interactive session: ask the user, then continue. Unattended: post the question as an issue comment, flip the label to `needs-input`, push the branch as-is (no PR), and stop cleanly.
-- **PR only at the end.** Work stays local until everything is done and green; then one push, one PR, labeled `ready-for-review`.
+Write to the user in plain, direct English, the way you would explain the work to a colleague. Use full sentences and everyday words, with no slogans and no invented terms. Lead with what you found, what you did, and what happens next. The full guide is [STYLE.md](../../STYLE.md).
+
+## Rules
+
+- **Check the label before writing code.** `ready-for-agent` means that everything needed to implement is in the issue or its linked docs, and that the issue depends on no open issue. Verify that this is actually true. If it is not, correct the label as the `labels` skill describes and stop. Implementing an issue that is not ready wastes the work.
+- **Every task is committed on its own.** For each task the sequence is: code, build, test, format, stage the named files, commit. Do not combine tasks into one commit. Do not continue while the build, the tests, or the format check fail. The repo is green after every commit.
+- **Tests are part of each task.** Each task includes the tests that prove its behavior. Do not claim a task is done if you have not run its verification commands.
+- **The scope is the issue.** No invented features, and no refactoring beyond what the task needs. Improvements you notice along the way are listed in the PR body as candidates for follow-up issues, and are not implemented.
+- **Spec gaps.** If a real ambiguity blocks a decision partway through: in an interactive session, ask the user and continue. When running unattended, post the question as an issue comment, change the label to `needs-input`, push the branch as it is without opening a PR, and stop.
+- **Open the PR at the end.** Work stays local until everything is done and green. Then push once and open one PR labeled `ready-for-review`.
 
 ## Workflow
 
-### 1. Absorb the spec
+### 1. Read the spec
 
 ```sh
 gh issue view <n> --json title,body,labels,url,comments
 ```
 
-Read the full issue including comments — later comments often amend the spec. Read `CONTEXT.md` (if it exists) and ADRs touching the area. Then run the readiness check from the contract.
+Read the whole issue including comments, since later comments often amend the spec. Read `CONTEXT.md` if it exists and any ADRs for the area. Then do the label check from the rules above.
 
-If the repo has no label taxonomy at all (`gh label list` shows none of the workflow labels), the spec guarantee cannot exist: interactively, offer to run `setup-repo` and to triage this issue properly first — with explicit user confirmation the implementation may proceed anyway, treating the issue body as the spec at the user's risk. Unattended: stop and report; never treat an unlabeled issue as ready.
+If the repo has none of the workflow labels at all (`gh label list` shows none of them), the label cannot vouch for the issue. In an interactive session, offer to run `setup-repo` and to triage this issue properly first. If the user explicitly confirms, you may proceed anyway, treating the issue body as the spec at their risk. When running unattended, stop and report. Never treat an unlabeled issue as ready.
 
-### 2. Set up — isolated worktree
+### 2. Set up an isolated worktree
 
-Work in a dedicated git worktree so the main checkout is never touched and parallel `implement` runs can't collide:
+Work in a dedicated git worktree so that the main checkout is never touched and parallel `implement` runs cannot collide:
 
 ```sh
 git fetch origin
@@ -39,35 +43,35 @@ git worktree add ../<repo>-issue-<n> <branch-name>     # sibling dir, own checko
 gh issue edit <n> --add-assignee @me
 ```
 
-**All subsequent work happens inside the worktree directory.** No clean-tree requirement on the main checkout — its state is irrelevant. If a worktree for this issue already exists, resume in it instead of creating another.
+All further work happens inside the worktree directory. The main checkout does not need to be clean; its state does not matter. If a worktree for this issue already exists, resume in it instead of creating another.
 
-The assignment is the in-progress signal — the label stays `ready-for-agent` until the PR closes the issue.
+The assignment signals that work is in progress. The label stays `ready-for-agent` until the PR closes the issue.
 
-### 3. Discover the toolchain
+### 3. Find the build, test, and format commands
 
-Read the repo's own instructions (`CLAUDE.md`, `CONTRIBUTING.md`, README, CI config) for the **build**, **test**, and **format/lint** commands. Every "build/test/format" below means those discovered commands. Run build + tests once for a clean baseline: a trivially broken baseline gets fixed as its own first commit; a non-trivially broken one is its own issue — stop and report.
+Read the repo's own instructions (`CLAUDE.md`, `CONTRIBUTING.md`, the README, CI config) for the build, test, and format or lint commands. Every "build", "test", and "format" below means those commands. Run the build and tests once to get a clean baseline. If the baseline is broken in a trivial way, fix it as the first commit. If it is broken in a way that is not trivial, that is a separate issue: stop and report.
 
 ### 4. Plan the tasks
 
-Break the issue into small ordered tasks, each one committable and green on its own. Prefer vertical slices (a thin end-to-end path first, then widen) over horizontal layers. Each task names its verification: which tests prove it. Show the task list in the terminal before starting; in an interactive session the user can object — don't wait for approval.
+Break the issue into small ordered tasks, each one committable and green on its own. Prefer thin end-to-end slices (a minimal path through every layer first, then widen it) over building one layer at a time. Each task names the tests that prove it. Show the task list in the terminal before starting. In an interactive session the user can object, but do not wait for approval.
 
-### 5. Execute, task by task
+### 5. Work through the tasks
 
 For each task, in order:
 
-1. Apply the minimal changes, including the task's tests.
-2. Build — fix until it compiles.
-3. Test — fix until everything passes (fixes re-run build + tests).
-4. Format/lint — fix violations, re-verify.
-5. `git add <file1> <file2> ...` — named files only, never `-A` or `.`.
-6. Commit: imperative header, body saying what changed and why per file when it isn't obvious.
+1. Make the minimal changes, including the task's tests.
+2. Build. Fix until it compiles.
+3. Test. Fix until everything passes, re-running the build and tests after each fix.
+4. Format and lint. Fix violations and re-verify.
+5. `git add <file1> <file2> ...` with named files only, never `-A` or `.`.
+6. Commit with an imperative header and a body that says what changed and why per file, when that is not obvious.
 
-Only then the next task. If a later task invalidates an earlier decision, that's a new task with its own commit — history stays honest.
+Only then move to the next task. If a later task reverses an earlier decision, that is a new task with its own commit, so that the history shows what actually happened.
 
 ### 6. Finish
 
-1. Rebase onto the latest default branch (`git fetch`, `git rebase origin/<base>`). On conflicts: understand what each side changed before resolving — integrate both where possible, never blindly take one side; if genuinely ambiguous, treat it as a spec gap (contract above).
-2. Final full build + test + format run — zero failures. It runs **after** the rebase, not before: every task already went green on its own, so the only thing this run can still catch is the base moving underneath you — including a conflict that resolved cleanly but wrongly.
+1. Rebase onto the latest default branch (`git fetch`, then `git rebase origin/<base>`). On conflicts, understand what each side changed before resolving. Integrate both where possible and never take one side blindly. If it is truly ambiguous, treat it as a spec gap as described in the rules.
+2. Run the full build, tests, and format check one more time, with zero failures. Do this after the rebase. Every task already passed on its own, so the only thing this run can still catch is a change in the base branch underneath you, including a conflict that resolved cleanly but wrongly.
 3. Push, then:
 
 ```sh
@@ -77,14 +81,14 @@ Closes #<n>"
 gh pr edit --add-label ready-for-review   # skip silently if the repo lacks the label
 ```
 
-4. Remove the worktree — the branch lives on remote and locally; only the checkout goes:
+4. Remove the worktree. The branch still exists on the remote and locally; only the checkout goes:
 
 ```sh
 git worktree remove ../<repo>-issue-<n>
 ```
 
-Exception: a run that stops early (spec gap, unattended halt) **leaves its worktree in place** so the next run resumes exactly where it stopped.
+Exception: a run that stops early (a spec gap, or an unattended halt) leaves its worktree in place so that the next run can resume where it stopped.
 
 ### 7. Report
 
-Terminal status: tasks completed with their commits, final build/test result, PR link, and any assumptions or follow-up candidates flagged in the PR body. The review loop (`review-pr` → `answer-review` → `finish-pr`) takes it from here.
+Tell the user in the terminal: the tasks completed with their commits, the final build and test result, the PR link, and any assumptions or follow-up candidates you listed in the PR body. The review loop (`review-pr`, then `answer-review`, then `finish-pr`) takes it from here.
