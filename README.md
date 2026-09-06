@@ -27,6 +27,15 @@ internals, grills the chosen one with the user, and hands the design to
 `domain-modeling` keeps `CONTEXT.md` and the ADRs up to date during grill
 sessions.
 
+Two skills run the pipeline over the whole backlog instead of one issue at a
+time. [grill-issues](skills/grill-issues/SKILL.md) works through every
+`needs-grilling` issue, explaining each one in plain English before grilling
+it into a spec. [work-loop](skills/work-loop/SKILL.md) then works through the
+`ready-for-agent` issues unattended: `implement`, then `review-pr` and
+`answer-review` in fresh sub-agents, then `finish-pr`, then `triage`, and
+repeat. Only the user can invoke `work-loop`, since it runs until the backlog
+is empty.
+
 **These skills are a system.** They reference each other (`finish-pr` reuses
 `review-pr`'s queries, `implement` trusts what the `labels` mean, the focused
 reviews deliver through `review-pr`). Install them as a set. Picking individual
