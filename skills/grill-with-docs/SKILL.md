@@ -58,4 +58,4 @@ As decisions are made, run the `domain-modeling` skill alongside: check the user
 
 ## When you are done
 
-The session is done when there are no askable questions left: every decision has been visited and nothing is left silently assumed. Do not act on the plan until the user confirms that you share the same understanding of it.
+The session is done when there are no askable questions left: every decision has been visited and nothing is left assumed without being said. Do not act on the plan until the user confirms that you share the same understanding of it.

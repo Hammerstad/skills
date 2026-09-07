@@ -1,11 +1,11 @@
 ---
 name: finish-pr
-description: Land a finished pull request as the implementer once review is complete - check nothing is outstanding, file follow-up issues, rebase-merge, delete the branch, and suggest what to work on next. Use when the user says "finish PR 98", "/finish-pr", "land this PR", "merge and clean up", or asks what to work on after a merge.
+description: Merge a finished pull request as the implementer once review is complete - check nothing is outstanding, file follow-up issues, rebase-merge, delete the branch, and suggest what to work on next. Use when the user says "finish PR 98", "/finish-pr", "land this PR", "merge and clean up", or asks what to work on after a merge.
 ---
 
 # Finish PR
 
-The implementer's procedure for landing a PR once the review loop is done: check, file follow-ups, merge, clean up, and line up the next piece of work. Uses the labels from the `labels` skill.
+The implementer's procedure for merging a PR once the review loop is done: check, file follow-ups, merge, clean up, and pick the next piece of work. Uses the labels from the `labels` skill.
 
 ## How to talk to the user
 

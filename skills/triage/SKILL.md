@@ -47,7 +47,7 @@ Present four groups, oldest first. Each group is a count and one line per issue 
 2. **Reality checks**: (a) Is it already built? Search the codebase for the requested behavior by concept, and not only by the reporter's wording. If it exists, close with a pointer. (b) For bugs, verify the claim: try a cheap reproduction from the reported steps. If it reproduces, that is a strong basis. If it does not, that gives you a specific question for the reporter. If it needs real investigation, that is `needs-diagnosis`, and not triage work.
 3. **Recommend** a category and state, with the reason in one or two sentences, and wait for the user's decision. A quick instruction like "move #42 to ready-for-agent" is trusted and applied without further discussion.
 4. **Apply the outcome:**
-   - `ready-for-agent`: the issue body must meet the label's definition first; fold in anything established during triage.
+   - `ready-for-agent`: the issue body must meet the label's definition first; add anything established during triage.
    - `needs-grilling` or `needs-diagnosis`: the label, plus a comment only if triage established something worth recording.
    - `needs-input`: the label, plus a comment with the questions (template below).
    - **Close**: rejected or already implemented. A polite one-paragraph explanation (with a pointer to the existing implementation when that is the reason), then close.

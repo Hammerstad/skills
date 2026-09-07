@@ -1,6 +1,6 @@
 ---
 name: work-loop
-description: Work through the ready-for-agent backlog end to end - pick the oldest ready issue, implement it, run the review loop with sub-agents, land the PR, triage, and repeat until nothing is ready. Only invoked explicitly by the user via /work-loop.
+description: Work through the ready-for-agent backlog end to end - pick the oldest ready issue, implement it, run the review loop with sub-agents, merge the PR, triage, and repeat until nothing is ready. Only invoked explicitly by the user via /work-loop.
 disable-model-invocation: true
 ---
 
@@ -110,7 +110,7 @@ When the PR is `ready-to-merge` with nothing outstanding, invoke `finish-pr` for
 Sweep the tracker with the `triage` skill before the next pick, so that the next iteration chooses from an accurate queue. Triage is interactive by design, so inside the loop split it in two:
 
 - **Apply without asking** the mechanical part: blockers that have closed, label combinations that should not exist, and issues the merge just unblocked (`finish-pr` already handles the ones this PR closed).
-- **Defer** anything that needs the user's judgment: unlabeled issues, `needs-input` issues with a fresh human answer, stale states. Collect them for the final report. Blocking the loop on a question the user is not there to answer stalls the run, and guessing a state silently corrupts the queue.
+- **Defer** anything that needs the user's judgment: unlabeled issues, `needs-input` issues with a fresh human answer, stale states. Collect them for the final report. Blocking the loop on a question the user is not there to answer stalls the run, and a guessed state puts wrong issues in the queue with no way to notice.
 
 Then back to step 0. Rebuild the queue from scratch rather than reusing the old one, since a merge, a triage fix, or a follow-up issue filed by `finish-pr` may have changed it.
 

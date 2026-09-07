@@ -45,7 +45,7 @@ Collect everything that needs an answer (queries in `reference/github-api.md`):
 ```sh
 git status --porcelain    # must be clean - abort if dirty with unrelated changes
 gh pr checkout <n>        # no-op if already on the branch; handles forks
-git pull                  # make sure the fixes land on top of the latest head
+git pull                  # put the fixes on top of the latest head
 ```
 
 ### 3. Decide each thread

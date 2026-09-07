@@ -87,7 +87,7 @@ Only then move to the next task. If a later task reverses an earlier decision, t
 gh pr create --title "<imperative summary>" --body "<what & why, notable decisions, follow-up candidates>
 
 Closes #<n>"
-gh pr edit --add-label ready-for-review   # skip silently if the repo lacks the label
+gh pr edit --add-label ready-for-review   # skip, without a message, if the repo lacks the label
 ```
 
 4. Remove the worktree. The branch still exists on the remote and locally; only the checkout goes:

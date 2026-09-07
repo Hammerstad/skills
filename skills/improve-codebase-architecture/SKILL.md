@@ -68,7 +68,7 @@ The questions for this kind of change follow a rough order, where each round unb
 3. **The interface.** The smallest surface that serves every current caller. Walk through the awkward callers explicitly; one caller that does not fit is how a good interface turns back into a leaky one.
 4. **What gets simpler.** Name the boilerplate, the leaked type, or the scattered rule that this removes. If nothing concrete goes away, the candidate was speculative. Say so and stop.
 5. **Tests.** What becomes testable through the interface that currently needs internals, and which existing tests test the boundary rather than the behavior.
-6. **Migration.** One move or several steps? What lands first, what can coexist, and how much could break at each step.
+6. **Migration.** One move or several steps? What is merged first, what can coexist, and how much could break at each step.
 
 Run `domain-modeling` alongside: resolved terms go into `CONTEXT.md` as they are decided, and the change itself is exactly the kind of hard-to-reverse, non-obvious trade-off that deserves an ADR.
 
