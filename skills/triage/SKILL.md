@@ -34,7 +34,7 @@ Comments on the maintainer's own issues are posted without it.
 
 ## Invoked without arguments: the sweep
 
-Present four groups, oldest first, with counts and a one-line summary per issue. The user picks what to work through:
+Present four groups, oldest first. Each group is a count and one line per issue (number, title, age). Do not summarize the issue; the title does that. Skip a group that is empty. The user picks what to work through:
 
 1. **Unlabeled**: never triaged.
 2. **`needs-input` with a human answer** since the label was applied. Someone replied, so the issue needs re-routing.
@@ -45,7 +45,7 @@ Present four groups, oldest first, with counts and a one-line summary per issue.
 
 1. **Gather**: the full body, all comments, labels, author, and dates. Read any earlier triage notes so that nothing gets asked twice. Check the codebase (the project's vocabulary, and the ADRs in the area).
 2. **Reality checks**: (a) Is it already built? Search the codebase for the requested behavior by concept, and not only by the reporter's wording. If it exists, close with a pointer. (b) For bugs, verify the claim: try a cheap reproduction from the reported steps. If it reproduces, that is a strong basis. If it does not, that gives you a specific question for the reporter. If it needs real investigation, that is `needs-diagnosis`, and not triage work.
-3. **Recommend** a category and state with one paragraph of reasoning, and wait for the user's decision. A quick instruction like "move #42 to ready-for-agent" is trusted and applied without further discussion.
+3. **Recommend** a category and state, with the reason in one or two sentences, and wait for the user's decision. A quick instruction like "move #42 to ready-for-agent" is trusted and applied without further discussion.
 4. **Apply the outcome:**
    - `ready-for-agent`: the issue body must meet the label's definition first; fold in anything established during triage.
    - `needs-grilling` or `needs-diagnosis`: the label, plus a comment only if triage established something worth recording.

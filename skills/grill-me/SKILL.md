@@ -23,4 +23,6 @@ Interview me about every part of this plan until we share the same understanding
 
 Ask the questions one at a time with AskUserQuestion, and wait for my answer before asking the next one. If a question can be answered by exploring the codebase, explore the codebase instead of asking me.
 
+Put the recommendation and its reason in the option cards, not in text before them. Between questions, write nothing unless something has to be said (a fact you found that changes the plan, a file you wrote), and then say it in one line. Do not summarize what has been decided so far; I was there.
+
 Do not stop until we share the same understanding of the plan and every decision has been made.

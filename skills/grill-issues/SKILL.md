@@ -53,7 +53,7 @@ If the repo has none of the workflow labels, offer `setup-repo` and stop.
 
 Read the issue and every comment, then read enough of the code to know what already exists in the area. Read `CONTEXT.md` and the ADRs first if the repo has them.
 
-Then present it, briefly:
+Then present it in this shape. Each field is one or two sentences, and the whole brief fits in twelve lines:
 
 ```
 **#42 — <title>**
@@ -88,4 +88,4 @@ Everything this session produces goes on GitHub:
 
 Report in one or two lines: what #42 became, its new label, anything filed alongside it, and how many issues are left. Ask whether to continue.
 
-When the list is empty: list what got specified, what was skipped and why, and any `needs-input` questions now waiting on someone else.
+When the list is empty: one line per issue that got specified (number, title, label), one line per issue that was skipped (number, why), and one line per `needs-input` question now waiting on someone else. Nothing else.

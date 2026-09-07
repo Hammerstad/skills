@@ -42,7 +42,9 @@ If the harness does not have AskUserQuestion, fall back to numbered text:
 ➡️ <your recommended answer>
 ```
 
-Each set of answers changes the picture: decided questions unblock the questions that depended on them. Work out the new set of askable questions and run the next round.
+Each set of answers unblocks the questions that depended on them. Work out the new set of askable questions and run the next round.
+
+Between rounds, write at most one line per file you changed (`CONTEXT.md`: added "Site ID". `docs/adr/0011.md`: written.) and then ask the next round. Do not repeat the decisions the user just made, do not describe how the answers changed the plan, and do not preview the questions that are coming. The reasoning behind a question goes into that question's option descriptions, not into text before the cards.
 
 ## Facts are yours to find, decisions are the user's
 
