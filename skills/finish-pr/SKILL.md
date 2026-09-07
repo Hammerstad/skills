@@ -72,9 +72,19 @@ gh issue list --state open --label ready-for-agent --json number,title,labels,cr
 - Apply the user's prioritization if they gave one; otherwise oldest first.
 - Verify that each candidate really can start: no `blocked` label, and no `Blocked by #N` or `Depends on #N` in the body pointing at an issue that is still open. Fix a wrongly labeled one (swap `ready-for-agent` for `blocked` as the `labels` skill describes) and skip it.
 - If this PR closed an issue, check what that issue was blocking with `gh issue list --state open --label blocked --search "Blocked by #<closed>"`. Any issue whose blockers have now all closed loses the `blocked` label, and if it carries no `needs-*` state it becomes `ready-for-agent` and joins this round's candidates. Blocked issues unrelated to this merge are for `triage` to sweep up.
-- Present the top 3-5: number, title, age, one line on what it involves, and mark one as recommended, with the reason.
-- Then, clearly separated, the open `needs-input` issues, each with the specific question it is waiting on. The user can unblock these with an answer.
+- Pick up to three to present, and one of them to recommend. The reason for the recommendation is one clause.
+- Collect the open `needs-input` issues and the one question each is waiting on. The user can unblock these with an answer.
 
 ### 6. Report
 
-A summary in the terminal: merged (link), branch deletion confirmed, follow-up issues filed (links), then the suggestions. This is the one skill where a summary is the right output.
+One report in the terminal, in this shape and no other:
+
+```text
+Merged #<pr> <title> as <sha>. Branch deleted. Closed #<issue>.
+Filed: #<n> <title>, #<n> <title>.            (or: No follow-ups.)
+Next: #<n> <title> (<age>). <why, one clause>.
+Also ready: #<n> <title>, #<n> <title>.       (omit the line if none)
+Waiting on you: #<n> <question>. #<n> <question>.
+```
+
+Every line is one sentence or one list. Do not add what you checked and found clean, issues that are neither ready nor waiting on the user, counts by label, or a note on the labels. If the user wants any of that, they will ask.
