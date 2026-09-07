@@ -49,7 +49,7 @@ For each slice, pick the state label as the `labels` skill defines them:
 
 ### 5. Check with the user
 
-Present the breakdown as a numbered list, with the title, proposed labels, what it is blocked by, and which requirements it covers for each slice. Ask: is the granularity right? Are the dependencies right? Should anything be merged or split? Repeat until the user approves.
+Present the breakdown as a numbered list, one line per slice: the title, proposed labels, what it is blocked by, and which requirements it covers. Save the full bodies for the issues themselves. Ask: is the granularity right? Are the dependencies right? Should anything be merged or split? Repeat until the user approves.
 
 ### 6. Publish
 

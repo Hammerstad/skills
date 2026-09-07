@@ -108,7 +108,7 @@ Do not move on until you have both reproduced and shrunk the scenario.
 
 ## Phase 3: List possible causes
 
-Write down 3 to 5 ranked hypotheses before testing any of them. If you only generate one, you will anchor on the first plausible idea.
+Write down 3 to 5 ranked hypotheses before testing any of them, one line each. If you only generate one, you will anchor on the first plausible idea.
 
 Each hypothesis must make a prediction you can test:
 
@@ -157,5 +157,7 @@ Required before declaring done:
 - [ ] All `[DEBUG-...]` instrumentation is removed (grep for the prefix)
 - [ ] Throwaway prototypes are deleted, or moved to a clearly marked debug location
 - [ ] The hypothesis that turned out to be correct is stated in the commit or PR message, so that the next person learns from it
+
+Report in the terminal, under eight lines: the cause in one sentence, the fix commit, the name of the regression test, and the result of re-running the Phase 1 check. Do not retell the investigation; the issue comment and the commit message hold that.
 
 Then ask: what would have prevented this bug? If the answer involves a structural change (no good place for a test, tangled callers, hidden coupling), hand off to the `/improve-codebase-architecture` skill with the specifics. Make that recommendation after the fix is in rather than before, since you know more now than when you started.

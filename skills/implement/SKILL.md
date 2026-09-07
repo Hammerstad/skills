@@ -100,4 +100,13 @@ Exception: a run that stops early (a spec gap, or an unattended halt) leaves its
 
 ### 7. Report
 
-Tell the user in the terminal: the tasks completed with their commits, the final build and test result, the PR link, and any assumptions or follow-up candidates you listed in the PR body. The review loop (`review-pr`, then `answer-review`, then `finish-pr`) takes it from here.
+One report in the terminal, in this shape:
+
+```text
+PR #<n> <title>: <url>
+<k> commits. Build, tests, and format green.     (or: <which> failing, with the output)
+Assumed: <one line>.                             (omit if none)
+Follow-ups in the PR body: #<n> <title>.         (omit if none)
+```
+
+Do not list the commits or the tasks; the PR shows them. The review loop (`review-pr`, then `answer-review`, then `finish-pr`) takes it from here.

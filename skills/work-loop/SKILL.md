@@ -116,7 +116,7 @@ Then back to step 0. Rebuild the queue from scratch rather than reusing the old 
 
 ### 6. Report
 
-An empty queue ends the run. One terminal summary for the whole thing:
+An empty queue ends the run. One terminal summary for the whole thing, one line per item:
 
 - Per issue: number, PR link, merge status, and how many review rounds it took.
 - Skipped issues, each with its reason (spec gap, wrong label, failed implement) and what was left behind.
