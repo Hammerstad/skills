@@ -74,10 +74,6 @@ English. The rules are in [STYLE.md](STYLE.md). Every skill carries the same
 "How to talk to the user" block near the top, copied from STYLE.md word for
 word, because a link to the file is not followed while a skill runs.
 
-`scripts/measure-replies.py` reads the transcripts under `~/.claude/projects`
-and reports reply length and banned phrasing per skill. Run it before and after
-a change to the style rules to see whether the change did anything.
-
 ## Adding a skill
 
 1. Create `skills/<skill-name>/SKILL.md` with `name` and `description`
