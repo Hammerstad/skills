@@ -70,8 +70,13 @@ guessing.
 ## Writing style
 
 The skills, and Claude's replies while running them, are written in plain
-English. The rules are in [STYLE.md](STYLE.md). Every skill has a short "How to
-talk to the user" section near the top that points there.
+English. The rules are in [STYLE.md](STYLE.md). Every skill carries the same
+"How to talk to the user" block near the top, copied from STYLE.md word for
+word, because a link to the file is not followed while a skill runs.
+
+`scripts/measure-replies.py` reads the transcripts under `~/.claude/projects`
+and reports reply length and banned phrasing per skill. Run it before and after
+a change to the style rules to see whether the change did anything.
 
 ## Adding a skill
 
@@ -80,7 +85,8 @@ talk to the user" section near the top that points there.
 2. The `description` carries the triggers. It is the only part an agent sees
    before deciding to load the skill. Add `disable-model-invocation: true` for
    skills that should only run when explicitly invoked.
-3. Copy the "How to talk to the user" section from an existing skill and follow
-   [STYLE.md](STYLE.md) for the rest.
+3. Copy the "How to talk to the user" block from STYLE.md, unchanged, and follow
+   the rest of STYLE.md for the skill's own text. Give every report the skill
+   asks for a fixed shape and a size.
 4. Keep `SKILL.md` short; push long material into files next to it
    (`reference/`, formats, scripts) and link them.
