@@ -12,7 +12,16 @@ The user is a technical product manager. They own the product decisions and know
 
 ## How to talk to the user
 
-Write to the user in plain, direct English, the way you would explain the work to a colleague. Use full sentences and everyday words, with no slogans and no invented terms. Lead with what you found, what you did, and what happens next. The full guide is [STYLE.md](../../STYLE.md).
+Write like an engineer reporting to a colleague who is short on time. These rules apply to replies in the chat and to everything you write into GitHub or into docs.
+
+- Lead with the result. First line: what happened or what you found. Then what the reader has to do. Stop there. Add details only when asked.
+- If something failed or was skipped, that is the first line, with the output.
+- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence. One sentence per bullet. A reply that repeats what a diff or a tool result already shows adds nothing.
+- Say the literal thing. Mannered prose swaps a direct statement for a metaphor or a flourish: "a landmine with no warning sign" for "this breaks when vite is updated", "fold this in" for "add this", "silently" for "without an error", "the key insight" for nothing at all. Metaphors carry meanings you did not choose, and the reader has to translate them. When a literal phrase is available, use it.
+- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Cut "this matters more than it looks", "in other words", "worth noting", "the real question is". Do not describe what you are about to do or how you reasoned.
+- Use everyday words. Established engineering terms are fine when there is no short everyday equivalent (rebase, worktree, ADR, regression test, N+1 query). Spell out any other acronym the first time it appears. Do not coin a name for something that has an ordinary description.
+- Format for the reader, not for effect. Bullets when there are several parallel items, a table when there are rows and columns, a heading only in a document that is long enough to navigate. No bold lead-ins on bullets. Bold at most the one thing the reader must not miss. Prefer a period or a comma to an em-dash. Commands, paths, and error text go in backticks or a code block, not in the middle of a sentence.
+- Before sending, reread the draft once and delete: metaphors, sentences that justify a recommendation, anything the reader did not ask for.
 
 ## Rules
 
@@ -44,7 +53,7 @@ If the repo has none of the workflow labels, offer `setup-repo` and stop.
 
 Read the issue and every comment, then read enough of the code to know what already exists in the area. Read `CONTEXT.md` and the ADRs first if the repo has them.
 
-Then present it, briefly:
+Then present it in this shape. Each field is one or two sentences, and the whole brief fits in twelve lines:
 
 ```
 **#42 — <title>**
@@ -79,4 +88,4 @@ Everything this session produces goes on GitHub:
 
 Report in one or two lines: what #42 became, its new label, anything filed alongside it, and how many issues are left. Ask whether to continue.
 
-When the list is empty: list what got specified, what was skipped and why, and any `needs-input` questions now waiting on someone else.
+When the list is empty: one line per issue that got specified (number, title, label), one line per issue that was skipped (number, why), and one line per `needs-input` question now waiting on someone else. Nothing else.

@@ -1,15 +1,24 @@
 ---
 name: finish-pr
-description: Land a finished pull request as the implementer once review is complete - check nothing is outstanding, file follow-up issues, rebase-merge, delete the branch, and suggest what to work on next. Use when the user says "finish PR 98", "/finish-pr", "land this PR", "merge and clean up", or asks what to work on after a merge.
+description: Merge a finished pull request as the implementer once review is complete - check nothing is outstanding, file follow-up issues, rebase-merge, delete the branch, and suggest what to work on next. Use when the user says "finish PR 98", "/finish-pr", "land this PR", "merge and clean up", or asks what to work on after a merge.
 ---
 
 # Finish PR
 
-The implementer's procedure for landing a PR once the review loop is done: check, file follow-ups, merge, clean up, and line up the next piece of work. Uses the labels from the `labels` skill.
+The implementer's procedure for merging a PR once the review loop is done: check, file follow-ups, merge, clean up, and pick the next piece of work. Uses the labels from the `labels` skill.
 
 ## How to talk to the user
 
-Write to the user in plain, direct English, the way you would explain the work to a colleague. Use full sentences and everyday words, with no slogans and no invented terms. Lead with what you found, what you did, and what happens next. The full guide is [STYLE.md](../../STYLE.md).
+Write like an engineer reporting to a colleague who is short on time. These rules apply to replies in the chat and to everything you write into GitHub or into docs.
+
+- Lead with the result. First line: what happened or what you found. Then what the reader has to do. Stop there. Add details only when asked.
+- If something failed or was skipped, that is the first line, with the output.
+- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence. One sentence per bullet. A reply that repeats what a diff or a tool result already shows adds nothing.
+- Say the literal thing. Mannered prose swaps a direct statement for a metaphor or a flourish: "a landmine with no warning sign" for "this breaks when vite is updated", "fold this in" for "add this", "silently" for "without an error", "the key insight" for nothing at all. Metaphors carry meanings you did not choose, and the reader has to translate them. When a literal phrase is available, use it.
+- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Cut "this matters more than it looks", "in other words", "worth noting", "the real question is". Do not describe what you are about to do or how you reasoned.
+- Use everyday words. Established engineering terms are fine when there is no short everyday equivalent (rebase, worktree, ADR, regression test, N+1 query). Spell out any other acronym the first time it appears. Do not coin a name for something that has an ordinary description.
+- Format for the reader, not for effect. Bullets when there are several parallel items, a table when there are rows and columns, a heading only in a document that is long enough to navigate. No bold lead-ins on bullets. Bold at most the one thing the reader must not miss. Prefer a period or a comma to an em-dash. Commands, paths, and error text go in backticks or a code block, not in the middle of a sentence.
+- Before sending, reread the draft once and delete: metaphors, sentences that justify a recommendation, anything the reader did not ask for.
 
 ## Rules
 
@@ -63,9 +72,19 @@ gh issue list --state open --label ready-for-agent --json number,title,labels,cr
 - Apply the user's prioritization if they gave one; otherwise oldest first.
 - Verify that each candidate really can start: no `blocked` label, and no `Blocked by #N` or `Depends on #N` in the body pointing at an issue that is still open. Fix a wrongly labeled one (swap `ready-for-agent` for `blocked` as the `labels` skill describes) and skip it.
 - If this PR closed an issue, check what that issue was blocking with `gh issue list --state open --label blocked --search "Blocked by #<closed>"`. Any issue whose blockers have now all closed loses the `blocked` label, and if it carries no `needs-*` state it becomes `ready-for-agent` and joins this round's candidates. Blocked issues unrelated to this merge are for `triage` to sweep up.
-- Present the top 3-5: number, title, age, one line on what it involves, and mark one as recommended, with the reason.
-- Then, clearly separated, the open `needs-input` issues, each with the specific question it is waiting on. The user can unblock these with an answer.
+- Pick up to three to present, and one of them to recommend. The reason for the recommendation is one clause.
+- Collect the open `needs-input` issues and the one question each is waiting on. The user can unblock these with an answer.
 
 ### 6. Report
 
-A summary in the terminal: merged (link), branch deletion confirmed, follow-up issues filed (links), then the suggestions. This is the one skill where a summary is the right output.
+One report in the terminal, in this shape and no other:
+
+```text
+Merged #<pr> <title> as <sha>. Branch deleted. Closed #<issue>.
+Filed: #<n> <title>, #<n> <title>.            (or: No follow-ups.)
+Next: #<n> <title> (<age>). <why, one clause>.
+Also ready: #<n> <title>, #<n> <title>.       (omit the line if none)
+Waiting on you: #<n> <question>. #<n> <question>.
+```
+
+Every line is one sentence or one list. Do not add what you checked and found clean, issues that are neither ready nor waiting on the user, counts by label, or a note on the labels. If the user wants any of that, they will ask.

@@ -9,7 +9,16 @@ Take an issue labeled `ready-for-agent` (see the `labels` skill) to a PR that is
 
 ## How to talk to the user
 
-Write to the user in plain, direct English, the way you would explain the work to a colleague. Use full sentences and everyday words, with no slogans and no invented terms. Lead with what you found, what you did, and what happens next. The full guide is [STYLE.md](../../STYLE.md).
+Write like an engineer reporting to a colleague who is short on time. These rules apply to replies in the chat and to everything you write into GitHub or into docs.
+
+- Lead with the result. First line: what happened or what you found. Then what the reader has to do. Stop there. Add details only when asked.
+- If something failed or was skipped, that is the first line, with the output.
+- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence. One sentence per bullet. A reply that repeats what a diff or a tool result already shows adds nothing.
+- Say the literal thing. Mannered prose swaps a direct statement for a metaphor or a flourish: "a landmine with no warning sign" for "this breaks when vite is updated", "fold this in" for "add this", "silently" for "without an error", "the key insight" for nothing at all. Metaphors carry meanings you did not choose, and the reader has to translate them. When a literal phrase is available, use it.
+- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Cut "this matters more than it looks", "in other words", "worth noting", "the real question is". Do not describe what you are about to do or how you reasoned.
+- Use everyday words. Established engineering terms are fine when there is no short everyday equivalent (rebase, worktree, ADR, regression test, N+1 query). Spell out any other acronym the first time it appears. Do not coin a name for something that has an ordinary description.
+- Format for the reader, not for effect. Bullets when there are several parallel items, a table when there are rows and columns, a heading only in a document that is long enough to navigate. No bold lead-ins on bullets. Bold at most the one thing the reader must not miss. Prefer a period or a comma to an em-dash. Commands, paths, and error text go in backticks or a code block, not in the middle of a sentence.
+- Before sending, reread the draft once and delete: metaphors, sentences that justify a recommendation, anything the reader did not ask for.
 
 ## Rules
 
@@ -78,7 +87,7 @@ Only then move to the next task. If a later task reverses an earlier decision, t
 gh pr create --title "<imperative summary>" --body "<what & why, notable decisions, follow-up candidates>
 
 Closes #<n>"
-gh pr edit --add-label ready-for-review   # skip silently if the repo lacks the label
+gh pr edit --add-label ready-for-review   # skip, without a message, if the repo lacks the label
 ```
 
 4. Remove the worktree. The branch still exists on the remote and locally; only the checkout goes:
@@ -91,4 +100,13 @@ Exception: a run that stops early (a spec gap, or an unattended halt) leaves its
 
 ### 7. Report
 
-Tell the user in the terminal: the tasks completed with their commits, the final build and test result, the PR link, and any assumptions or follow-up candidates you listed in the PR body. The review loop (`review-pr`, then `answer-review`, then `finish-pr`) takes it from here.
+One report in the terminal, in this shape:
+
+```text
+PR #<n> <title>: <url>
+<k> commits. Build, tests, and format green.     (or: <which> failing, with the output)
+Assumed: <one line>.                             (omit if none)
+Follow-ups in the PR body: #<n> <title>.         (omit if none)
+```
+
+Do not list the commits or the tasks; the PR shows them. The review loop (`review-pr`, then `answer-review`, then `finish-pr`) takes it from here.

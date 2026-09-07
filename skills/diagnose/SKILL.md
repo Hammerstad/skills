@@ -9,7 +9,16 @@ A method for hard bugs. Work through the phases in order, and skip one only when
 
 ## How to talk to the user
 
-Write to the user in plain, direct English, the way you would explain the work to a colleague. Use full sentences and everyday words, with no slogans and no invented terms. Lead with what you found, what you did, and what happens next. The full guide is [STYLE.md](../../STYLE.md).
+Write like an engineer reporting to a colleague who is short on time. These rules apply to replies in the chat and to everything you write into GitHub or into docs.
+
+- Lead with the result. First line: what happened or what you found. Then what the reader has to do. Stop there. Add details only when asked.
+- If something failed or was skipped, that is the first line, with the output.
+- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence. One sentence per bullet. A reply that repeats what a diff or a tool result already shows adds nothing.
+- Say the literal thing. Mannered prose swaps a direct statement for a metaphor or a flourish: "a landmine with no warning sign" for "this breaks when vite is updated", "fold this in" for "add this", "silently" for "without an error", "the key insight" for nothing at all. Metaphors carry meanings you did not choose, and the reader has to translate them. When a literal phrase is available, use it.
+- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Cut "this matters more than it looks", "in other words", "worth noting", "the real question is". Do not describe what you are about to do or how you reasoned.
+- Use everyday words. Established engineering terms are fine when there is no short everyday equivalent (rebase, worktree, ADR, regression test, N+1 query). Spell out any other acronym the first time it appears. Do not coin a name for something that has an ordinary description.
+- Format for the reader, not for effect. Bullets when there are several parallel items, a table when there are rows and columns, a heading only in a document that is long enough to navigate. No bold lead-ins on bullets. Bold at most the one thing the reader must not miss. Prefer a period or a comma to an em-dash. Commands, paths, and error text go in backticks or a code block, not in the middle of a sentence.
+- Before sending, reread the draft once and delete: metaphors, sentences that justify a recommendation, anything the reader did not ask for.
 
 ## Before you start
 
@@ -99,7 +108,7 @@ Do not move on until you have both reproduced and shrunk the scenario.
 
 ## Phase 3: List possible causes
 
-Write down 3 to 5 ranked hypotheses before testing any of them. If you only generate one, you will anchor on the first plausible idea.
+Write down 3 to 5 ranked hypotheses before testing any of them, one line each. If you only generate one, you will anchor on the first plausible idea.
 
 Each hypothesis must make a prediction you can test:
 
@@ -148,5 +157,7 @@ Required before declaring done:
 - [ ] All `[DEBUG-...]` instrumentation is removed (grep for the prefix)
 - [ ] Throwaway prototypes are deleted, or moved to a clearly marked debug location
 - [ ] The hypothesis that turned out to be correct is stated in the commit or PR message, so that the next person learns from it
+
+Report in the terminal, under eight lines: the cause in one sentence, the fix commit, the name of the regression test, and the result of re-running the Phase 1 check. Do not retell the investigation; the issue comment and the commit message hold that.
 
 Then ask: what would have prevented this bug? If the answer involves a structural change (no good place for a test, tangled callers, hidden coupling), hand off to the `/improve-codebase-architecture` skill with the specifics. Make that recommendation after the fix is in rather than before, since you know more now than when you started.
