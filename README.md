@@ -67,6 +67,18 @@ labels, the skills still do what they can and say what they skipped: reviews
 still work, while `implement` and `finish-pr` offer to run setup instead of
 guessing.
 
+## Global preferences
+
+[global-CLAUDE.md](global-CLAUDE.md) holds the preferences that apply to every
+project: commit message rules, the worktree rule for branch work, and the
+writing rules from STYLE.md in short form. On each machine `~/.claude/CLAUDE.md`
+is one line importing it, so `git pull` updates every machine.
+
+The [global-preferences](skills/global-preferences/SKILL.md) skill does both
+sides of that: wiring up a machine, and adding a new preference to the shared
+file. It pulls the repo before it reads the file, and it keeps
+employer-specific content out, since this repo is public.
+
 ## Writing style
 
 The skills, and Claude's replies while running them, are written in plain
