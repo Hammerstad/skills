@@ -39,6 +39,13 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - `needs-input` does not count as blocked. Waiting for a human's answer is the normal flow.
 - An issue that is fully specified and waits only on its dependency carries `blocked` alone, with no state label. When the blocker closes, `blocked` comes off and it becomes `ready-for-agent`. An issue that is blocked and also under-specified carries `blocked` plus the fitting `needs-*` state.
 
+## Epic: added alongside a state
+
+`epic` marks a `plan-epic` map: an issue that names where a large piece of work is going and holds one sub-issue per open decision. It sits alongside the map's state label (`epic` plus `needs-grilling`). Its sub-issues carry ordinary state labels: `needs-grilling` for a decision the user makes in conversation, `needs-input` for a research or task ticket waiting on a sub-agent or a person, `blocked` when another ticket has to close first.
+
+- `grill-issues` skips issues labeled `epic` and hands issues whose parent is an `epic` to `plan-epic`.
+- The map closes when `plan-epic` has sliced it with `to-issues`.
+
 ## Categories (optional)
 
 GitHub's built-in `bug` and `enhancement` may be added for filtering. They are not states, and the workflow does not read them.
@@ -56,6 +63,7 @@ The loop: open PR → `ready-for-review` → review finds issues → `review-fee
 ## Who changes which label
 
 - **Creating an issue**: apply the state that matches how far along it is (`needs-grilling` for ideas, `needs-diagnosis` for unexplained bugs, `ready-for-agent` only when it meets the definition above). Add `blocked` plus `Blocked by #N` when a dependency is known.
+- **Charting an epic** (`plan-epic`): the map gets `epic` plus `needs-grilling`; each ticket gets the state for its type as described above.
 - **After grilling**: the spec is decided, so `ready-for-agent` (or `needs-input` if a question came up).
 - **After diagnosis**: the cause is known, so `ready-for-agent` if the fix is now clear and specified, otherwise `needs-grilling` for a design discussion.
 - **Opening a PR**: `ready-for-review`.

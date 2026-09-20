@@ -23,9 +23,12 @@ idea/bug
 runs when a PR touches their areas. `improve-codebase-architecture` enters the
 pipeline from the side: it surveys the codebase for modules that leak their
 internals, grills the chosen one with the user, and hands the design to
-`to-issues`. `grill-me` is a quick grill that only the user can invoke;
-`domain-modeling` keeps `CONTEXT.md` and the ADRs up to date during grill
-sessions.
+`to-issues`. [plan-epic](skills/plan-epic/SKILL.md) is for work too big for
+one grill session: it writes the idea down as a map issue labeled `epic` with
+one sub-issue per open decision, resolves those one session at a time, and hands
+the finished map to `to-issues`. `grill-me` is a quick grill that only the user
+can invoke; `domain-modeling` keeps `CONTEXT.md` and the ADRs up to date during
+grill sessions.
 
 Two skills run the pipeline over the whole backlog instead of one issue at a
 time. [grill-issues](skills/grill-issues/SKILL.md) works through every

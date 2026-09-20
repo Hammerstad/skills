@@ -39,6 +39,7 @@ gh label create needs-diagnosis  --force --color E99695 --description "Bug with 
 gh label create needs-input      --force --color FBCA04 --description "A named question waits on a human - maintainer or reporter"
 gh label create ready-for-agent  --force --color 0E8A16 --description "Spec complete and unblocked - implementable now"
 gh label create blocked          --force --color B60205 --description "Depends on an open issue - see 'Blocked by #N' in body"
+gh label create epic             --force --color 6F42C1 --description "A plan-epic map - one sub-issue per open decision"
 gh label create ready-for-review --force --color 1D76DB --description "PR: implementation complete, review requested"
 gh label create review-feedback  --force --color 5319E7 --description "PR: review left unresolved findings"
 gh label create ready-to-merge   --force --color 0E8A16 --description "PR: review clean - merge via finish-pr"

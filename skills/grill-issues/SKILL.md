@@ -41,6 +41,8 @@ gh issue list --state open --label needs-grilling --json number,title,createdAt,
 
 Sort oldest first by `createdAt`. Show the list (number, title, age, one plain line each), then start on the first.
 
+Issues labeled `epic` are `plan-epic` maps and are not grilled here; skip them without asking. An issue whose parent issue carries `epic` is a ticket on a map: run the `plan-epic` skill's "Working a ticket" mode on it instead of steps 2 to 4, so the map's index and blocking stay current. Check the parent with `gh api repos/{owner}/{repo}/issues/<n>/parent`.
+
 Three kinds of issue leave the list instead of being grilled. Say which kind and why, and let the user confirm:
 
 - **`blocked`**: the design depends on an open issue, so grilling it now means guessing at that outcome. Skip it until the blocker closes.
