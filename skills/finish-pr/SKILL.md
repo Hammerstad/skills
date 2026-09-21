@@ -24,7 +24,8 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 
 - **Merge only when nothing is outstanding.** Outstanding means unresolved review threads, failing CI, a changes-requested review, or merge conflicts. When all of those are clear, merge without asking. When something needs the user's judgment, ask one combined question rather than several small ones.
 - **Always merge with rebase**, and delete the branch on both the remote and locally as part of the merge.
-- **Anything deferred during review becomes an issue.** Review points set aside as "out of scope, follow-up", suggestions that were accepted but not required, and TODOs this PR introduces each become a labeled issue that links back to the PR.
+- **Deferred scope becomes an issue. Trivia gets fixed or dropped.** A review point set aside as "out of scope, follow-up" becomes a labeled issue that links back to the PR. Something the reviewer could have asked for in the PR does not: a rename, deleting an unused parameter, a comment that states the wrong thing. The test is whether the fix is smaller than the issue describing it. If it is, ask for it in this round or drop it and say in the report that you did.
+- **One issue per cause, not per symptom.** Read what is already open before filing. Findings that share a root cause are one issue naming the cause, not one issue each. A run that files a dozen issues about the same unclear contract has written the same problem down a dozen times, and every copy looks small enough to ignore.
 - **Suggest only work that can start now.** Suggest only `ready-for-agent` issues, since that label means fully specified and blocked by nothing. Verify that anyway and fix wrong labels as the `labels` skill describes. Waiting on the user's input does not count as blocked: list `needs-input` issues separately, with the question each one is waiting on.
 - **Default order is oldest first.** The user's request can override this ("prioritize label:x", "newest", a milestone, and so on).
 
@@ -45,7 +46,17 @@ Also fetch the unresolved review threads, with the same GraphQL query the `revie
 
 ### 2. Collect follow-ups
 
-Look through the review threads and the PR conversation for anything that was agreed as "later": pushbacks accepted as out of scope, deferred suggestions, `nit:` comments the author skipped with agreement, and TODO or FIXME comments the diff introduces. For each, draft an issue: a title, a 2-5 line body with context, a `From #<pr>` link, and a state label as the `labels` skill describes (`ready-for-agent` if the review thread fully specified it, otherwise `needs-grilling`).
+Look through the review threads and the PR conversation for anything that was agreed as "later": pushbacks accepted as out of scope, deferred suggestions, `nit:` comments the author skipped with agreement, and TODO or FIXME comments the diff introduces.
+
+Sort them before drafting anything. Search the tracker first, so the second case can happen at all:
+
+```sh
+gh issue list --state open --search "<the words a duplicate would use>" --json number,title
+```
+
+- Smaller than the issue that would describe it. Do not file. Either the fix belongs in this PR, in which case say so and let the review loop take one more round, or it is not worth doing and the report says it was dropped.
+- Shares a cause with something already open. Comment on that issue instead, naming this PR and what it adds.
+- Real deferred scope. Draft an issue: a title, a 2-5 line body with context, a `From #<pr>` link, and a state label as the `labels` skill describes (`ready-for-agent` if the review thread fully specified it, otherwise `needs-grilling`).
 
 File the clear-cut ones with `gh issue create --title ... --body ... --label ...`. If it is unclear whether something deserves an issue, put it in the step 3 question.
 
