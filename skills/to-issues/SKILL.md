@@ -30,7 +30,17 @@ Work from the conversation context; a just-finished grill session is the common 
 
 Explore enough to slice realistically. Titles and bodies use the project's own vocabulary from `CONTEXT.md` and respect the ADRs in the area.
 
-### 3. Draft the slices
+### 3. Settle what spans the slices
+
+Find the decisions more than one slice will need, and settle them before drafting. Presentation conventions are the usual ones: whether a URL renders as a link, where a unit goes, label casing, how a missing value reads. Naming and the shape of a shared contract are others.
+
+A decision left open here does not stay one decision. Every slice that meets it argues it again in review, and every round files an issue for the part it could not settle. Ask once, in the `grill-with-docs` style, and write the answer where the slices will find it: `CONTEXT.md` for a term, a comment beside the code for a rule that is still moving.
+
+Then look for a layer all the slices sit on, such as a mapper, a schema, a serializer, or a shared fixture. If they all read from it and nobody has checked it against its source, that check is the first slice rather than a footnote in the others. Finding the same wrong assumption once per slice costs more than reading the layer once.
+
+If this turns up more open decisions than one session can settle, the work wants `plan-epic` instead of a list of slices. Say so and stop.
+
+### 4. Draft the slices
 
 Each issue is a thin slice that goes through every layer it touches (schema, API, UI, tests) and is complete on its own. Do not slice by layer.
 
@@ -38,7 +48,7 @@ Each issue is a thin slice that goes through every layer it touches (schema, API
 - Prefer many thin slices over a few thick ones.
 - Order matters: the first slice proves the path from end to end, and later slices widen it.
 
-### 4. Label each slice
+### 5. Label each slice
 
 For each slice, pick the state label as the `labels` skill defines them:
 
@@ -47,11 +57,11 @@ For each slice, pick the state label as the `labels` skill defines them:
 - **`needs-grilling`**: the slice brought up design questions the session did not cover.
 - **`blocked`**: another slice has to be merged first, and the body says `Blocked by #N`. If the slice is fully specified and only waiting on the dependency, it carries `blocked` alone; it becomes `ready-for-agent` when the blocker closes (`finish-pr` does this automatically). If it is blocked and also under-specified, it carries `blocked` plus the fitting `needs-*` state. Never `blocked` together with `ready-for-agent`.
 
-### 5. Check with the user
+### 6. Check with the user
 
 Present the breakdown as a numbered list, one line per slice: the title, proposed labels, what it is blocked by, and which requirements it covers. Save the full bodies for the issues themselves. Ask: is the granularity right? Are the dependencies right? Should anything be merged or split? Repeat until the user approves.
 
-### 6. Publish
+### 7. Publish
 
 Publish in dependency order, blockers first, so that `Blocked by #N` refers to real numbers:
 
