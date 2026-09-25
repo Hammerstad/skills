@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Run the whole pipeline, issue after issue, until no `ready-for-agent` issues are left.
 
-This skill only coordinates. Every piece of real work belongs to the skill that owns it: `implement`, `review-pr`, `answer-review`, `finish-pr`, `triage`. What this skill owns is choosing what runs next, keeping the reviewer independent of the author, recognizing a stuck PR, and knowing when to stop.
+This skill only coordinates. Every piece of real work belongs to the skill that owns it: `implement`, `review-pr`, `answer-review`, `finish-pr`, `triage`. What this skill owns is choosing what runs next, keeping the reviewer independent of the author, recognizing a deadlocked review, and knowing when to stop.
 
 ## How to talk to the user
 
@@ -32,7 +32,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - **The label is the verdict.** Do not rely on the sub-agent's account of what it did. After every sub-agent returns, re-read the PR's labels and threads yourself. `ready-to-merge` is the only thing that lets `finish-pr` run. Never merge because a review "looked clean".
 - **Do not touch code.** The coordinating session never edits, commits, or pushes. If something needs fixing, the skill that owns it fixes it in its own run.
 - **Never lower the bar to keep working.** Do not move `needs-grilling`, `needs-diagnosis`, or `needs-input` issues into the queue, do not implement an issue that does not meet the `ready-for-agent` definition, and do not invent work. An empty queue is a successful finish.
-- **A stuck issue stops that issue, and the loop continues.** A halted `implement`, a review loop that will not converge, or CI failing for reasons outside this PR: record it, leave the labels and threads in a state that matches reality, and move to the next issue.
+- **A stuck issue stops that issue, and the loop continues.** A halted `implement` or CI failing for reasons outside this PR: record it, leave the labels and threads in a state that matches reality, and move to the next issue.
 - **The loop ends when the queue is empty**, never on a round count or a clock.
 
 ## Workflow
@@ -99,11 +99,11 @@ Alternate two sub-agents against the PR until it settles. Each round:
 
 `answer-review` works in the main checkout (`gh pr checkout`), so the tree must be clean between rounds. `implement` removes its worktree at the end, but verify that rather than assuming it.
 
-**Limit the back-and-forth.** Three full rounds without reaching `ready-to-merge` means the two sub-agents are arguing rather than converging. Stop this PR: leave every thread and label exactly as they are, log the specific points still in dispute, and move to the next issue. In an interactive session, ask the user one question before moving on, since a human can settle in a sentence what another round will not.
+**There is no round limit.** Keep alternating until the PR reaches `ready-to-merge`. The one exception is a deadlock: a round with no new commits in which `answer-review` pushes back on the same threads with the same reasons as the round before. Then ask the user one question about the disputed points and wait for the answer, even in an unattended run. Pass the answer to the next `answer-review` sub-agent and continue the same PR.
 
 ### 4. Finish
 
-When the PR is `ready-to-merge` with nothing outstanding, invoke `finish-pr` for it in this session rather than in a sub-agent: it merges, files follow-ups, and its next-work suggestions feed straight back into this loop. If it stops on something outstanding, that contradicts step 3's re-read. Trust `finish-pr`, log the discrepancy, and treat the PR as stuck as described in step 3.
+When the PR is `ready-to-merge` with nothing outstanding, invoke `finish-pr` for it in this session rather than in a sub-agent: it merges, files follow-ups, and its next-work suggestions feed straight back into this loop. If it stops on something outstanding, that contradicts step 3's re-read. Trust `finish-pr`, log the discrepancy, and treat the PR as stuck as the rules above describe.
 
 ### 5. Triage, then loop
 
@@ -120,7 +120,7 @@ An empty queue ends the run. One terminal summary for the whole thing, one line 
 
 - Per issue: number, PR link, merge status, and how many review rounds it took.
 - Skipped issues, each with its reason (spec gap, wrong label, failed implement) and what was left behind.
-- Stuck PRs, each with the disputed points and the state left on GitHub.
+- Stuck PRs, each with the reason and the state left on GitHub.
 - Follow-up issues filed during the run.
 - The deferred triage questions from step 5.
 - What remains open and is not `ready-for-agent`, as the answer to "what is left".
