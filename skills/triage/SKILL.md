@@ -48,10 +48,20 @@ Present four groups, oldest first. Each group is a count and one line per issue 
 3. **Recommend** a category and state, with the reason in one or two sentences, and wait for the user's decision. A quick instruction like "move #42 to ready-for-agent" is trusted and applied without further discussion.
 4. **Apply the outcome:**
    - `ready-for-agent`: the issue body must meet the label's definition first; add anything established during triage.
-   - `needs-grilling` or `needs-diagnosis`: the label, plus a comment only if triage established something worth recording.
+   - `needs-grilling` or `needs-diagnosis`: the label.
    - `needs-input`: the label, plus a comment with the questions (template below).
    - **Close**: rejected or already implemented. A polite one-paragraph explanation (with a pointer to the existing implementation when that is the reason), then close.
    - `blocked`: the label plus `Blocked by #N` in the body, as the `labels` skill describes.
+
+## When to comment
+
+The issue thread is for the reporter and the maintainer, not a log of every triage pass. Post a comment only for:
+
+- the questions of a `needs-input` issue;
+- the explanation when closing;
+- a label change whose reason a later reader could not get from the label, the body, or the linked issues: a reproduction result, a decision the user made during triage, a part of the request found already built.
+
+Everything else gets no comment. A re-check that leaves the label as it was writes nothing. A change whose reason is visible elsewhere ("meets the `ready-for-agent` definition", "blocker #12 closed") changes the label and writes nothing. Facts that belong in the issue go into the body, not into a comment.
 
 ## Needs-input comment template
 
