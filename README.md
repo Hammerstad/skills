@@ -20,10 +20,7 @@ idea/bug
 ```
 
 `review-security` and `review-performance` are focused reviews that `review-pr`
-runs when a PR touches their areas. `improve-codebase-architecture` enters the
-pipeline from the side: it surveys the codebase for modules that leak their
-internals, grills the chosen one with the user, and hands the design to
-`to-issues`. [plan-epic](skills/plan-epic/SKILL.md) is for work too big for
+runs when a PR touches their areas. [plan-epic](skills/plan-epic/SKILL.md) is for work too big for
 one grill session: it writes the idea down as a map issue labeled `epic` with
 one sub-issue per open decision, resolves those one session at a time, and hands
 the finished map to `to-issues`. `grill-me` is a quick grill that only the user
@@ -85,9 +82,10 @@ employer-specific content out, since this repo is public.
 ## Writing style
 
 The skills, and Claude's replies while running them, are written in plain
-English. The rules are in [STYLE.md](STYLE.md). Every skill carries the same
-"How to talk to the user" block near the top, copied from STYLE.md word for
-word, because a link to the file is not followed while a skill runs.
+English. The rules are in [STYLE.md](STYLE.md). Every skill that talks to the
+user carries the same "How to talk to the user" block near the top, copied from
+STYLE.md word for word, because a link to the file is not followed while a
+skill runs.
 
 ## Adding a skill
 

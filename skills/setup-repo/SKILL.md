@@ -9,16 +9,13 @@ Make a repository ready for the workflow skills (`labels`, `implement`, `review-
 
 ## How to talk to the user
 
-Write like an engineer reporting to a colleague who is short on time. These rules apply to replies in the chat and to everything you write into GitHub or into docs.
+Write like an engineer reporting to a colleague who is short on time. These rules apply to chat and to everything you write into GitHub or into docs.
 
-- Lead with the result. First line: what happened or what you found. Then what the reader has to do. Stop there. Add details only when asked.
-- If something failed or was skipped, that is the first line, with the output.
-- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence. One sentence per bullet. A reply that repeats what a diff or a tool result already shows adds nothing.
-- Say the literal thing. Mannered prose swaps a direct statement for a metaphor or a flourish: "a landmine with no warning sign" for "this breaks when vite is updated", "fold this in" for "add this", "silently" for "without an error", "the key insight" for nothing at all. Metaphors carry meanings you did not choose, and the reader has to translate them. When a literal phrase is available, use it.
-- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Cut "this matters more than it looks", "in other words", "worth noting", "the real question is". Do not describe what you are about to do or how you reasoned.
-- Use everyday words. Established engineering terms are fine when there is no short everyday equivalent (rebase, worktree, ADR, regression test, N+1 query). Spell out any other acronym the first time it appears. Do not coin a name for something that has an ordinary description.
-- Format for the reader, not for effect. Bullets when there are several parallel items, a table when there are rows and columns, a heading only in a document that is long enough to navigate. No bold lead-ins on bullets. Bold at most the one thing the reader must not miss. Prefer a period or a comma to an em-dash. Commands, paths, and error text go in backticks or a code block, not in the middle of a sentence.
-- Before sending, reread the draft once and delete: metaphors, sentences that justify a recommendation, anything the reader did not ask for.
+- Lead with the result: what happened or what you found, then what the reader has to do. If something failed or was skipped, that is the first line, with the output. Add details only when asked.
+- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence.
+- Say the literal thing. No metaphors or flourishes ("a landmine", "fold this in" for "add this"), no filler ("worth noting", "the key insight"), no coined names for things that have an ordinary description. Spell out an acronym the first time unless it is an established engineering term.
+- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Do not describe what you are about to do or how you reasoned.
+- Format plainly: bullets only for parallel items, no bold lead-ins, a period or a comma over an em-dash, commands, paths, and error text in backticks. Before sending, reread once and delete metaphors, justifications, and anything the reader did not ask for.
 
 ## 1. Verify access
 
@@ -55,13 +52,35 @@ For solo repos the signal that review passed is the `ready-to-merge` label, sinc
 
 Apply with `gh api` on the branch protection endpoint only after the user picks. Skipping this step entirely is a fine outcome.
 
-## 4. Optional starter files
+## 4. Offer the permission allowlist (ask, do not assume)
+
+Unattended runs (`work-loop`, sub-agent reviews) stall on the first permission prompt for each new `gh` command. Offer to add the commands the workflow uses to the repo's `.claude/settings.json`, merging into the existing file rather than overwriting:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh issue list:*)", "Bash(gh issue view:*)", "Bash(gh issue create:*)",
+      "Bash(gh issue edit:*)", "Bash(gh issue comment:*)", "Bash(gh issue close:*)",
+      "Bash(gh issue develop:*)",
+      "Bash(gh pr list:*)", "Bash(gh pr view:*)", "Bash(gh pr diff:*)",
+      "Bash(gh pr create:*)", "Bash(gh pr edit:*)", "Bash(gh pr checkout:*)",
+      "Bash(gh pr checks:*)", "Bash(gh pr merge:*)",
+      "Bash(gh label create:*)", "Bash(gh api:*)"
+    ]
+  }
+}
+```
+
+Say what the broad ones grant when offering: `gh pr merge` merges without a prompt, and `gh api` can call any GitHub endpoint (the workflow needs it for review threads and sub-issues). Let the user trim the list before writing it.
+
+## 5. Optional starter files
 
 Offer these one at a time, only where missing. Never create content the user did not ask for:
 
 - `CONTEXT.md`, created nearly empty in the `domain-modeling` format, when the user wants the glossary discipline from day one.
 - A build, test, and format section in `CLAUDE.md`. The `implement` skill finds its commands from the repo docs, so writing the three commands down once saves every future run from having to find them.
 
-## 5. Report
+## 6. Report
 
 What was created, what already existed, what was skipped and why, and, if anything needed permissions the account lacks, exactly which step to rerun after access is granted.

@@ -9,23 +9,20 @@ The implementer's procedure for merging a PR once the review loop is done: check
 
 ## How to talk to the user
 
-Write like an engineer reporting to a colleague who is short on time. These rules apply to replies in the chat and to everything you write into GitHub or into docs.
+Write like an engineer reporting to a colleague who is short on time. These rules apply to chat and to everything you write into GitHub or into docs.
 
-- Lead with the result. First line: what happened or what you found. Then what the reader has to do. Stop there. Add details only when asked.
-- If something failed or was skipped, that is the first line, with the output.
-- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence. One sentence per bullet. A reply that repeats what a diff or a tool result already shows adds nothing.
-- Say the literal thing. Mannered prose swaps a direct statement for a metaphor or a flourish: "a landmine with no warning sign" for "this breaks when vite is updated", "fold this in" for "add this", "silently" for "without an error", "the key insight" for nothing at all. Metaphors carry meanings you did not choose, and the reader has to translate them. When a literal phrase is available, use it.
-- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Cut "this matters more than it looks", "in other words", "worth noting", "the real question is". Do not describe what you are about to do or how you reasoned.
-- Use everyday words. Established engineering terms are fine when there is no short everyday equivalent (rebase, worktree, ADR, regression test, N+1 query). Spell out any other acronym the first time it appears. Do not coin a name for something that has an ordinary description.
-- Format for the reader, not for effect. Bullets when there are several parallel items, a table when there are rows and columns, a heading only in a document that is long enough to navigate. No bold lead-ins on bullets. Bold at most the one thing the reader must not miss. Prefer a period or a comma to an em-dash. Commands, paths, and error text go in backticks or a code block, not in the middle of a sentence.
-- Before sending, reread the draft once and delete: metaphors, sentences that justify a recommendation, anything the reader did not ask for.
+- Lead with the result: what happened or what you found, then what the reader has to do. If something failed or was skipped, that is the first line, with the output. Add details only when asked.
+- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence.
+- Say the literal thing. No metaphors or flourishes ("a landmine", "fold this in" for "add this"), no filler ("worth noting", "the key insight"), no coined names for things that have an ordinary description. Spell out an acronym the first time unless it is an established engineering term.
+- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Do not describe what you are about to do or how you reasoned.
+- Format plainly: bullets only for parallel items, no bold lead-ins, a period or a comma over an em-dash, commands, paths, and error text in backticks. Before sending, reread once and delete metaphors, justifications, and anything the reader did not ask for.
 
 ## Rules
 
 - **Merge only when nothing is outstanding.** Outstanding means unresolved review threads, failing CI, a changes-requested review, or merge conflicts. When all of those are clear, merge without asking. When something needs the user's judgment, ask one combined question rather than several small ones.
 - **Always merge with rebase**, and delete the branch on both the remote and locally as part of the merge.
 - **Deferred scope becomes an issue. Trivia gets fixed or dropped.** A review point set aside as "out of scope, follow-up" becomes a labeled issue that links back to the PR. Something the reviewer could have asked for in the PR does not: a rename, deleting an unused parameter, a comment that states the wrong thing. The test is whether the fix is smaller than the issue describing it. If it is, ask for it in this round or drop it and say in the report that you did.
-- **One issue per cause, not per symptom.** Read what is already open before filing. Findings that share a root cause are one issue naming the cause, not one issue each. A run that files a dozen issues about the same unclear contract has written the same problem down a dozen times, and every copy looks small enough to ignore.
+- **One issue per cause, not per symptom.** Read what is already open before filing. Findings that share a root cause are one issue naming the cause, not one issue each.
 - **Suggest only work that can start now.** Suggest only `ready-for-agent` issues, since that label means fully specified and blocked by nothing. Verify that anyway and fix wrong labels as the `labels` skill describes. Waiting on the user's input does not count as blocked: list `needs-input` issues separately, with the question each one is waiting on.
 - **Default order is oldest first.** The user's request can override this ("prioritize label:x", "newest", a milestone, and so on).
 
@@ -41,8 +38,9 @@ gh pr checks <n>
 Also fetch the unresolved review threads, with the same GraphQL query the `review-pr` skill uses (reviewThreads, then isResolved).
 
 - If CI is still running, run `gh pr checks <n> --watch` and wait for it.
+- If `gh pr checks` reports no checks at all, the repo has no CI, so nothing has verified the branch since the last push. Check out the PR head in a worktree (as below) and run the repo's build and tests there. A failure is outstanding and stops the merge.
 - If CI is failing, threads are unresolved, or `reviewDecision` is `CHANGES_REQUESTED`, fixing that is not this skill's job. Report what is outstanding and stop. The fix path is `answer-review` and the review loop.
-- If `mergeStateStatus` is `DIRTY` (conflicts), rebase locally: the tree must be clean, then `gh pr checkout <n>` and `git rebase origin/<base>`. If the conflicts do not resolve trivially, stop and ask. If they do, `git push --force-with-lease` and wait for CI again.
+- If `mergeStateStatus` is `DIRTY` (conflicts), rebase in a worktree, never in the shared checkout: `git worktree add --detach <scratchpad>/pr-<n> origin/<base>`, then `gh pr checkout <n>` inside it and `git rebase origin/<base>`. If the conflicts do not resolve trivially, stop and ask. If they do, `git push --force-with-lease`, remove the worktree, and wait for CI again.
 
 ### 2. Collect follow-ups
 
@@ -70,7 +68,7 @@ If anything above needs the user's call (a debatable follow-up, a non-trivial co
 gh pr merge <n> --rebase --delete-branch
 ```
 
-This deletes the remote branch. When the branch is checked out locally it also switches back to the base branch and deletes the local one. If the branch lives in a leftover `implement` worktree (check `git worktree list`), remove that worktree first, because a branch checked out in a worktree cannot be deleted. Verify the local side with `git branch --list <headRefName>`. If the local branch is still there (for example because you ran this from another branch), run `git branch -D <headRefName>`. Finish with `git pull` on the base branch.
+This deletes the remote branch. When the branch is checked out locally it also switches back to the base branch and deletes the local one. If the branch lives in a leftover worktree (`implement`'s, or this skill's rebase worktree; check `git worktree list`), remove that worktree first, because a branch checked out in a worktree cannot be deleted. Verify the local side with `git branch --list <headRefName>`. If the local branch is still there (for example because you ran this from another branch), run `git branch -D <headRefName>`. Finish with `git pull` on the base branch.
 
 ### 5. Suggest next work
 

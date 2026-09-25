@@ -12,16 +12,13 @@ This skill only coordinates. Every piece of real work belongs to the skill that 
 
 ## How to talk to the user
 
-Write like an engineer reporting to a colleague who is short on time. These rules apply to replies in the chat and to everything you write into GitHub or into docs.
+Write like an engineer reporting to a colleague who is short on time. These rules apply to chat and to everything you write into GitHub or into docs.
 
-- Lead with the result. First line: what happened or what you found. Then what the reader has to do. Stop there. Add details only when asked.
-- If something failed or was skipped, that is the first line, with the output.
-- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence. One sentence per bullet. A reply that repeats what a diff or a tool result already shows adds nothing.
-- Say the literal thing. Mannered prose swaps a direct statement for a metaphor or a flourish: "a landmine with no warning sign" for "this breaks when vite is updated", "fold this in" for "add this", "silently" for "without an error", "the key insight" for nothing at all. Metaphors carry meanings you did not choose, and the reader has to translate them. When a literal phrase is available, use it.
-- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Cut "this matters more than it looks", "in other words", "worth noting", "the real question is". Do not describe what you are about to do or how you reasoned.
-- Use everyday words. Established engineering terms are fine when there is no short everyday equivalent (rebase, worktree, ADR, regression test, N+1 query). Spell out any other acronym the first time it appears. Do not coin a name for something that has an ordinary description.
-- Format for the reader, not for effect. Bullets when there are several parallel items, a table when there are rows and columns, a heading only in a document that is long enough to navigate. No bold lead-ins on bullets. Bold at most the one thing the reader must not miss. Prefer a period or a comma to an em-dash. Commands, paths, and error text go in backticks or a code block, not in the middle of a sentence.
-- Before sending, reread the draft once and delete: metaphors, sentences that justify a recommendation, anything the reader did not ask for.
+- Lead with the result: what happened or what you found, then what the reader has to do. If something failed or was skipped, that is the first line, with the output. Add details only when asked.
+- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence.
+- Say the literal thing. No metaphors or flourishes ("a landmine", "fold this in" for "add this"), no filler ("worth noting", "the key insight"), no coined names for things that have an ordinary description. Spell out an acronym the first time unless it is an established engineering term.
+- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Do not describe what you are about to do or how you reasoned.
+- Format plainly: bullets only for parallel items, no bold lead-ins, a period or a comma over an em-dash, commands, paths, and error text in backticks. Before sending, reread once and delete metaphors, justifications, and anything the reader did not ask for.
 
 ## Rules
 
@@ -34,6 +31,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - **Never lower the bar to keep working.** Do not move `needs-grilling`, `needs-diagnosis`, or `needs-input` issues into the queue, do not implement an issue that does not meet the `ready-for-agent` definition, and do not invent work. An empty queue is a successful finish.
 - **A stuck issue stops that issue, and the loop continues.** A halted `implement` or CI failing for reasons outside this PR: record it, leave the labels and threads in a state that matches reality, and move to the next issue.
 - **The loop ends when the queue is empty**, never on a round count or a clock.
+- **Do not pause between issues.** The run never stops at a convenient point and never asks whether to continue. After an interruption (a session limit, a reboot, a permission prompt), resume by rebuilding the queue at step 0; the labels and threads on GitHub hold all the state.
 
 ## Workflow
 
@@ -97,7 +95,7 @@ Alternate two sub-agents against the PR until it settles. Each round:
 
 4. Re-read the PR again, then back to 1.
 
-`answer-review` works in the main checkout (`gh pr checkout`), so the tree must be clean between rounds. `implement` removes its worktree at the end, but verify that rather than assuming it.
+Both sub-agents work in their own worktrees, so the shared checkout's state does not matter between rounds. Verify that `implement` removed its worktree rather than assuming it.
 
 **There is no round limit.** Keep alternating until the PR reaches `ready-to-merge`. The one exception is a deadlock: a round with no new commits in which `answer-review` pushes back on the same threads with the same reasons as the round before. Then ask the user one question about the disputed points and wait for the answer, even in an unattended run. Pass the answer to the next `answer-review` sub-agent and continue the same PR.
 

@@ -9,16 +9,13 @@ Respond to a PR review as the author. Every reviewer comment gets exactly one re
 
 ## How to talk to the user
 
-Write like an engineer reporting to a colleague who is short on time. These rules apply to replies in the chat and to everything you write into GitHub or into docs.
+Write like an engineer reporting to a colleague who is short on time. These rules apply to chat and to everything you write into GitHub or into docs.
 
-- Lead with the result. First line: what happened or what you found. Then what the reader has to do. Stop there. Add details only when asked.
-- If something failed or was skipped, that is the first line, with the output.
-- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence. One sentence per bullet. A reply that repeats what a diff or a tool result already shows adds nothing.
-- Say the literal thing. Mannered prose swaps a direct statement for a metaphor or a flourish: "a landmine with no warning sign" for "this breaks when vite is updated", "fold this in" for "add this", "silently" for "without an error", "the key insight" for nothing at all. Metaphors carry meanings you did not choose, and the reader has to translate them. When a literal phrase is available, use it.
-- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Cut "this matters more than it looks", "in other words", "worth noting", "the real question is". Do not describe what you are about to do or how you reasoned.
-- Use everyday words. Established engineering terms are fine when there is no short everyday equivalent (rebase, worktree, ADR, regression test, N+1 query). Spell out any other acronym the first time it appears. Do not coin a name for something that has an ordinary description.
-- Format for the reader, not for effect. Bullets when there are several parallel items, a table when there are rows and columns, a heading only in a document that is long enough to navigate. No bold lead-ins on bullets. Bold at most the one thing the reader must not miss. Prefer a period or a comma to an em-dash. Commands, paths, and error text go in backticks or a code block, not in the middle of a sentence.
-- Before sending, reread the draft once and delete: metaphors, sentences that justify a recommendation, anything the reader did not ask for.
+- Lead with the result: what happened or what you found, then what the reader has to do. If something failed or was skipped, that is the first line, with the output. Add details only when asked.
+- Keep a chat reply under ten lines unless it is a list of findings. One idea per sentence.
+- Say the literal thing. No metaphors or flourishes ("a landmine", "fold this in" for "add this"), no filler ("worth noting", "the key insight"), no coined names for things that have an ordinary description. Spell out an acronym the first time unless it is an established engineering term.
+- Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Do not describe what you are about to do or how you reasoned.
+- Format plainly: bullets only for parallel items, no bold lead-ins, a period or a comma over an em-dash, commands, paths, and error text in backticks. Before sending, reread once and delete metaphors, justifications, and anything the reader did not ask for.
 
 ## Rules
 
@@ -40,13 +37,20 @@ Collect everything that needs an answer (queries in `reference/github-api.md`):
 - review bodies that contain findings,
 - ordinary PR comments that raise points no thread already covers.
 
-### 2. Get on the branch
+### 2. Get on the branch in a worktree
+
+Never check the PR branch out in the shared checkout; another session may be using it. Work in a dedicated worktree:
 
 ```sh
-git status --porcelain    # must be clean - abort if dirty with unrelated changes
-gh pr checkout <n>        # no-op if already on the branch; handles forks
-git pull                  # put the fixes on top of the latest head
+git fetch origin
+git worktree add --detach <scratchpad>/pr-<n> origin/<base>
+cd <scratchpad>/pr-<n>
+gh pr checkout <n>        # inside the worktree; handles forks and tracking
 ```
+
+If `gh pr checkout` refuses because the branch is checked out elsewhere, fetch the head directly (`git fetch origin pull/<n>/head && git checkout FETCH_HEAD`) and push later with `git push origin HEAD:<headRefName>`.
+
+All edits, commits, and pushes happen inside the worktree.
 
 ### 3. Decide each thread
 
@@ -65,6 +69,8 @@ git push
 Then, for each thread, reply with `Fixed in <sha>.` plus one line on what changed if the fix is not self-evident, or with the pushback reasoning. Finally post the single quote-reply comment for any points that were not in inline threads. API calls: `reference/github-api.md`.
 
 Change the PR's state label as the `labels` skill describes: `gh pr edit <n> --add-label ready-for-review --remove-label review-feedback`. The reviewer is up next. If the repo does not have these labels, still respond in full, skip the label change, and note "workflow labels not set up in this repo (see `setup-repo`)" in the terminal report.
+
+Remove the worktree (`git worktree remove <scratchpad>/pr-<n>`). If the run stops early, leave it in place so the next run can resume.
 
 ### 6. Report
 
