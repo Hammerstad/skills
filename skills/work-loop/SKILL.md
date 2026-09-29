@@ -1,6 +1,6 @@
 ---
 name: work-loop
-description: Work through the ready-for-agent backlog end to end - pick the oldest ready issue, implement it, run the review loop with sub-agents, merge the PR, triage, and repeat until nothing is ready. Only invoked explicitly by the user via /work-loop.
+description: Work through the ready-for-agent backlog end to end - pick the oldest ready issue, implement it, run the review loop with a sub-agent reviewer, merge the PR, triage, and repeat until nothing is ready. Only invoked explicitly by the user via /work-loop.
 disable-model-invocation: true
 ---
 
@@ -25,9 +25,10 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - **One issue at a time, in sequence.** Never start a second issue while a PR is open. Every merge moves the base branch and `finish-pr` rebases onto it, so running issues in parallel produces conflicts rather than saving time.
 - **Oldest first**, unless the invocation says otherwise (`/work-loop prioritize label:bug`, `newest`, a milestone). Age is measured by `createdAt` rather than by issue number.
 - **Review always runs in a fresh sub-agent.** This is about independence rather than speed: the reviewer must not inherit the implementer's context. A reviewer who watched the code get written already believes every justification for it. A sub-agent that sees only the PR reviews the diff on its own merits.
-- **Answering runs in its own sub-agent too**, for the same reason in reverse: it argues from the PR and the code, without a remembered intent that never made it into either.
-- **The label is the verdict.** Do not rely on the sub-agent's account of what it did. After every sub-agent returns, re-read the PR's labels and threads yourself. `ready-to-merge` is the only thing that lets `finish-pr` run. Never merge because a review "looked clean".
-- **Do not touch code.** The coordinating session never edits, commits, or pushes. If something needs fixing, the skill that owns it fixes it in its own run.
+- **Everything else runs in this session.** `implement`, `answer-review`, `finish-pr`, and `triage` run here, as the author would run them. A sub-agent starts from nothing and re-reads the PR, the code, and the skill files, so use one only where independence requires it.
+- **Models come from the skills.** `implement` sets `model: sonnet`; `answer-review` and `finish-pr` set `model: opus`, which returns the session to Opus after implementing. Pass `model: opus` on the reviewer's Agent call.
+- **The label is the verdict.** Do not rely on the reviewer's account of what it did. After the reviewer returns and after every `answer-review` run, re-read the PR's labels and threads yourself. `ready-to-merge` is the only thing that lets `finish-pr` run. Never merge because a review "looked clean".
+- **Do not touch code outside the skills.** This session edits, commits, and pushes only inside an `implement` or `answer-review` run. If something needs fixing, the skill that owns it fixes it.
 - **Never lower the bar to keep working.** Do not move `needs-grilling`, `needs-diagnosis`, or `needs-input` issues into the queue, do not implement an issue that does not meet the `ready-for-agent` definition, and do not invent work. An empty queue is a successful finish.
 - **A stuck issue stops that issue, and the loop continues.** A halted `implement` or CI failing for reasons outside this PR: record it, leave the labels and threads in a state that matches reality, and move to the next issue.
 - **The loop ends when the queue is empty**, never on a round count or a clock.
@@ -67,9 +68,9 @@ Invoke the `implement` skill for the issue, in this session. It ends in one of t
 
 ### 3. Review loop
 
-Alternate two sub-agents against the PR until it settles. Each round:
+Alternate a sub-agent reviewer and `answer-review` in this session until the PR settles. Each round:
 
-1. **Review.** Spawn a sub-agent with fresh context and tools that can post to GitHub:
+1. **Review.** Spawn a sub-agent with fresh context, `model: opus`, and tools that can post to GitHub:
 
    ```
    Invoke the /hammerstad-skills:review-pr skill on PR #<P> in <repo>.
@@ -83,25 +84,17 @@ Alternate two sub-agents against the PR until it settles. Each round:
    - `ready-to-merge` and no unresolved threads: go to step 4.
    - `review-feedback` or unresolved threads: continue.
 
-3. **Answer.** Spawn a second sub-agent, only after the reviewer has finished, because this one commits and pushes and the two must never overlap:
-
-   ```
-   Invoke the /hammerstad-skills:answer-review skill on PR #<P> in <repo>.
-   You are the author responding to review. Fix or push back on every unresolved thread.
-   Do not merge and do not resolve threads. The reviewer resolves them next round.
-   Report back: threads fixed (with SHAs), threads pushed back on (with the reason),
-   and the label you left.
-   ```
+3. **Answer.** Invoke `answer-review` on the PR in this session, only after the reviewer has finished, because it commits and pushes and the two must never overlap. Fix or push back on every unresolved thread. Do not merge and do not resolve threads; the reviewer resolves them next round. Log the threads fixed (with SHAs) and the threads pushed back on (with the reason).
 
 4. Re-read the PR again, then back to 1.
 
-Both sub-agents work in their own worktrees, so the shared checkout's state does not matter between rounds. Verify that `implement` removed its worktree rather than assuming it.
+The reviewer and `answer-review` each work in their own worktree, so the shared checkout's state does not matter between rounds. Verify that `implement` removed its worktree rather than assuming it.
 
-**There is no round limit.** Keep alternating until the PR reaches `ready-to-merge`. The one exception is a deadlock: a round with no new commits in which `answer-review` pushes back on the same threads with the same reasons as the round before. Then ask the user one question about the disputed points and wait for the answer, even in an unattended run. Pass the answer to the next `answer-review` sub-agent and continue the same PR.
+**There is no round limit.** Keep alternating until the PR reaches `ready-to-merge`. The one exception is a deadlock: a round with no new commits in which `answer-review` pushes back on the same threads with the same reasons as the round before. Then ask the user one question about the disputed points and wait for the answer, even in an unattended run. Apply the answer in the next `answer-review` run and continue the same PR.
 
 ### 4. Finish
 
-When the PR is `ready-to-merge` with nothing outstanding, invoke `finish-pr` for it in this session rather than in a sub-agent: it merges, files follow-ups, and its next-work suggestions feed straight back into this loop. If it stops on something outstanding, that contradicts step 3's re-read. Trust `finish-pr`, log the discrepancy, and treat the PR as stuck as the rules above describe.
+When the PR is `ready-to-merge` with nothing outstanding, invoke `finish-pr` for it in this session: it merges, files follow-ups, and its next-work suggestions feed straight back into this loop. If it stops on something outstanding, that contradicts step 3's re-read. Trust `finish-pr`, log the discrepancy, and treat the PR as stuck as the rules above describe.
 
 ### 5. Triage, then loop
 

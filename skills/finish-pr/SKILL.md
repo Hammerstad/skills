@@ -1,6 +1,7 @@
 ---
 name: finish-pr
 description: Merge a finished pull request as the implementer once review is complete - check nothing is outstanding, file follow-up issues, rebase-merge, delete the branch, and suggest what to work on next. Use when the user says "finish PR 98", "/finish-pr", "land this PR", "merge and clean up", or asks what to work on after a merge.
+model: opus
 ---
 
 # Finish PR
