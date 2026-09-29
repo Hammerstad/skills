@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Grill Issues
 
-Take the open `needs-grilling` issues (see the `labels` skill) and work through them one at a time. Each issue gets explained, grilled with `grill-with-docs`, and written back to GitHub as a real spec.
+Take the open `needs-grilling` issues (see the `labels` skill) and work through them one at a time. Each issue gets explained, grilled with `grill-with-docs`, and written back to GitHub as a complete spec.
 
 The user is a technical product manager. They own the product decisions and know the domain, and they have not read the code. Everything you put in front of them is in plain English.
 
@@ -26,7 +26,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - **Explain before you ask.** Every issue opens with the brief described in step 2. The user should never have to work out what an issue is about from your first question.
 - **No jargon in anything the user reads.** Describe behavior and consequences rather than classes, layers, or patterns. Name a file only when they need to open it. Explain a term the first time you need it, or find a plainer one.
 - **Describe options by their outcomes.** "Slower to build, but the import cannot lose rows" is better than "use a transactional outbox". The user picks between outcomes, costs, and risks.
-- **Facts are yours to find, decisions are the user's.** Read the code before asking anything. Never ask the user something the repo can answer.
+- **Look up facts yourself, and ask the user for decisions.** Read the code before asking anything. Never ask the user something the repo can answer.
 
 ## Workflow
 
@@ -38,7 +38,7 @@ gh issue list --state open --label needs-grilling --json number,title,createdAt,
 
 Sort oldest first by `createdAt`. Show the list (number, title, age, one plain line each), then start on the first.
 
-Issues labeled `epic` are `plan-epic` maps and are not grilled here; skip them without asking. An issue whose parent issue carries `epic` is a ticket on a map: run the `plan-epic` skill's "Working a ticket" mode on it instead of steps 2 to 4, so the map's index and blocking stay current. Check the parent with `gh api repos/{owner}/{repo}/issues/<n>/parent`.
+Issues labeled `epic` are epic issues created by `plan-epic` and are not grilled here; skip them without asking. An issue whose parent issue carries `epic` is a ticket in an epic: run the `plan-epic` skill's "Working a ticket" mode on it instead of steps 2 to 4, so that the epic issue's decision list and blocked labels stay correct. Check the parent with `gh api repos/{owner}/{repo}/issues/<n>/parent`.
 
 Three kinds of issue leave the list instead of being grilled. Say which kind and why, and let the user confirm:
 

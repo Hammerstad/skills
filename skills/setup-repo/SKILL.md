@@ -5,7 +5,7 @@ description: Prepare a GitHub repo for the skills workflow - create the workflow
 
 # Setup Repo
 
-Make a repository ready for the workflow skills (`labels`, `implement`, `review-pr`, `answer-review`, `finish-pr`, `to-issues`). Everything here is safe to run more than once. Nothing fails hard: whatever cannot be done (missing permissions, someone else's repo) is reported and left alone.
+Make a repository ready for the workflow skills (`labels`, `implement`, `review-pr`, `answer-review`, `finish-pr`, `to-issues`). Everything here is safe to run more than once. If a step cannot be done (missing permissions, someone else's repo), report it and continue with the rest.
 
 ## How to talk to the user
 
@@ -36,7 +36,7 @@ gh label create needs-diagnosis  --force --color E99695 --description "Bug with 
 gh label create needs-input      --force --color FBCA04 --description "A named question waits on a human - maintainer or reporter"
 gh label create ready-for-agent  --force --color 0E8A16 --description "Spec complete and unblocked - implementable now"
 gh label create blocked          --force --color B60205 --description "Depends on an open issue - see 'Blocked by #N' in body"
-gh label create epic             --force --color 6F42C1 --description "A plan-epic map - one sub-issue per open decision"
+gh label create epic             --force --color 6F42C1 --description "A plan-epic epic - one sub-issue per open decision"
 gh label create ready-for-review --force --color 1D76DB --description "PR: implementation complete, review requested"
 gh label create review-feedback  --force --color 5319E7 --description "PR: review left unresolved findings"
 gh label create ready-to-merge   --force --color 0E8A16 --description "PR: review clean - merge via finish-pr"
@@ -78,7 +78,7 @@ Say what the broad ones grant when offering: `gh pr merge` merges without a prom
 
 Offer these one at a time, only where missing. Never create content the user did not ask for:
 
-- `CONTEXT.md`, created nearly empty in the `domain-modeling` format, when the user wants the glossary discipline from day one.
+- `CONTEXT.md`, created nearly empty in the `domain-modeling` format, when the user wants to start a glossary now.
 - A build, test, and format section in `CLAUDE.md`. The `implement` skill finds its commands from the repo docs, so writing the three commands down once saves every future run from having to find them.
 
 ## 6. Report

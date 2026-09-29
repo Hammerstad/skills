@@ -105,13 +105,13 @@ Do not move on until you have both reproduced and shrunk the scenario.
 
 ## Phase 3: List possible causes
 
-Write down 3 to 5 ranked hypotheses before testing any of them, one line each. If you only generate one, you will anchor on the first plausible idea.
+Write down 3 to 5 ranked hypotheses before testing any of them, one line each. With only one, you tend to stick with the first plausible idea.
 
 Each hypothesis must make a prediction you can test:
 
 > "If <X> is the cause, then <changing Y> will make the bug disappear, or <changing Z> will make it worse."
 
-If you cannot state the prediction, the hypothesis is a guess. Discard it or sharpen it.
+If you cannot state a prediction, discard the hypothesis or make it more specific.
 
 Show the ranked list to the user before testing. They often know something that reorders it at once ("we just deployed a change to #3"), or have already ruled some out. Do not block on their reply. If the user is not responding, proceed with your own ranking.
 
@@ -121,7 +121,7 @@ Each probe must test a specific prediction from Phase 3. Change one variable at 
 
 Preferred tools, in order:
 
-1. A debugger or REPL if the environment supports it. One breakpoint beats ten logs.
+1. A debugger or REPL if the environment supports it. One breakpoint tells you more than ten log lines.
 2. Targeted logs at the boundaries that tell the hypotheses apart.
 3. Never "log everything and grep".
 
@@ -135,7 +135,7 @@ Write the regression test before the fix, but only if there is a right place to 
 
 The right place is one where the test exercises the real bug pattern the way it occurs at the call site. If the only available place is too shallow (a single-caller test when the bug needs several callers, or a unit test that cannot reproduce the chain of calls that triggered the bug), a regression test there gives false confidence.
 
-If no right place exists, that is a finding in itself. Note it: the structure of the codebase is preventing the bug from being locked down by a test. Bring it up in the last phase.
+If no right place exists, that is a finding in itself. Note it: the structure of the codebase prevents a test from covering this bug. Bring it up in the last phase.
 
 If a right place exists:
 

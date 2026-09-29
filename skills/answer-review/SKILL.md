@@ -20,7 +20,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 
 ## Rules
 
-- **Every unresolved inline thread gets a response.** Fix or push back. Do not leave a thread hanging or skip one because it is inconvenient. Resolved threads are done; ignore them. Threads where the last reply is already ours are waiting on the reviewer; ignore them too. This is what makes re-runs safe.
+- **Every unresolved inline thread gets a response.** Fix or push back. Do not skip a thread. Resolved threads are done; ignore them. Threads where the last reply is already ours are waiting on the reviewer; ignore them too. This makes it safe to run the skill again on the same PR.
 - **Fix by default.** Push back only when the comment is factually wrong, would make the code worse, or is out of scope for this PR (then say so and propose where it belongs). A pushback is one or two sentences of technical reasoning, without apology and without "great point, but".
 - **Reply, but do not resolve.** The reviewer verifies and resolves threads; that is the `review-pr` skill's job on its next round. Leave every thread open.
 - **One commit per logical fix.** Each fixed thread's reply names the SHA that fixes it ("Fixed in `a1b2c3d`."). Related comments fixed by one change share a commit. Push once at the end, before posting replies, so that every SHA you cite exists on GitHub when the reviewer clicks it.
@@ -59,7 +59,7 @@ Read the thread, the file as it is now, and enough surrounding code to judge whe
 
 ### 4. Fix
 
-For each fix: edit, verify (run the targeted tests or build for the touched area when the project has them; the full CI run stays CI's job), and commit with a message naming the concern, for example `fix: handle empty batch in charger sync (review)`. Keep a record of which thread each SHA answers.
+For each fix: edit, verify (run the targeted tests or build for the touched area when the project has them; the full CI run stays CI's job), and commit with a message naming the concern, for example `Handle empty batch in charger sync (review)`. Keep a record of which thread each SHA answers.
 
 ### 5. Push, then respond
 

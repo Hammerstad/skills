@@ -1,11 +1,11 @@
 ---
 name: plan-epic
-description: Plan a piece of work too big for one grill session (an epic, a large feature, a migration) as a map issue on GitHub with one sub-issue per open decision, then resolve those decisions one session at a time until nothing is left to decide and to-issues can slice it. Charting a new map starts only when the user asks ("plan this epic", "map out this feature", "this is too big to grill"). Working a ticket is also invoked by grill-issues when it meets an issue whose parent carries the `epic` label.
+description: Plan a piece of work too big for one grill session (an epic, a large feature, a migration) as an epic issue on GitHub with one sub-issue per open decision, then resolve those decisions one session at a time until nothing is left to decide and to-issues can split it into build issues. Create a new epic only when the user asks ("plan this epic", "map out this feature", "this is too big to grill"). grill-issues also invokes it to work a ticket when it meets an issue whose parent carries the `epic` label.
 ---
 
 # Plan Epic
 
-A loose idea has arrived that is too big to settle in one grill session, and the details are not known yet. This skill writes the idea down as a **map**: one GitHub issue that names where the work is going, with one sub-issue per question that has to be decided first. Sessions then resolve those questions one at a time. The output is decisions, not code. When nothing is left to decide, `to-issues` slices the result into build work.
+Use this when the user has an idea that is too big to settle in one grill session and whose details are not known yet. This skill records the idea as an **epic issue** on GitHub. The epic issue states the goal, and it has one sub-issue, called a **ticket**, for each question that has to be decided before the work can be built. Each later session resolves one ticket. This skill only records decisions and writes no code. When nothing is left to decide, `to-issues` splits the result into build issues.
 
 ## How to talk to the user
 
@@ -19,26 +19,26 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 
 ## Rules
 
-- **Decide, do not build.** Every ticket resolves a question. The map is finished when nothing is left to decide before someone builds the thing; even then, building goes through `to-issues` and `implement`, not this skill.
-- **One ticket per session.** A session resolves one ticket, updates the map, and stops. The user starts a new session for the next one. Research tickets are the exception: they run as sub-agents with their own context.
-- **Claim before work.** Assign the ticket to the user before reading anything else. Other sessions skip assigned tickets. An open, unassigned ticket is free to take.
+- **Resolve questions, and do not build.** Every ticket answers a question. The epic is finished when nothing is left to decide. Even then, `to-issues` and `implement` do the building, not this skill.
+- **One ticket per session.** A session resolves one ticket, updates the epic issue, and stops. The user starts a new session for the next ticket. Research tickets are the exception: each one runs in its own sub-agent.
+- **Assign the ticket before working on it.** Assign it to the user before reading anything else. Other sessions skip assigned tickets, so an open, unassigned ticket is free to take.
 - **Refer to issues by title.** In everything the user reads, name a ticket by its title with the number in the link, never by a bare `#42`.
-- **Facts are yours to find, decisions are the user's.** Read the code, the docs, and the tracker before asking anything. Every decision goes to the user through a question, as `grill-with-docs` describes.
+- **Look up facts yourself, and ask the user for decisions.** Read the code, the docs, and the tracker before asking anything. Every decision goes to the user as a question, as `grill-with-docs` describes.
 
-## The map
+## The epic issue
 
-The map is one issue labeled `epic` plus `needs-grilling` (see the `labels` skill). Its tickets are native sub-issues of it. The map is an index: it lists decisions in one line each and links to the ticket that holds the full answer. It never repeats the answer. Open tickets are not listed in the body. They are the open sub-issues, found by query.
+The epic issue carries the labels `epic` and `needs-grilling` (see the `labels` skill). Its tickets are native GitHub sub-issues of it. The body is an index: each decision gets one line with a link to the ticket that holds the full answer, and the answer is not repeated in the body. Open tickets are not listed in the body. Find them with the query under "GitHub commands".
 
-Map body:
+Epic issue body:
 
 ```markdown
-## Destination
+## Goal
 
-<What finished looks like: the spec, decision, or change this map leads to. One or two lines. Every session reads this before picking a ticket.>
+<What finished looks like: the spec, decision, or change this epic leads to. One or two lines. Every session reads this before picking a ticket.>
 
 ## Notes
 
-<Domain background, skills every session should load, standing preferences for this effort.>
+<Domain background, skills every session should load, standing preferences for this work.>
 
 ## Decisions so far
 
@@ -48,21 +48,23 @@ Map body:
 
 ## Not yet specified
 
-<!-- questions you can tell are coming but cannot state precisely yet; see "Not yet specified" -->
+<!-- questions you expect to come up but cannot state precisely yet; see "Not yet specified" -->
 
 ## Out of scope
 
-<!-- work ruled outside the destination, with why; see "Out of scope" -->
+<!-- work ruled outside the goal, and why; see "Out of scope" -->
 ```
+
+Epic issues created before this format use the heading `## Destination` for the goal. Treat it as the same section.
 
 ## Tickets
 
-Each ticket is a sub-issue of the map. Its body is one question, sized so one session can resolve it:
+Each ticket is a sub-issue of the epic issue. Its body is one question, small enough for one session to resolve:
 
 ```markdown
 ## Question
 
-<the decision or investigation this ticket resolves, and why the destination depends on it>
+<the decision or investigation this ticket resolves, and why the goal depends on it>
 
 ## Type
 
@@ -73,62 +75,59 @@ grilling | research | task
 #N - or "None"
 ```
 
-The answer is not in the body. It is posted as a comment when the ticket closes.
+The answer does not go in the body. It is posted as a comment when the ticket closes.
 
 ### Types
 
-Three types. Each maps to an existing state label, so `triage`, `grill-issues`, and `finish-pr` work on tickets without changes.
+There are three types. Each one uses an existing state label, so `triage`, `grill-issues`, and `finish-pr` handle tickets without changes.
 
 | Type | Who resolves it | Label while open |
 |---|---|---|
-| grilling | The user, in conversation. The default. Resolve with `grill-with-docs` and `domain-modeling`. When a question needs something concrete to react to, write a rough stub or outline first and link it from the ticket. | `needs-grilling` |
-| research | A sub-agent alone. Reads documentation, third-party APIs, or the codebase to find a fact a decision waits on. See "Research". | `needs-input` |
-| task | Manual work a decision waits on: signing up for a service, provisioning access, moving data so its shape can be seen. Nothing to decide, but the next decision cannot be made until it is done. The agent does it when it can; otherwise the body holds a checklist for the user. | `needs-input` |
+| grilling | The user, in conversation. This is the default. Resolve it with `grill-with-docs` and `domain-modeling`. When the user needs something concrete to react to, write a rough draft or outline first and link it from the ticket. | `needs-grilling` |
+| research | A sub-agent, without the user. It reads documentation, third-party APIs, or the codebase to find a fact that a decision depends on. See "Research". | `needs-input` |
+| task | Manual work that a decision depends on: signing up for a service, getting access, moving data so its shape can be seen. There is nothing to decide, but the next decision cannot be made until the task is done. The agent does it when it can. Otherwise the body holds a checklist for the user. | `needs-input` |
 
-A grilling ticket never answers its own questions. If the user is not there, the ticket stays open.
+A grilling ticket is never answered without the user. If the user is not there, the ticket stays open.
 
-Tickets that depend on another open ticket also carry `blocked`, with `Blocked by #N` in the body and the native blocked-by relation set (see "GitHub commands"). `blocked` comes off when the blocker closes.
+A ticket that depends on another open ticket also carries `blocked`, has `Blocked by #N` in its body, and has the native blocked-by relation set (see "GitHub commands"). Remove `blocked` when all its blocking tickets have closed.
 
-The **frontier** is the set of open sub-issues that are unassigned and not `blocked`. That is what a session picks from.
+A session picks from the **available tickets**: sub-issues that are open, unassigned, and not `blocked`.
 
 ## Not yet specified
 
-The map is incomplete on purpose. Do not create tickets for questions you cannot state yet. The **Not yet specified** section holds the questions you can see coming but cannot phrase precisely, because they depend on answers still open. Resolving a ticket usually sharpens some of them into tickets. Move each one out of the section the moment it becomes a ticket, so it lives in one place.
+Do not create a ticket for a question you cannot state yet. The Not yet specified section lists the questions you expect to come up but cannot phrase precisely, because they depend on answers that are still open. Resolving a ticket often makes some of them precise enough to become tickets. When one does, create the ticket and remove the entry, so that each question is recorded in one place.
 
-The test for ticket or not yet specified is whether you can state the question precisely now, not whether you can answer it now.
+Create a ticket when you can state the question precisely, even if you cannot answer it yet or it is blocked. Otherwise add it to Not yet specified, and do not split it in advance: one entry may later become several tickets, or none.
 
-- Ticket when the question is sharp, even if it is blocked.
-- Not yet specified when it is not. Do not pre-slice it; one entry may become several tickets, or none.
-
-The section excludes what is decided, what is already a ticket, and what is out of scope.
+The section does not hold decided questions, questions that already have a ticket, or work that is out of scope.
 
 ## Out of scope
 
-The destination fixes the scope. Work beyond it is out of scope, not "not yet specified". It goes in the **Out of scope** section with one line saying why. It never becomes a ticket on this map; if it comes back, it is a new map.
+The goal sets the scope. Work beyond the goal goes in the Out of scope section, with one line saying why. It never becomes a ticket in this epic. If it comes up again later, it needs a new epic.
 
-When an existing ticket turns out to be beyond the destination, close it with a comment saying so, add a line to **Out of scope** linking it, and do not add it to **Decisions so far**.
+When an existing ticket turns out to be beyond the goal, close it with a comment saying so, add a line to Out of scope that links it, and leave it out of Decisions so far.
 
-## Charting a map
+## Creating an epic
 
-The user invokes this with a loose idea. Charting creates issues, so it never starts on the model's own judgment.
+The user starts this with a rough idea. Creating an epic creates issues, so do it only when the user asks.
 
-1. **Name the destination.** Run `grill-with-docs` and `domain-modeling` on one question: what does finished look like? A spec, a decision, or a change made in place. Settle this first because it fixes the scope of everything else.
-2. **Find the open questions.** Grill again, wide rather than deep: cover the whole space, surface every decision that has to be made and which ones can be worked on now. If this turns up nothing that has to wait on something else, the work fits one grill session and does not need a map. Say so and ask how the user wants to proceed.
-3. **Create the map issue** with the body above: Destination and Notes filled in, Decisions so far empty, the questions you cannot yet state under Not yet specified, anything ruled out under Out of scope. Labels: `epic`, `needs-grilling`.
-4. **Create the tickets** you can state precisely, one sub-issue each with its type label. Then, in a second pass, set the blocking relations, `Blocked by #N` lines, and `blocked` labels (issues need numbers before they can refer to each other).
-5. **Fire the research.** For every research ticket, start one sub-agent in parallel with the method under "Research". Wait for them, record each one as "Working a ticket" step 4 describes, then move on.
-6. **Stop.** Report the map by title with its link, the number of tickets on the frontier, and the number blocked. Charting resolves no grilling tickets.
+1. **Agree on the goal.** Run `grill-with-docs` and `domain-modeling` on one question: what does finished look like? A spec, a decision, or a change to existing code. Settle this first, because it sets the scope for everything else.
+2. **List the open questions.** Grill again, covering the whole area broadly rather than one part in depth. List every decision that has to be made, and which ones can be worked on now. If no question has to wait for another, the work fits in one grill session and needs no epic. Say so and ask how the user wants to proceed.
+3. **Create the epic issue** with the body above: Goal and Notes filled in, Decisions so far empty, the questions you cannot state yet under Not yet specified, and anything ruled out under Out of scope. Labels: `epic`, `needs-grilling`.
+4. **Create the tickets** you can state precisely, one sub-issue each, with the label for its type. Then, in a second pass, add the blocked-by relations, the `Blocked by #N` lines, and the `blocked` labels. The second pass is needed because issues must exist before they can refer to each other's numbers.
+5. **Start the research.** For each research ticket, start a sub-agent with the method under "Research", all in parallel. Wait for them to finish, record each result as step 4 of "Working a ticket" describes, then continue.
+6. **Stop.** Report the epic by title with its link, how many tickets are available, and how many are blocked. Creating an epic does not resolve any grilling tickets.
 
 ## Working a ticket
 
-Invoked by the user with a map or ticket number or URL, or by `grill-issues` when its sweep meets a ticket whose parent is an `epic`.
+The user invokes this with an epic or ticket number or URL, or `grill-issues` invokes it when it meets a ticket whose parent issue has the `epic` label.
 
-1. **Load the map**: the body only, not every ticket. Read the Destination, Notes, and Decisions so far. Load any skills the Notes name.
-2. **Pick the ticket.** If one was named, take it. Otherwise take the first frontier ticket in the sub-issue order. **Claim it** by assigning it to the user before doing anything else.
-3. **Resolve it** by type. For grilling, run `grill-with-docs` and `domain-modeling` on the ticket's question; read related closed tickets and the repo's `CONTEXT.md` and ADRs as needed, not up front. For research, run the method under "Research". For a task, do the work or walk the user through the checklist.
-4. **Record it.** Post the resolution comment (shape below), close the ticket, and append one line to the map's Decisions so far. Hard-to-reverse trade-offs go into an ADR and agreed terms into `CONTEXT.md`, as `domain-modeling` describes; check that it happened.
-5. **Update the map.** Create the tickets the answer made possible to state, wire their blocking, and remove the matching entries from Not yet specified. Remove `blocked` from tickets this one was blocking. If the answer shows a ticket is beyond the destination, rule it out of scope. If it invalidates other tickets, edit or close them. Fire sub-agents for any new research tickets.
-6. **Stop**, unless the map is finished. Report in two or three lines: the ticket by title and its answer, what was written to the docs, how many tickets remain on the frontier and how many are blocked.
+1. **Read the epic issue**: its body only, not every ticket. Read the Goal, Notes, and Decisions so far. Load any skills the Notes name.
+2. **Pick the ticket.** If the user named one, take it. Otherwise take the first available ticket in sub-issue order. Assign it to the user before doing anything else.
+3. **Resolve it** according to its type. Grilling: run `grill-with-docs` and `domain-modeling` on the ticket's question, and read related closed tickets, `CONTEXT.md`, and the ADRs when you need them rather than all at the start. Research: run the method under "Research". Task: do the work, or walk the user through the checklist.
+4. **Record it.** Post the resolution comment (shape below), close the ticket, and add one line to Decisions so far in the epic issue. Hard-to-reverse trade-offs go into an ADR and agreed terms into `CONTEXT.md`, as `domain-modeling` describes. Check that this happened.
+5. **Update the epic issue.** Create tickets for the questions the answer made precise, set their blocked-by relations, and remove the matching entries from Not yet specified. Remove `blocked` from tickets whose blocking tickets have now all closed. If the answer shows that a ticket is beyond the goal, move it to Out of scope. If the answer makes other tickets wrong or unnecessary, edit or close them. Start sub-agents for any new research tickets.
+6. **Stop**, unless the epic is finished. Report in two or three lines: the ticket by title and its answer, what was written to the docs, how many tickets are available, and how many are blocked.
 
 Resolution comment:
 
@@ -153,11 +152,11 @@ Resolution comment:
 
 ## Research
 
-A research ticket is resolved by a sub-agent with no user in the loop. Give it the ticket's question, the map's Destination and Notes, and this method:
+A sub-agent resolves a research ticket without the user. Give it the ticket's question, the epic's Goal and Notes, and this method:
 
-1. Read the sources the question points at: documentation, an API, a library, the codebase. Prefer primary sources and quote them.
+1. Read the sources the question points at: documentation, an API, a library, the codebase. Prefer primary sources and quote them. For facts that may have changed since your training (versions, limits, prices, API behavior), check a current source even when you are confident.
 2. Answer the question. Say plainly when the sources do not settle it.
-3. Post a comment in the shape below, close the ticket, and return the one-line answer for the map.
+3. Post a comment in the shape below, close the ticket, and return the one-line answer for Decisions so far.
 
 Research comment:
 
@@ -179,29 +178,29 @@ Research comment:
 - <what the sources did not settle, and what would> - or "none"
 ```
 
-The sub-agent does not create tickets or edit the map. The calling session does that from the answer.
+The sub-agent does not create tickets or edit the epic issue. The session that started it does that, using the answer.
 
-## Finishing the map
+## Finishing the epic
 
-The map is finished when there are no open sub-issues and Not yet specified is empty. Confirm with the user that nothing is left to decide. Then:
+The epic is finished when it has no open sub-issues and Not yet specified is empty. Confirm with the user that nothing is left to decide. Then:
 
-1. Run `to-issues` with the map as the parent. Every slice's Parent field points at the map issue, and slices are labeled as the `labels` skill describes.
-2. Close the map with a comment listing the slices by title.
+1. Run `to-issues` with the epic issue as the parent. Every build issue's Parent field points at the epic issue, and each is labeled as the `labels` skill describes.
+2. Close the epic issue with a comment listing the build issues by title.
 
 ## GitHub commands
 
-Sub-issue and dependency endpoints take the database id, not the number:
+Sub-issue and dependency endpoints take the database id, not the issue number:
 
 ```sh
 gh api repos/{owner}/{repo}/issues/<n> --jq .id
 ```
 
-Create the map and a ticket, then attach the ticket:
+Create the epic issue and a ticket, then attach the ticket:
 
 ```sh
-gh issue create --title "<map title>" --label epic,needs-grilling --body-file map.md
+gh issue create --title "<epic title>" --label epic,needs-grilling --body-file epic.md
 gh issue create --title "<ticket title>" --label needs-grilling --body-file ticket.md
-gh api -X POST repos/{owner}/{repo}/issues/<map>/sub_issues -F sub_issue_id=<ticket db id>
+gh api -X POST repos/{owner}/{repo}/issues/<epic>/sub_issues -F sub_issue_id=<ticket db id>
 ```
 
 Block ticket B on ticket A (native relation, body line, and label):
@@ -211,14 +210,14 @@ gh api -X POST repos/{owner}/{repo}/issues/<B>/dependencies/blocked_by -F issue_
 gh issue edit <B> --add-label blocked
 ```
 
-Frontier of a map: open, unassigned, not blocked:
+Available tickets of an epic (open, unassigned, not blocked):
 
 ```sh
-gh api repos/{owner}/{repo}/issues/<map>/sub_issues --paginate \
+gh api repos/{owner}/{repo}/issues/<epic>/sub_issues --paginate \
   --jq '.[] | select(.state=="open" and (.assignees|length)==0 and ([.labels[].name]|index("blocked")|not)) | "\(.number) \(.title)"'
 ```
 
-Claim and close:
+Assign and close:
 
 ```sh
 gh issue edit <n> --add-assignee @me
@@ -226,4 +225,4 @@ gh issue comment <n> --body-file resolution.md
 gh issue close <n>
 ```
 
-If the repo lacks the `epic` label, offer `setup-repo` and stop.
+If the repo does not have the `epic` label, offer `setup-repo` and stop.

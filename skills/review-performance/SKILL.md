@@ -19,10 +19,10 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 
 ## Rules
 
-- **A claim is a hypothesis until it is measured.** Every finding comes either with a number you obtained by running something, or with a concrete measurement plan and an acceptance criterion. Do not assert a speedup you did not measure.
+- **Measure, or say how to measure.** Every finding comes either with a number you obtained by running something, or with a concrete measurement plan and an acceptance criterion. Do not assert a speedup you did not measure.
 - **Every finding cites its evidence.** A file and line plus a snippet for each finding, a confidence level (low, medium, or high) with the reason, and any missing context (SLOs, traffic shape, data volumes) stated as unknown rather than made up.
-- **Collect everything first, then decide what to report.** The sweep in step 2 collects every candidate. Step 3 decides what ships. Do not drop a candidate during the sweep for seeming too small to mention; rank it low afterwards instead.
-- **Do not invent findings.** Code that is fine is fine. Say so and stop. This allows an empty result. It does not allow a shallow sweep.
+- **Collect everything first, then decide what to report.** The sweep in step 2 collects every candidate. Step 3 decides what to report. Do not drop a candidate during the sweep for seeming too small to mention; rank it low afterwards instead.
+- **Do not invent findings.** If the code has no performance problems, say so and stop. An empty result is fine, as long as you went through the whole checklist.
 - **Prefer fixes that remove a whole category of overhead** (removing the N+1 query) over micro-optimizations (shaving a loop). Rank by the expected effect on p95 or p99 latency or on throughput, then by effort and by how much could break.
 
 ## Process
@@ -35,7 +35,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
    - **Concurrency.** Lock contention on shared mutable state; I/O inside critical sections; CPU-heavy work on the event loop; unbounded parallelism (no backpressure, pool exhaustion).
    - **Caching.** Recomputed values that could be cached; caches without a TTL, proper keys, or a size bound; many callers recomputing at once when a popular key expires.
    - **Serialization.** Serializing or deserializing the same data repeatedly; text formats on high-volume internal paths; redundant encode and decode round trips.
-3. **Decide which candidates to report.** Each survivor cites a file and line on a path you established is hot, and names the overhead it removes. Drop anything that rests on traffic shapes or data volumes you made up. Cold-path candidates are kept and reported as `nit:`.
+3. **Decide which candidates to report.** Each finding you keep cites a file and line on a path you established is hot, and names the overhead it removes. Drop anything that rests on traffic shapes or data volumes you made up. Cold-path candidates are kept and reported as `nit:`.
 4. **Measure or plan.** For each finding, run the cheap measurement if one is at hand. Otherwise write the plan: what to run (endpoint or function), against what (dataset size, concurrency), which signals to capture (latency percentiles, allocations per operation, query counts, cache hit rate, pool stats), and the acceptance criterion (for example "p95 at or under 40 ms at 300 requests per second", or "1 query per request instead of N+1").
 
 ## Finding format
