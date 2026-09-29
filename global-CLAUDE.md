@@ -16,6 +16,10 @@ checkout has already collected commits from another session, cherry-pick only yo
 branch's pushed tip inside a worktree and push from there. Never force-push a shared branch;
 another session may be working against it.
 
+## Reviews
+
+Do not start your own review rounds or launch reviewer sub-agents unless I asked for a review. If a deeper review seems worth doing, say so at the end.
+
 ## How to write to me
 
 The Concise output style sets how long a reply is. These rules are about the words in it, and they apply to chat, to commit messages, and to anything you write into GitHub or into docs.

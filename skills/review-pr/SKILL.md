@@ -19,13 +19,13 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 
 ## Rules
 
-- **Inline first.** Every finding that maps to a changed file and line becomes an inline review comment there. Findings that have no diff line to attach to (stale comments in untouched files, a rename that makes docs elsewhere wrong, a missing migration, and so on) go in the review body. If there are none, the body stays empty.
-- **No praise and no filler.** Comment only where there is a real improvement to make. A good file gets nothing. A good PR gets zero comments; do not invent findings to look busy. This rule is about what survives step 3. It is not a budget for step 2: collect everything, then filter.
+- **Put findings inline.** Every finding that maps to a changed file and line becomes an inline review comment there. Findings that have no diff line to attach to (stale comments in untouched files, a rename that makes docs elsewhere wrong, a missing migration, and so on) go in the review body. If there are none, the body stays empty.
+- **No praise and no filler.** Comment only where there is a real improvement to make. A good file gets nothing. A good PR gets zero comments; do not invent findings. This rule applies to what you report after step 3. It does not limit what you collect in step 2: collect everything, then filter.
 - **Full scope.** Correctness, edge cases, security, design, tests, and also style, naming, and consistency with the codebase's idioms when they are real improvements. Prefix small or taste-level findings with `nit:` so that the author can prioritize.
-- **Ask for the small fix rather than deferring it.** A finding whose fix is smaller than the issue that would describe it belongs in this PR. Say that on the thread instead of writing "worth a follow-up": a rename, an unused parameter, a comment that states the wrong thing. Defer only what genuinely does not fit the PR. `finish-pr` drops the rest rather than filing it, so a deferral you meant as a reminder disappears.
+- **Ask for the small fix rather than deferring it.** A finding whose fix is smaller than the issue that would describe it belongs in this PR. Say that on the thread instead of writing "worth a follow-up": a rename, an unused parameter, a comment that states the wrong thing. Defer only what genuinely does not fit the PR. `finish-pr` drops the rest rather than filing it, so a small fix you defer as a reminder is lost.
 - **One review submission.** All inline comments and the body go out as a single review, so that the author gets one notification. Do not post a separate summary comment.
 - **Verdict.** Zero new findings and no open threads that still apply means submit as `APPROVE`. Otherwise submit as `COMMENT`. Never `REQUEST_CHANGES`.
-- **Close threads that are done.** For each existing unresolved review thread whose concern is now addressed or no longer applies, post a short reply saying why (for example "Addressed in `a1b2c3d`.") and then resolve it, regardless of who opened it. Threads that still have merit stay open and count as findings for the verdict.
+- **Resolve threads that are done.** For each existing unresolved review thread whose concern is now addressed or no longer applies, post a short reply saying why (for example "Addressed in `a1b2c3d`.") and then resolve it, regardless of who opened it. Threads that still have merit stay open and count as findings for the verdict.
 
 ## Workflow
 
@@ -55,11 +55,11 @@ For every non-trivial hunk: read the surrounding function or module at PR state,
 
 When the PR touches authentication, input handling, secrets, storage, or CI config, run the `review-security` checklist. When it touches hot paths, data access, or new I/O, run `review-performance`. Their findings go into this review's comments.
 
-Collect everything at this step; filtering is step 3's job. Write down every candidate as you meet it, including the ones you would normally hold back: too small, probably intentional, not sure it is wrong. A candidate you never wrote down cannot be recovered later, while a weak one costs a single line in the next step. Do not decide what is worth reporting while you are still reading.
+Collect everything at this step; filtering is step 3's job. Write down every candidate as you meet it, including the ones you would normally hold back: too small, probably intentional, not sure it is wrong. A candidate you did not write down is lost, while a weak one costs a single line in the next step. Do not decide what is worth reporting while you are still reading.
 
 ### 3. Decide the findings
 
-Now filter. Keep a candidate only if you can say concretely what to improve and why it matters, based on the code in front of you. Drop it if you cannot defend it, if it is speculation about code the PR does not show, or if an existing open thread already raised it (handle that through the thread instead). Everything that survives is reported. There is no severity floor and no comment budget; `nit:` exists so that small but real findings have somewhere to go. Map each survivor to:
+Now filter. Keep a candidate only if you can say concretely what to improve and why it matters, based on the code in front of you. Drop it if you cannot defend it, if it is speculation about code the PR does not show, or if an existing open thread already raised it (handle that through the thread instead). Report every candidate you keep. There is no minimum severity and no limit on the number of comments; `nit:` exists so that small but real findings have somewhere to go. Place each finding:
 
 - an exact `path` plus a line or line range on the right-hand side of the diff, as an inline comment, or
 - the review body, if it has no diff line to live on.

@@ -28,10 +28,10 @@ One set of labels shared by all repos, designed around the skill pipeline. Each 
 
 ## Epic: added alongside a state
 
-`epic` marks a `plan-epic` map: an issue that names where a large piece of work is going and holds one sub-issue per open decision. It sits alongside the map's state label (`epic` plus `needs-grilling`). Its sub-issues carry ordinary state labels: `needs-grilling` for a decision the user makes in conversation, `needs-input` for a research or task ticket waiting on a sub-agent or a person, `blocked` when another ticket has to close first.
+`epic` marks an epic issue created by `plan-epic`: it states the goal of a large piece of work and has one sub-issue (ticket) per open decision. It sits alongside the epic issue's state label (`epic` plus `needs-grilling`). Its sub-issues carry ordinary state labels: `needs-grilling` for a decision the user makes in conversation, `needs-input` for a research or task ticket waiting on a sub-agent or a person, `blocked` when another ticket has to close first.
 
 - `grill-issues` skips issues labeled `epic` and hands issues whose parent is an `epic` to `plan-epic`.
-- The map closes when `plan-epic` has sliced it with `to-issues`.
+- The epic issue closes after `plan-epic` has split it into build issues with `to-issues`.
 
 ## Categories (optional)
 
@@ -50,7 +50,7 @@ The loop: open PR → `ready-for-review` → review finds issues → `review-fee
 ## Who changes which label
 
 - **Creating an issue**: apply the state that matches how far along it is (`needs-grilling` for ideas, `needs-diagnosis` for unexplained bugs, `ready-for-agent` only when it meets the definition above). Add `blocked` plus `Blocked by #N` when a dependency is known.
-- **Charting an epic** (`plan-epic`): the map gets `epic` plus `needs-grilling`; each ticket gets the state for its type as described above.
+- **Creating an epic** (`plan-epic`): the epic issue gets `epic` plus `needs-grilling`; each ticket gets the state for its type as described above.
 - **After grilling**: the spec is decided, so `ready-for-agent` (or `needs-input` if a question came up).
 - **After diagnosis**: the cause is known, so `ready-for-agent` if the fix is now clear and specified, otherwise `needs-grilling` for a design discussion.
 - **Opening a PR**: `ready-for-review`.

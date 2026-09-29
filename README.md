@@ -21,9 +21,9 @@ idea/bug
 
 `review-security` and `review-performance` are focused reviews that `review-pr`
 runs when a PR touches their areas. [plan-epic](skills/plan-epic/SKILL.md) is for work too big for
-one grill session: it writes the idea down as a map issue labeled `epic` with
+one grill session: it writes the idea down as an epic issue labeled `epic` with
 one sub-issue per open decision, resolves those one session at a time, and hands
-the finished map to `to-issues`. `grill-me` is a quick grill that only the user
+the finished epic to `to-issues`. `grill-me` is a quick grill that only the user
 can invoke; `domain-modeling` keeps `CONTEXT.md` and the ADRs up to date during
 grill sessions.
 

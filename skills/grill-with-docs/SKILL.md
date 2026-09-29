@@ -5,7 +5,7 @@ description: Grill the user about a plan, decision, or idea until every open que
 
 # Grill With Docs
 
-Interview the user until the two of you agree on the whole plan, and write the decisions down as they are made.
+Ask the user questions until you both agree on every part of the plan. Write each decision into the docs when it is made.
 
 ## How to talk to the user
 
@@ -19,7 +19,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 
 ## The method
 
-Treat the plan as a set of decisions where some depend on others. Deciding one thing opens up the questions that hang off it.
+Treat the plan as a set of decisions where some depend on others. Once a decision is made, the questions that depend on it can be asked.
 
 Work in rounds. In each round, ask every question whose prerequisites are already decided, so that you are never guessing at an answer you have not heard yet. Then wait for the user's answers before starting the next round. A question that depends on another question still open in this round waits for a later round.
 
@@ -43,7 +43,7 @@ Each set of answers unblocks the questions that depended on them. Work out the n
 
 Between rounds, write at most one line per file you changed (`CONTEXT.md`: added "Site ID". `docs/adr/0011.md`: written.) and then ask the next round. Do not repeat the decisions the user just made, do not describe how the answers changed the plan, and do not preview the questions that are coming. The reasoning behind a question goes into that question's option descriptions, not into text before the cards.
 
-## Facts are yours to find, decisions are the user's
+## Look up facts yourself, and ask the user for decisions
 
 When a question needs a fact from the environment (the filesystem, tools, and so on), look it up yourself. Do not ask the user for anything you could find. Use a sub-agent only when the lookup is a wide investigation across many files that would otherwise hold up the round. One sub-agent is enough, and a lookup that a few tool calls would settle does not need one at all. While that investigation runs, only the questions that depend on it wait. Ask the rest of the round now.
 
@@ -51,8 +51,8 @@ Every decision goes to the user. Put it to them and wait for the answer.
 
 ## Writing the docs
 
-As decisions are made, run the `domain-modeling` skill alongside: check the user's terms against `CONTEXT.md`, sharpen vague language, and write the docs the moment something is decided. Resolved terms go into `CONTEXT.md`, and hard-to-reverse trade-offs go into ADRs. This is what the "with docs" in the name means. Decisions that exist only in the chat are gone when the session ends.
+As decisions are made, run the `domain-modeling` skill alongside: check the user's terms against `CONTEXT.md`, sharpen vague language, and write the docs the moment something is decided. Resolved terms go into `CONTEXT.md`, and hard-to-reverse trade-offs go into ADRs. This is what the "with docs" in the name means. Decisions that are only in the chat are lost when the session ends.
 
 ## When you are done
 
-The session is done when there are no askable questions left: every decision has been visited and nothing is left assumed without being said. Do not act on the plan until the user confirms that you share the same understanding of it.
+The session is done when no questions are left to ask: every decision has been made, and nothing is assumed without having been said. Do not act on the plan until the user confirms that you share the same understanding of it.

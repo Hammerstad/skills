@@ -5,7 +5,7 @@ description: Capture a thought, feature idea, or bug report as a GitHub issue th
 
 # Create Issue
 
-Turn a description into an issue that is accurate about the problem, about the codebase, and about how ready it is to work on (labeled as the `labels` skill describes). Capturing is quick. Going deeper is optional and is offered at the end.
+Turn a description into an issue that describes the problem correctly, matches the codebase, and has a label that says how ready it is (see the `labels` skill). Filing the issue is quick. At the end, offer to grill it further.
 
 ## How to talk to the user
 
@@ -25,7 +25,7 @@ Detect the repo from `git remote -v`. If the user names one, use that instead. C
 
 ### 2. Check it against the codebase
 
-Before writing a word of the issue:
+Before writing the issue:
 
 - **Search the codebase** for the code the description touches. Use the project's own vocabulary from `CONTEXT.md` in everything you write.
 - **Check whether it already exists.** If the requested behavior is already there, say so and point at it instead of filing. If the current behavior differs from what the user described, note the difference in the issue.
@@ -39,7 +39,7 @@ Before writing a word of the issue:
 
 ### 4. Label it
 
-Following the `labels` skill: `needs-grilling` for most ideas and features, `needs-diagnosis` for a bug with an unknown root cause, `ready-for-agent` only when the issue already meets that label's bar (small, fully specified, blocked by nothing), and `blocked` plus `Blocked by #N` in the body when a dependency is known. Add `bug` or `enhancement` if the repo uses them. If the repo does not have the workflow labels, file the issue anyway and note the missing labels in the report (see `setup-repo`).
+Following the `labels` skill: `needs-grilling` for most ideas and features, `needs-diagnosis` for a bug with an unknown root cause, `ready-for-agent` only when the issue already meets that label's definition (small, fully specified, blocked by nothing), and `blocked` plus `Blocked by #N` in the body when a dependency is known. Add `bug` or `enhancement` if the repo uses them. If the repo does not have the workflow labels, file the issue anyway and note the missing labels in the report (see `setup-repo`).
 
 ### 5. File it and offer to go deeper
 
@@ -47,4 +47,4 @@ Following the `labels` skill: `needs-grilling` for most ideas and features, `nee
 gh issue create --title "..." --body-file issue.md --label <labels>
 ```
 
-Report the number and URL. Then offer, without starting on your own: "Grill it to ready-for-agent now?" If yes, run `grill-with-docs`, fold the decisions back into the issue body, and re-label. If the session shows that the issue is really several slices, hand over to `to-issues`.
+Report the number and URL. Then offer, without starting on your own: "Grill it to ready-for-agent now?" If yes, run `grill-with-docs`, write the decisions into the issue body, and re-label. If the session shows that the issue is really several slices, hand over to `to-issues`.

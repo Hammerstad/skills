@@ -26,7 +26,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 
 ## 1. Find the checkout and pull it first
 
-Never read or edit `global-CLAUDE.md` before the checkout is current. A stale checkout means editing a file that has already changed on another machine.
+Never read or edit `global-CLAUDE.md` before the checkout is current. Pulling first means you work on the current version of the file, which may have changed on another machine.
 
 Find the clone. Try, in order: the path in the existing `~/.claude/CLAUDE.md` import line, then `~/code/skills`, then a search of the usual parents (`~/code`, `~/src`, `~/projects`, `~/dev`). If there is none, clone it:
 
@@ -42,7 +42,7 @@ git -C <repo> status --short --branch
 ```
 
 - Checkout on `master` and clean: `git -C <repo> pull --ff-only`.
-- Checkout on another branch, or dirty: do not switch it and do not stash. Another session may be working there. `fetch` was enough for this skill's own work, which happens in a worktree off `origin/master`. Tell the user in one line that the shared checkout is parked on `<branch>`, because the import reads the file as that branch has it, so a preference just pushed to `master` will not be in effect there until the checkout returns to `master`.
+- Checkout on another branch, or dirty: do not switch it and do not stash. Another session may be working there. `fetch` was enough for this skill's own work, which happens in a worktree off `origin/master`. Tell the user in one line that the shared checkout is on `<branch>`. The import reads the file from whatever branch is checked out, so a preference pushed to `master` does not take effect on this machine until the checkout is back on `master`.
 
 ## 2. Install on this machine
 
@@ -52,24 +52,24 @@ Read `~/.claude/CLAUDE.md` before writing anything to it. There are three cases:
 2. **Already the import line**, pointing at this clone. Nothing to do. Say so.
 3. **Real content.** Diff it against `global-CLAUDE.md`. If it matches, replace it with the import line. If it differs, show the user the lines that only exist locally and ask whether to move them into `global-CLAUDE.md` (step 3) or leave the machine as it is. Never overwrite preferences that exist only on this machine.
 
-The import line, with the real path (a `~` path is fine and travels better than an absolute one):
+The import line, with the real path (a `~` path works on every machine):
 
 ```
 @~/code/skills/global-CLAUDE.md
 ```
 
-Imports are read when a session starts, so the current session does not see the change. Tell the user to start a new session and run `/memory`, which lists the loaded files, to confirm the import resolved. If it does not resolve on that machine, the fallback is a copy of the file instead of the import, and the cost of the copy is that it has to be re-copied after every pull.
+Imports are read when a session starts, so the current session does not see the change. Tell the user to start a new session and run `/memory`, which lists the loaded files, to confirm the import resolved. If it does not resolve on that machine, the fallback is a copy of the file instead of the import, and which has to be copied again after every pull.
 
 ## 3. Add a preference
 
-Only genuinely global preferences belong in this file. Everything else has a better home, and putting it here spends context in every session on every project:
+Only preferences that apply to every project belong in this file, because it is loaded into every session on every project. Put everything else where it applies:
 
 - Applies to every project and every repo: this file.
 - Applies to one repo: that repo's `CLAUDE.md`.
 - Applies to one session: nothing to write.
 - Automated behavior ("whenever X happens, do Y"): a hook in `settings.json`, not a preference. Claude cannot run these; the harness does. Say so and stop.
 
-The repo is public. Nothing employer-specific goes in the file: no employer or client names, no internal hostnames or URLs, no ticket keys, no private paths, no names of unreleased products. If the user's wording carries any of it, rewrite the preference so it holds without them, and say what you dropped.
+The repo is public. Nothing employer-specific goes in the file: no employer or client names, no internal hostnames or URLs, no ticket keys, no private paths, no names of unreleased products. If the user's wording includes any of it, rewrite the preference so it works without them, and say what you dropped.
 
 Write it in the file's existing voice: first person about the user, imperative to the agent, the reason in one clause or none, and follow [STYLE.md](../../STYLE.md). Put it under the heading that fits; add a heading only if none does. Keep the whole file short.
 

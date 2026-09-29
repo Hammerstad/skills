@@ -22,9 +22,11 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 
 - **Check the label before writing code.** `ready-for-agent` means that everything needed to implement is in the issue or its linked docs, and that the issue depends on no open issue. Verify that this is actually true. If it is not, correct the label as the `labels` skill describes and stop. Implementing an issue that is not ready wastes the work.
 - **Every task is committed on its own.** For each task the sequence is: code, build, test, format, stage the named files, commit. Do not combine tasks into one commit. Do not continue while the build, the tests, or the format check fail. The repo is green after every commit.
-- **Tests are part of each task.** Each task includes the tests that prove its behavior. Do not claim a task is done if you have not run its verification commands.
-- **The scope is the issue.** No invented features, and no refactoring beyond what the task needs. Improvements you notice along the way are listed in the PR body as candidates for follow-up issues, and are not implemented.
+- **Tests are part of each task.** Each task includes the tests that prove its behavior. Do not claim a task is done until a real check has exercised the change: its tests, the build, or running the code. A syntax-only check does not count, and neither does a check that failed to start. If a declared dependency is missing, install it with the project's package manager and lockfile, never with `sudo` or the system package manager. If a check still cannot run, say which one and why.
+- **Build only what the issue asks for.** Do not add features, files, docs, or refactors the issue does not need. Improvements you notice along the way are listed in the PR body as candidates for follow-up issues, and are not implemented.
 - **Spec gaps.** If a real ambiguity blocks a decision partway through: in an interactive session, ask the user and continue. When running unattended, post the question as an issue comment, change the label to `needs-input`, push the branch as it is without opening a PR, and stop.
+- **Keep going until the issue is done.** Do not stop to confirm the plan, to ask something you can find out yourself, or to ask whether to continue after one task. Stop only for a spec gap (above) or before a risky or irreversible step.
+- **Do not start your own review.** When the tasks are done and their checks pass, open the PR and stop. Do not start extra review or hardening rounds and do not launch reviewer sub-agents; `review-pr` reviews the PR.
 - **Open the PR at the end.** Work stays local until everything is done and green. Then push once and open one PR labeled `ready-for-review`.
 
 ## Workflow

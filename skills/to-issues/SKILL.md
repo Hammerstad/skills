@@ -5,7 +5,7 @@ description: Break a plan, spec, or grill-session outcome into GitHub issues tha
 
 # To Issues
 
-Break a plan into issues an agent can pick up and finish. This is the bridge between an agreed design (usually from a `grill-with-docs` session) and the `implement` skill. The output is issues whose labels match their real state, as the `labels` skill describes.
+Break a plan into issues an agent can pick up and finish. It comes after an agreed design (usually from a `grill-with-docs` session) and before the `implement` skill. The output is issues whose labels match their real state, as the `labels` skill describes.
 
 ## How to talk to the user
 
@@ -31,11 +31,11 @@ Explore enough to slice realistically. Titles and bodies use the project's own v
 
 Find the decisions more than one slice will need, and settle them before drafting. Presentation conventions are the usual ones: whether a URL renders as a link, where a unit goes, label casing, how a missing value reads. Naming and the shape of a shared contract are others.
 
-A decision left open here comes back once per slice: each PR that meets it raises it again in review. Ask once, in the `grill-with-docs` style, and write the answer where the slices will find it: `CONTEXT.md` for a term, a comment beside the code for a rule that is still moving.
+A decision left open here comes up again in the review of every slice that depends on it. Ask once, in the `grill-with-docs` style, and write the answer where the slices will find it: `CONTEXT.md` for a term, a comment beside the code for a rule that is still moving.
 
-Then look for a layer all the slices sit on, such as a mapper, a schema, a serializer, or a shared fixture. If they all read from it and nobody has checked it against its source, that check is the first slice rather than a footnote in the others. Finding the same wrong assumption once per slice costs more than reading the layer once.
+Then look for a layer all the slices sit on, such as a mapper, a schema, a serializer, or a shared fixture. If they all read from it and nobody has checked it against its source, make that check the first slice. Otherwise each slice may find the same wrong assumption separately.
 
-If this turns up more open decisions than one session can settle, the work wants `plan-epic` instead of a list of slices. Say so and stop.
+If this turns up more open decisions than one session can settle, the work needs `plan-epic` instead of a list of slices. Say so and stop.
 
 ### 4. Draft the slices
 
@@ -76,9 +76,9 @@ Issue body template:
 ## What to build
 
 End-to-end behavior of this slice, in the project's vocabulary. No file paths
-or code snippets, because they go stale. Exception: a decision-heavy artifact
-from the grill session or a prototype (a state machine, schema, or type shape)
-may be inlined, trimmed to the parts that encode the decision.
+or code snippets, because they go stale. Exception: if the grill session or a
+prototype produced a state machine, schema, or type shape that records a
+decision, include the parts of it that record the decision.
 
 ## Acceptance criteria
 

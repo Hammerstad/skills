@@ -20,10 +20,10 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 ## Rules
 
 - **Every finding cites its evidence.** A file and line, or a config excerpt, from the actual scope. No findings from a hunch, no invented paths, no assumed infrastructure.
-- **A claim is potential until it is corroborated.** Give each finding a confidence level (low, medium, or high) with a one-line reason. State the unknowns that limit the review (no threat model, an unclear trust boundary) rather than guessing around them.
+- **State your confidence.** Give each finding a confidence level (low, medium, or high) with a one-line reason. State the unknowns that limit the review (no threat model, an unclear trust boundary) rather than guessing around them.
 - **Collect everything first, then decide what to report.** The checklist sweep collects every candidate. The filter step decides what ships. Do not suppress a candidate during the sweep because it seems minor or probably intentional; make that judgment one step later, with all the candidates in front of you.
-- **Do not invent findings.** A clean scope gets "no security findings in this scope". That is a successful review. This allows an empty result. It does not allow a shallow sweep.
-- **The smallest fix, and how to prove it.** Each finding proposes the smallest fix and a test that verifies it, usually a negative test: the request that should be rejected.
+- **Do not invent findings.** A clean scope gets "no security findings in this scope". That is a successful review, as long as you went through the whole checklist.
+- **Propose the smallest fix and a test for it.** Each finding proposes the smallest fix and a test that verifies it, usually a negative test: the request that should be rejected.
 
 ## Process
 
@@ -37,7 +37,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
    - **Config and egress.** Permissive CORS, disabled TLS verification, debug endpoints, and network or file permissions that are broader than needed.
    - **Isolation.** Multi-tenant data paths: can tenant A's identifier reach tenant B's rows? Queries missing the tenant or owner condition.
    - **Supply chain.** New dependencies (typosquats, maintenance state), unpinned versions where the ecosystem pins them, CI workflow permissions that were widened (`pull_request_target`, secrets exposure), and install scripts.
-3. **Decide which candidates to report.** Each survivor cites a file and line or a config excerpt from the actual scope and describes a concrete abuse case. Drop anything that rests on assumed infrastructure or on paths you never read. A real finding you are only medium-confident about survives; say so in its confidence line rather than dropping it.
+3. **Decide which candidates to report.** Each finding you keep cites a file and line or a config excerpt from the actual scope and describes a concrete abuse case. Drop anything that rests on assumed infrastructure or on paths you never read. Keep a real finding you are only medium-confident about, and say so in its confidence line.
 4. **Rank** by how exploitable it is and how much damage it does: High, Medium, or Low.
 
 ## Finding format

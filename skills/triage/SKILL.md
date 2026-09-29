@@ -5,9 +5,9 @@ description: Sweep the issue tracker and give existing issues the correct workfl
 
 # Triage
 
-Keep the tracker accurate. Every open issue should carry a state label that names its next action (see the `labels` skill). Triage is the sweep that makes that true for issues that came in from outside, went stale, or changed under their labels.
+Keep the tracker accurate. Every open issue should carry a state label that names its next action (see the `labels` skill). Triage fixes the labels of issues that came in from outside, went stale, or changed since they were labeled.
 
-New thoughts do not come here; that is `create-issue`. Triage works on what already exists.
+To file a new idea, use `create-issue`. Triage works on issues that already exist.
 
 ## How to talk to the user
 
@@ -19,7 +19,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Do not describe what you are about to do or how you reasoned.
 - Format plainly: bullets only for parallel items, no bold lead-ins, a period or a comma over an em-dash, commands, paths, and error text in backticks. Before sending, reread once and delete metaphors, justifications, and anything the reader did not ask for.
 
-## Disclaimer rule
+## AI disclaimer
 
 Comments posted on issues written by someone else start with:
 
@@ -41,7 +41,7 @@ Present four groups, oldest first. Each group is a count and one line per issue 
 ## Triaging one issue
 
 1. **Gather**: the full body, all comments, labels, author, and dates. Read any earlier triage notes so that nothing gets asked twice. Check the codebase (the project's vocabulary, and the ADRs in the area).
-2. **Reality checks**: (a) Is it already built? Search the codebase for the requested behavior by concept, and not only by the reporter's wording. If it exists, close with a pointer. (b) For bugs, verify the claim: try a cheap reproduction from the reported steps. If it reproduces, that is a strong basis. If it does not, that gives you a specific question for the reporter. If it needs real investigation, that is `needs-diagnosis`, and not triage work.
+2. **Reality checks**: (a) Is it already built? Search the codebase for the requested behavior by concept, and not only by the reporter's wording. If it exists, close with a pointer. (b) For bugs, verify the claim: try a cheap reproduction from the reported steps. If it reproduces, the report is confirmed. If it does not, ask the reporter a specific question about the difference. If it needs real investigation, that is `needs-diagnosis`, and not triage work.
 3. **Recommend** a category and state, with the reason in one or two sentences, and wait for the user's decision. A quick instruction like "move #42 to ready-for-agent" is trusted and applied without further discussion.
 4. **Apply the outcome:**
    - `ready-for-agent`: the issue body must meet the label's definition first; add anything established during triage.

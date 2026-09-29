@@ -5,7 +5,7 @@ description: Internal companion to the grill skills - challenges terms and write
 
 # Domain Modeling
 
-Build and sharpen the project's domain model as you design: challenge terms, invent edge-case scenarios, and write the glossary and the decisions down the moment they are decided. Just reading `CONTEXT.md` for vocabulary is a one-line habit any skill can do and does not need this skill. This skill is for when you are changing the model rather than only using it.
+Use this while designing, to keep the project's domain model precise: question vague or conflicting terms, test them with edge-case scenarios, and write terms and decisions into the glossary and ADRs as soon as they are decided. Any skill can read `CONTEXT.md` for vocabulary without this skill. Use this skill when the model changes.
 
 ## How to talk to the user
 
