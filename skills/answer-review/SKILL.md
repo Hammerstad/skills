@@ -1,6 +1,7 @@
 ---
 name: answer-review
 description: Respond to a review on a GitHub pull request as the author - fix or push back on every comment, replying inline in the PR. Use when the user says "answer the review", "respond to the review on PR 98", "address review comments", or a PR they authored has been reviewed.
+model: opus
 ---
 
 # Answer Review
