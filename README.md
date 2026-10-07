@@ -33,7 +33,8 @@ time. [grill-issues](skills/grill-issues/SKILL.md) works through every
 it into a spec. [work-loop](skills/work-loop/SKILL.md) then works through the
 `ready-for-agent` issues unattended: `implement`, then `review-pr` in a fresh
 sub-agent and `answer-review` in the same session, then `finish-pr`, then
-`triage`, and repeat. Only the user can invoke `work-loop`, since it runs until the backlog
+`triage`, and repeat. Run it in a Sonnet session (`/model sonnet`); the reviewer
+sub-agent runs on Opus. Only the user can invoke `work-loop`, since it runs until the backlog
 is empty.
 
 **These skills are a system.** They reference each other (`finish-pr` reuses

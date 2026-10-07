@@ -1,7 +1,6 @@
 ---
 name: implement
 description: Implement a ready-for-agent GitHub issue end to end - branch, build in small verified steps, and open a PR labeled ready-for-review. Use when the user says "implement issue 42", "/implement 42", "pick up issue 42", or asks to build the change an issue describes.
-model: sonnet
 ---
 
 # Implement
