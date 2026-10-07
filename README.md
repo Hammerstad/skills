@@ -31,10 +31,10 @@ Two skills run the pipeline over the whole backlog instead of one issue at a
 time. [grill-issues](skills/grill-issues/SKILL.md) works through every
 `needs-grilling` issue, explaining each one in plain English before grilling
 it into a spec. [work-loop](skills/work-loop/SKILL.md) then works through the
-`ready-for-agent` issues unattended: `implement` in a Sonnet sub-agent, then
-`review-pr` in a fresh Opus sub-agent and `answer-review` in the main session,
-then `finish-pr`, then `triage`, and repeat. Only the user can invoke
-`work-loop`, since it runs until the backlog is empty.
+`ready-for-agent` issues unattended: `implement`, then `review-pr` in a fresh
+sub-agent and `answer-review` in the same session, then `finish-pr`, then
+`triage`, and repeat. Only the user can invoke `work-loop`, since it runs until the backlog
+is empty.
 
 **These skills are a system.** They reference each other (`finish-pr` reuses
 `review-pr`'s queries, `implement` trusts what the `labels` mean, the focused
