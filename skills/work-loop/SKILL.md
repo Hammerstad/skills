@@ -25,9 +25,8 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - **One issue at a time, in sequence.** Never start a second issue while a PR is open. Every merge moves the base branch and `finish-pr` rebases onto it, so running issues in parallel produces conflicts rather than saving time.
 - **Oldest first**, unless the invocation says otherwise (`/work-loop prioritize label:bug`, `newest`, a milestone). Age is measured by `createdAt` rather than by issue number.
 - **Review always runs in a fresh sub-agent.** The reviewer must not see the context in which the code was written. A reviewer that saw the implementation already accepts the reasons given for it. A sub-agent that sees only the PR judges the diff by what it contains.
-- **Implement runs in a Sonnet sub-agent.** Spawn one sub-agent per issue with `model: sonnet`. The `model:` line in a skill's frontmatter is not applied when the skill is invoked through the Skill tool, so the Agent call's `model` parameter is the only way to run `implement` on Sonnet.
-- **Everything else runs in this session.** `answer-review`, `finish-pr`, and `triage` run here, as the author would run them. A sub-agent starts from nothing and re-reads the PR, the code, and the skill files, so use one only where independence or the model requires it.
-- **Set the model on every Agent call.** `model: sonnet` for the implementer, `model: opus` for the reviewer. A sub-agent without `model` runs on the session's model.
+- **Everything else runs in this session.** `implement`, `answer-review`, `finish-pr`, and `triage` run here, as the author would run them. A sub-agent starts from nothing and re-reads the PR, the code, and the skill files, so use one only where independence requires it.
+- **Everything in this session runs on the session's model.** The `model:` line in a skill's frontmatter is not applied when the skill is invoked through the Skill tool, so `implement` runs on whatever model the session uses. Do not spawn a sub-agent to get a different model. Pass `model: opus` on the reviewer's Agent call.
 - **Decide from the PR's labels.** Do not rely on the reviewer's account of what it did. After the reviewer returns and after every `answer-review` run, re-read the PR's labels and threads yourself. `ready-to-merge` is the only thing that lets `finish-pr` run. Never merge because a review "looked clean".
 - **Do not touch code outside the skills.** This session edits, commits, and pushes only inside an `implement` or `answer-review` run. If something needs fixing, the skill that owns it fixes it.
 - **Only work on issues that are ready.** Do not move `needs-grilling`, `needs-diagnosis`, or `needs-input` issues into the queue, do not implement an issue that does not meet the `ready-for-agent` definition, and do not invent work. An empty queue is a successful finish.
@@ -59,15 +58,7 @@ Take the first issue in the queue. Re-check the `ready-for-agent` definition aga
 
 ### 2. Implement
 
-Spawn a sub-agent with `model: sonnet` and tools that can edit, commit, and post to GitHub:
-
-```
-Invoke the /hammerstad-skills:implement skill on issue #<N> in <repo>.
-Report back: the outcome (PR opened, halted on a spec gap, or failed),
-the PR number or the question posted, and the worktree path you removed.
-```
-
-Wait for it to finish before doing anything else on the repo. It ends in one of three states. Check which on GitHub, rather than trusting the report:
+Invoke the `implement` skill for the issue, in this session. It ends in one of three states. Check which, rather than assuming:
 
 | Outcome | Next |
 |---|---|
