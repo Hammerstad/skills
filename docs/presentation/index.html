@@ -184,10 +184,6 @@
     <h1>Software development<br>in 2026</h1>
     <p class="title-sub">How I work with AI agents and skills</p>
     <p class="byline">Eirik Mildestveit Hammerstad</p>
-    <aside class="notes">
-      First in a series on how we use AI. This one is inspiration: how I build software with AI agents today.
-      Plan: who builds software, how one piece of work moves through a team, then the same work done with skills.
-    </aside>
   </section>
 
   <!-- 2. Who builds software -->
@@ -203,24 +199,12 @@
       <div class="role" style="--c:var(--review)"><svg class="ic"><use href="#i-lock"/></svg><h3>Security</h3><p>Keeps it safe</p></div>
       <div class="role" style="--c:var(--ship)"><svg class="ic"><use href="#i-pulse"/></svg><h3>Ops / DevOps</h3><p>Ships it, keeps it running</p></div>
     </div>
-    <aside class="notes">
-      A typical team. Product decides what and when, UX how it feels.
-      The architect shapes the system, the tech lead guides the team's choices.
-      Developers build, QA and security check, ops ships and runs it.
-      Each role has its own responsibility and its own checklist, written down or in their head.
-    </aside>
   </section>
 
   <!-- 3. Traditional issue flow -->
   <section>
     <h2>How an issue usually flows</h2>
     <div class="board" data-board="classic"></div>
-    <aside class="notes">
-      One piece of work, issue 42. Click to move it.
-      The idea comes from a user or the PM, sometimes UX. Refined by PM, UX and tech lead.
-      A developer builds it, another developer and QA review it. Then merge and release.
-      Every arrow is a handoff between people, and work waits at each handoff.
-    </aside>
   </section>
 
   <!-- 4. What is a skill -->
@@ -269,13 +253,6 @@ answer before asking the next one.</pre>
         </div>
       </div>
     </div>
-    <aside class="notes">
-      A skill is a recipe for one step of the work, written in plain text.
-      Agent Skills is an open standard. The same folder works in Claude, Copilot, Cursor, Codex, and in Databricks and Snowflake.
-      The agent only sees the name and description until a task matches. Then it reads the rest and follows it.
-      Click: grill-me, the actual file behind the session I used to plan this talk.
-      No code. Anyone who can write a checklist can write a skill.
-    </aside>
   </section>
 
   <!-- 5. My skills -->
@@ -320,26 +297,12 @@ answer before asking the next one.</pre>
       <div class="map-loop fragment" data-fragment-index="1" style="grid-column:1;--lc:var(--decide)"><svg class="ic"><use href="#i-loop"/></svg><span><span class="mono">grill-issues</span> <span class="muted">grills the backlog</span></span></div>
       <div class="map-loop fragment" data-fragment-index="1" style="grid-column:3 / 6;--lc:var(--build)"><svg class="ic"><use href="#i-loop"/></svg><span><span class="mono">work-loop</span> <span class="muted">runs build → review → ship until the backlog is empty</span></span></div>
     </div>
-    <aside class="notes">
-      Nineteen skills. Helpers first: setup-repo prepares a repo, labels hold the state of each issue so any agent can pick up where another stopped.
-      The rest are grouped by phase.
-      Decide is where most of my time goes. Capture turns a decided plan into issues.
-      Build, review and ship are mostly done by agents.
-      Two skills run a phase over the whole backlog: grill-issues for decisions, work-loop for build to ship.
-      Several are borrowed from Matt Pocock's skills and adapted.
-    </aside>
   </section>
 
   <!-- 6. Issue flow with skills -->
   <section>
     <h2>The same work, with skills</h2>
     <div class="board" data-board="skills"></div>
-    <aside class="notes">
-      The same piece of work. It starts with me and an idea, and a grill session: grill-me, plan-epic for big work, or diagnose for a bug.
-      I make the decisions. to-issues splits the result into small issues. create-issue and triage are used sometimes, not always.
-      From build to merge, work-loop runs on its own.
-      The reviewer is a separate agent that has not seen the code being written.
-    </aside>
   </section>
 
   <!-- 7. Most used -->
@@ -384,27 +347,18 @@ answer before asking the next one.</pre>
       </div>
     </div>
     <p class="footnote fragment fade-in">Models: Sonnet 5.5 and Opus 5.5, about 50% each. Auto-compact at 200k tokens.</p>
-    <aside class="notes">
-      Left: what I type. Most of my own time goes to grill-me and plan-epic: deciding what to build.
-      Then I start work-loop and leave it.
-      Right: what runs most often, inside work-loop. Implement opens a pull request, review-pr comments, answer-review fixes or pushes back, repeat until approved.
-      The writer and the reviewer are different agents, the same separation we use between two developers.
-      Footnote: I split about evenly between Sonnet 5.5 and Opus 5.5. Auto-compact at 200k tokens means the conversation is summarized when it reaches 200k tokens, so long runs keep going.
-    </aside>
   </section>
 
   <!-- 8. Questions -->
   <section class="q">
     <h1>Questions?</h1>
     <p class="link">github.com/Hammerstad/skills</p>
-    <aside class="notes">The skills are public in this repo and install as a Claude Code plugin.</aside>
   </section>
 
 </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
 <script>
   // Each cell item: ['who', icon, label, dim?] | ['chip', name, role or '', dim?] | ['note', text] | ['you', text]
   const BOARDS = {
@@ -485,7 +439,6 @@ answer before asking the next one.</pre>
     slideNumber: 'c/t',
     transition: 'fade',
     backgroundTransition: 'none',
-    plugins: [RevealNotes],
   });
   ['ready', 'slidechanged', 'fragmentshown', 'fragmenthidden'].forEach(e => Reveal.on(e, updateBoard));
 </script>
