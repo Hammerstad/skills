@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Software development in 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel-2: #1c2330;
+    --line: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --idea: #8b949e;
+    --decide: #bc8cff;
+    --capture: #58a6ff;
+    --build: #3fb950;
+    --review: #f0883e;
+    --ship: #39c5cf;
+    --you: #f778ba;
+    --sans: "Inter", "Segoe UI", system-ui, sans-serif;
+    --mono: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+  }
+  html, body, .reveal-viewport { background: var(--bg); }
+  .reveal { font-family: var(--sans); font-size: 24px; color: var(--text); }
+  .reveal .slides { text-align: left; }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: var(--sans); color: var(--text); margin: 0; letter-spacing: -0.02em; }
+  .reveal h1 { font-size: 84px; font-weight: 800; line-height: 1.05; }
+  .reveal h2 { font-size: 46px; font-weight: 700; margin-bottom: 36px; }
+  .reveal h3 { font-size: 24px; font-weight: 600; }
+  .reveal p { margin: 0; }
+  .muted { color: var(--muted); }
+  .mono { font-family: var(--mono); }
+  .ic { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .reveal .controls { color: var(--muted); }
+  .reveal .progress { color: var(--capture); }
+  .reveal .slide-number a { text-decoration: none; }
+  .reveal .slide-number { background: transparent; color: var(--muted); font-family: var(--sans); font-size: 14px; }
+
+  /* Title */
+  .title-flow { display: flex; align-items: center; margin: 0 0 56px; }
+  .title-flow .dot { width: 22px; height: 22px; border-radius: 50%; }
+  .title-flow .bar { width: 86px; height: 3px; background: var(--line); }
+  .title-sub { font-size: 34px; color: var(--muted); margin-top: 20px !important; }
+  .byline { margin-top: 64px !important; font-size: 22px; font-weight: 600; }
+
+  /* Roles */
+  .roles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .role { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px 22px; }
+  .role .ic { font-size: 46px; color: var(--c); margin-bottom: 16px; }
+  .role h3 { font-size: 24px; }
+  .role p { color: var(--muted); font-size: 18px; margin-top: 6px !important; }
+
+  /* Board (both flow slides) */
+  .board { display: grid; grid-template-rows: auto 104px auto auto; position: relative; }
+  .colbg { grid-row: 1 / 4; border-radius: 12px; transition: background .4s; z-index: 0; }
+  .colbg.active { background: rgba(255,255,255,0.05); }
+  .colhead { grid-row: 1; z-index: 1; text-align: center; padding: 12px 6px; font-weight: 600; font-size: 21px; color: var(--muted); border-bottom: 3px solid var(--line); margin: 0 8px; transition: color .4s, border-color .4s; }
+  .colhead.active { color: var(--text); border-color: var(--pc); }
+  .lane { grid-row: 2; grid-column: 1 / -1; position: relative; z-index: 2; }
+  .card { position: absolute; top: 18px; left: 0; width: calc(100% / var(--n)); padding: 0 12px; box-sizing: border-box; transform: translateX(calc(var(--step, 0) * 100%)); transition: transform .7s cubic-bezier(.5,0,.2,1); }
+  .card-inner { background: var(--panel-2); border: 1px solid var(--line); border-left: 6px solid var(--pc, var(--idea)); border-radius: 10px; padding: 10px 12px; box-shadow: 0 8px 24px rgba(0,0,0,.35); transition: border-color .5s; }
+  .card-inner .num { font-family: var(--mono); font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; }
+  .card-inner .t { font-size: 17px; font-weight: 600; margin-top: 2px; line-height: 1.25; }
+  .card .merged { color: var(--ship); opacity: 0; transition: opacity .4s; }
+  .board.done .card .merged { opacity: 1; }
+  .cell { grid-row: 3; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px 20px; }
+  .who { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 15px; color: var(--muted); }
+  .who .ic { font-size: 34px; color: var(--text); }
+  .chip { width: 100%; box-sizing: border-box; background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--pc); border-radius: 8px; padding: 7px 8px; text-align: center; }
+  .chip .n { font-family: var(--mono); font-size: 15px; font-weight: 600; }
+  .chip .r { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .dim { opacity: .4; }
+  .note { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+  .you { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--you); border: 1.5px solid var(--you); border-radius: 999px; padding: 3px 10px; }
+  .you .ic { font-size: 16px; }
+  .loopbar { grid-row: 4; margin: 0 8px; border: 2px dashed var(--build); border-top: none; border-radius: 0 0 14px 14px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 18px; }
+  .loopbar .ic { font-size: 26px; color: var(--build); }
+  .reveal .fragment.step { display: none; }
+
+  /* What is a skill */
+  .tagline { font-size: 28px; margin: -16px 0 28px !important; color: var(--muted); }
+  .tagline .mono { color: var(--build); }
+  .stack { display: grid; align-items: start; }
+  .stack > * { grid-area: 1 / 1; }
+  .std { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px 28px; }
+  .std-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
+  .std-head .site { font-family: var(--mono); font-size: 26px; font-weight: 600; color: var(--capture); }
+  .std-head .what { font-size: 20px; color: var(--muted); }
+  .std-row { display: grid; grid-template-columns: 0.9fr 1.6fr; gap: 28px; align-items: stretch; }
+  .tree { margin: 0; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; font-family: var(--mono); font-size: 16px; line-height: 1.7; white-space: pre; color: var(--text); box-shadow: none; width: auto; }
+  .tree .c { color: var(--muted); }
+  .tree .req { color: var(--build); }
+  .stages { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 10px; }
+  .stage { background: var(--panel-2); border: 1px solid var(--line); border-top: 3px solid var(--sc); border-radius: 10px; padding: 14px 14px; height: 100%; box-sizing: border-box; }
+  .stage .k { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sc); font-weight: 600; }
+  .stage .d { font-size: 17px; margin-top: 6px; line-height: 1.35; }
+  .arrow { color: var(--muted); font-size: 26px; }
+  .clients { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 22px; }
+  .clients .lbl { font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-right: 6px; }
+  .clients span.c { font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+  .clients span.c.hl { border-color: var(--capture); color: var(--capture); }
+  .split { width: 760px; margin: 0 auto; }
+  .recipe { background: #f4efe6; color: #2b2622; border-radius: 8px; padding: 26px 30px; box-shadow: 0 14px 40px rgba(0,0,0,.45); }
+  .recipe .rname { font-family: var(--mono); font-size: 30px; font-weight: 600; padding-bottom: 14px; border-bottom: 2px solid rgba(224,122,122,.6); }
+  .recipe .when { margin-top: 18px !important; font-size: 18px; color: #6b625a; }
+  .recipe .when b { color: #2b2622; }
+  .recipe ol { margin: 16px 0 0 1.2em; padding: 0; font-size: 19px; line-height: 1.55; }
+  .reveal pre.snippet { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; font-family: var(--mono); font-size: 19px; line-height: 1.6; white-space: pre-wrap; color: var(--text); box-shadow: none; width: auto; }
+  .snippet .fm { color: var(--muted); }
+  .snippet .k { color: var(--capture); }
+  .snippet .h { color: var(--decide); font-weight: 600; }
+  .filepath { font-family: var(--mono); font-size: 14px; color: var(--muted); margin-bottom: 8px !important; display: flex; align-items: center; gap: 8px; }
+
+  /* Skills map */
+  .map { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .phase h3 { font-size: 16px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--pc); border-bottom: 3px solid var(--pc); padding-bottom: 8px; margin-bottom: 10px; }
+  .sk { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; margin-bottom: 8px; }
+  .sk .n { font-family: var(--mono); font-size: 15px; font-weight: 600; }
+  .sk .d { font-size: 13px; color: var(--muted); }
+  .map-bars { display: contents; }
+  .map-loop { border: 2px dashed var(--lc); border-radius: 10px; padding: 8px 12px; display: flex; align-items: center; gap: 10px; font-size: 15px; }
+  .map-loop .ic { font-size: 22px; color: var(--lc); }
+  .helpers { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+  .helpers .lbl { font-size: 14px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-right: 6px; }
+  .helpers .sk { margin: 0; flex: 1; border-style: dashed; }
+
+  /* Most used */
+  .used { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 36px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px 28px; }
+  .panel-head { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .panel-head .ic { font-size: 34px; }
+  .panel-head h3 { font-size: 28px; }
+  .start-item { display: flex; gap: 14px; align-items: baseline; padding: 26px 0; border-top: 1px solid var(--line); }
+  .start-item .n { font-family: var(--mono); font-size: 22px; font-weight: 600; min-width: 150px; color: var(--pc); }
+  .start-item .d { font-size: 18px; color: var(--muted); }
+  .loopsvg { width: 100%; height: auto; display: block; margin-top: 30px; }
+  .caption { font-size: 16px; color: var(--muted); margin-top: 30px !important; display: flex; gap: 8px; align-items: center; }
+
+  .footnote { font-size: 15px; color: var(--muted); margin-top: 20px !important; }
+
+  /* Questions */
+  .q { text-align: center; }
+  .q h1 { font-size: 110px; }
+  .q .link { margin-top: 36px !important; font-family: var(--mono); font-size: 24px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M14.5 4.5l5 5L9 20H4v-5z"/><path d="M12.5 6.5l5 5"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 12.5l9 5 9-5"/><path d="M3 17l9 5 9-5"/></symbol>
+    <symbol id="i-graph" viewBox="0 0 24 24"><circle cx="5.5" cy="6" r="2.5"/><circle cx="18.5" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 6h8M6.8 8.3l4 7.4M17.2 8.3l-4 7.4"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7.5 12.5l3 3 6-7"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 5 12 2.5-6H21"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+    <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V5"/><circle cx="12" cy="4" r="1"/><circle cx="9" cy="14" r="1.3" fill="currentColor"/><circle cx="15" cy="14" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-loop" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-14 5.3"/><path d="M4 12a8 8 0 0 1 14-5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></symbol>
+  </defs>
+</svg>
+
+<div class="reveal">
+<div class="slides">
+
+  <!-- 1. Title -->
+  <section>
+    <div class="title-flow">
+      <span class="dot" style="background:var(--decide)"></span><span class="bar"></span>
+      <span class="dot" style="background:var(--capture)"></span><span class="bar"></span>
+      <span class="dot" style="background:var(--build)"></span><span class="bar"></span>
+      <span class="dot" style="background:var(--review)"></span><span class="bar"></span>
+      <span class="dot" style="background:var(--ship)"></span>
+    </div>
+    <h1>Software development<br>in 2026</h1>
+    <p class="title-sub">How I work with AI agents and skills</p>
+    <p class="byline">Eirik Mildestveit Hammerstad</p>
+    <aside class="notes">
+      First in a series on how we use AI. This one is inspiration: how I build software with AI agents today.
+      Plan: who builds software, how one piece of work moves through a team, then the same work done with skills.
+    </aside>
+  </section>
+
+  <!-- 2. Who builds software -->
+  <section>
+    <h2>Who builds software</h2>
+    <div class="roles fragment fade-up">
+      <div class="role" style="--c:var(--capture)"><svg class="ic"><use href="#i-target"/></svg><h3>Product manager</h3><p>Decides what to build, and when</p></div>
+      <div class="role" style="--c:var(--capture)"><svg class="ic"><use href="#i-pen"/></svg><h3>UX designer</h3><p>How it looks and feels</p></div>
+      <div class="role" style="--c:var(--decide)"><svg class="ic"><use href="#i-layers"/></svg><h3>Architect</h3><p>Shapes the system as a whole</p></div>
+      <div class="role" style="--c:var(--decide)"><svg class="ic"><use href="#i-graph"/></svg><h3>Tech lead</h3><p>Guides the team's technical choices</p></div>
+      <div class="role" style="--c:var(--build)"><svg class="ic"><use href="#i-code"/></svg><h3>Developer</h3><p>Writes the code</p></div>
+      <div class="role" style="--c:var(--review)"><svg class="ic"><use href="#i-check"/></svg><h3>QA / tester</h3><p>Checks that it works</p></div>
+      <div class="role" style="--c:var(--review)"><svg class="ic"><use href="#i-lock"/></svg><h3>Security</h3><p>Keeps it safe</p></div>
+      <div class="role" style="--c:var(--ship)"><svg class="ic"><use href="#i-pulse"/></svg><h3>Ops / DevOps</h3><p>Ships it, keeps it running</p></div>
+    </div>
+    <aside class="notes">
+      A typical team. Product decides what and when, UX how it feels.
+      The architect shapes the system, the tech lead guides the team's choices.
+      Developers build, QA and security check, ops ships and runs it.
+      Each role has its own responsibility and its own checklist, written down or in their head.
+    </aside>
+  </section>
+
+  <!-- 3. Traditional issue flow -->
+  <section>
+    <h2>How an issue usually flows</h2>
+    <div class="board" data-board="classic"></div>
+    <aside class="notes">
+      One piece of work, issue 42. Click to move it.
+      The idea comes from a user or the PM, sometimes UX. Refined by PM, UX and tech lead.
+      A developer builds it, another developer and QA review it. Then merge and release.
+      Every arrow is a handoff between people, and work waits at each handoff.
+    </aside>
+  </section>
+
+  <!-- 4. What is a skill -->
+  <section>
+    <h2>What is a skill?</h2>
+    <p class="tagline">A <span class="mono">Markdown file</span>. The agent loads it when the task matches.</p>
+    <div class="stack">
+      <div class="std fragment fade-out" data-fragment-index="1">
+        <div class="std-head"><span class="site">agentskills.io</span><span class="what">an open standard, first developed by Anthropic</span></div>
+        <div class="std-row">
+<pre class="tree">my-skill/
+├── <span class="req">SKILL.md</span>     <span class="c">name, description, steps</span>
+├── scripts/     <span class="c">optional</span>
+├── references/  <span class="c">optional</span>
+└── assets/      <span class="c">optional</span></pre>
+          <div class="stages">
+            <div class="stage" style="--sc:var(--capture)"><div class="k">Discover</div><div class="d">Agent reads only the name and description</div></div>
+            <span class="arrow">→</span>
+            <div class="stage" style="--sc:var(--decide)"><div class="k">Activate</div><div class="d">Task matches, it reads the whole file</div></div>
+            <span class="arrow">→</span>
+            <div class="stage" style="--sc:var(--build)"><div class="k">Execute</div><div class="d">It follows the steps</div></div>
+          </div>
+        </div>
+        <div class="clients">
+          <span class="lbl">Works in</span>
+          <span class="c">Claude</span><span class="c">GitHub Copilot</span><span class="c">VS Code</span><span class="c">Cursor</span><span class="c">ChatGPT &amp; Codex</span><span class="c">Gemini CLI</span><span class="c hl">Databricks</span><span class="c hl">Snowflake</span><span class="c">…</span>
+        </div>
+      </div>
+      <div class="split fragment fade-in" data-fragment-index="1">
+        <div>
+          <p class="filepath"><svg class="ic"><use href="#i-doc"/></svg>skills/grill-me/SKILL.md</p>
+<pre class="snippet"><span class="fm">---</span>
+<span class="k">name:</span> grill-me
+<span class="k">description:</span> Interview the user about a plan
+  or design until every decision has been made.
+<span class="fm">---</span>
+
+<span class="h">## The method</span>
+
+Interview me about every part of this plan until
+we share the same understanding of it.
+For each question, give your recommended answer.
+
+Ask the questions one at a time, and wait for my
+answer before asking the next one.</pre>
+        </div>
+      </div>
+    </div>
+    <aside class="notes">
+      A skill is a recipe for one step of the work, written in plain text.
+      Agent Skills is an open standard. The same folder works in Claude, Copilot, Cursor, Codex, and in Databricks and Snowflake.
+      The agent only sees the name and description until a task matches. Then it reads the rest and follows it.
+      Click: grill-me, the actual file behind the session I used to plan this talk.
+      No code. Anyone who can write a checklist can write a skill.
+    </aside>
+  </section>
+
+  <!-- 5. My skills -->
+  <section>
+    <h2>My skills</h2>
+    <div class="map">
+      <div class="helpers">
+        <span class="lbl">Helpers</span>
+        <div class="sk"><div class="n">setup-repo</div><div class="d">prepare a new repo</div></div>
+        <div class="sk"><div class="n">labels</div><div class="d">what state each issue is in</div></div>
+        <div class="sk"><div class="n">domain-modeling</div><div class="d">glossary and decisions</div></div>
+        <div class="sk"><div class="n">global-preferences</div><div class="d">my rules, every project</div></div>
+      </div>
+      <div class="phase" style="--pc:var(--decide)">
+        <h3>Decide</h3>
+        <div class="sk"><div class="n">grill-me</div><div class="d">question my plan</div></div>
+        <div class="sk"><div class="n">grill-with-docs</div><div class="d">… and write decisions down</div></div>
+        <div class="sk"><div class="n">plan-epic</div><div class="d">big work, one decision at a time</div></div>
+        <div class="sk"><div class="n">diagnose</div><div class="d">find a bug's cause</div></div>
+      </div>
+      <div class="phase" style="--pc:var(--capture)">
+        <h3>Capture</h3>
+        <div class="sk"><div class="n">to-issues</div><div class="d">plan → small issues</div></div>
+        <div class="sk"><div class="n">create-issue</div><div class="d">idea → issue</div></div>
+        <div class="sk"><div class="n">triage</div><div class="d">keep the board correct</div></div>
+      </div>
+      <div class="phase" style="--pc:var(--build)">
+        <h3>Build</h3>
+        <div class="sk"><div class="n">implement</div><div class="d">issue → pull request</div></div>
+      </div>
+      <div class="phase" style="--pc:var(--review)">
+        <h3>Review</h3>
+        <div class="sk"><div class="n">review-pr</div><div class="d">review, comment inline</div></div>
+        <div class="sk"><div class="n">answer-review</div><div class="d">fix or push back</div></div>
+        <div class="sk"><div class="n">review-security</div><div class="d">is it safe?</div></div>
+        <div class="sk"><div class="n">review-performance</div><div class="d">is it fast enough?</div></div>
+      </div>
+      <div class="phase" style="--pc:var(--ship)">
+        <h3>Ship</h3>
+        <div class="sk"><div class="n">finish-pr</div><div class="d">merge, clean up, pick next</div></div>
+      </div>
+      <div class="map-loop fragment" data-fragment-index="1" style="grid-column:1;--lc:var(--decide)"><svg class="ic"><use href="#i-loop"/></svg><span><span class="mono">grill-issues</span> <span class="muted">grills the backlog</span></span></div>
+      <div class="map-loop fragment" data-fragment-index="1" style="grid-column:3 / 6;--lc:var(--build)"><svg class="ic"><use href="#i-loop"/></svg><span><span class="mono">work-loop</span> <span class="muted">runs build → review → ship until the backlog is empty</span></span></div>
+    </div>
+    <aside class="notes">
+      Nineteen skills. Helpers first: setup-repo prepares a repo, labels hold the state of each issue so any agent can pick up where another stopped.
+      The rest are grouped by phase.
+      Decide is where most of my time goes. Capture turns a decided plan into issues.
+      Build, review and ship are mostly done by agents.
+      Two skills run a phase over the whole backlog: grill-issues for decisions, work-loop for build to ship.
+      Several are borrowed from Matt Pocock's skills and adapted.
+    </aside>
+  </section>
+
+  <!-- 6. Issue flow with skills -->
+  <section>
+    <h2>The same work, with skills</h2>
+    <div class="board" data-board="skills"></div>
+    <aside class="notes">
+      The same piece of work. It starts with me and an idea, and a grill session: grill-me, plan-epic for big work, or diagnose for a bug.
+      I make the decisions. to-issues splits the result into small issues. create-issue and triage are used sometimes, not always.
+      From build to merge, work-loop runs on its own.
+      The reviewer is a separate agent that has not seen the code being written.
+    </aside>
+  </section>
+
+  <!-- 7. Most used -->
+  <section>
+    <h2>What I use most</h2>
+    <div class="used">
+      <div class="panel fragment fade-up">
+        <div class="panel-head"><svg class="ic" style="color:var(--you)"><use href="#i-person"/></svg><h3>I start</h3></div>
+        <div class="start-item" style="--pc:var(--build)"><span class="n">work-loop</span><span class="d">work through the ready backlog</span></div>
+        <div class="start-item" style="--pc:var(--decide)"><span class="n">grill-me</span><span class="d">question my plan until it is decided</span></div>
+        <div class="start-item" style="--pc:var(--decide)"><span class="n">plan-epic</span><span class="d">big work, one decision per session</span></div>
+      </div>
+      <div class="panel fragment fade-up">
+        <div class="panel-head"><svg class="ic" style="color:var(--build)"><use href="#i-bot"/></svg><h3>Runs for me</h3></div>
+        <svg class="loopsvg" viewBox="0 0 560 230" role="img" aria-label="implement leads to review-pr, which loops with answer-review until approved, then merged">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8b949e"/></marker>
+          </defs>
+          <g fill="none" stroke="#8b949e" stroke-width="2">
+            <path d="M150 34 H196" marker-end="url(#ah)"/>
+            <path d="M350 34 H426" marker-end="url(#ah)"/>
+            <path d="M255 58 V166" marker-end="url(#ah)"/>
+            <path d="M315 168 V60" marker-end="url(#ah)"/>
+          </g>
+          <g font-family="Inter, sans-serif" font-size="13" fill="#8b949e">
+            <text x="243" y="118" text-anchor="end">comments</text>
+            <text x="327" y="118">fixes</text>
+            <text x="388" y="24" text-anchor="middle">approved</text>
+          </g>
+          <g font-family="JetBrains Mono, monospace" font-size="17" font-weight="600" text-anchor="middle">
+            <rect x="10" y="10" width="140" height="48" rx="10" fill="#1c2330" stroke="#3fb950" stroke-width="2"/>
+            <text x="80" y="40" fill="#e6edf3">implement</text>
+            <rect x="200" y="10" width="150" height="48" rx="10" fill="#1c2330" stroke="#f0883e" stroke-width="2"/>
+            <text x="275" y="40" fill="#e6edf3">review-pr</text>
+            <rect x="200" y="170" width="170" height="48" rx="10" fill="#1c2330" stroke="#f0883e" stroke-width="2"/>
+            <text x="285" y="200" fill="#e6edf3">answer-review</text>
+            <rect x="430" y="10" width="120" height="48" rx="10" fill="#1c2330" stroke="#39c5cf" stroke-width="2" stroke-dasharray="5 4"/>
+            <text x="490" y="40" fill="#8b949e">merged</text>
+          </g>
+        </svg>
+        <p class="caption"><svg class="ic"><use href="#i-person"/></svg>The reviewer is a separate agent that has not seen the code being written.</p>
+      </div>
+    </div>
+    <p class="footnote fragment fade-in">Models: Sonnet 5.5 and Opus 5.5, about 50% each. Auto-compact at 200k tokens.</p>
+    <aside class="notes">
+      Left: what I type. Most of my own time goes to grill-me and plan-epic: deciding what to build.
+      Then I start work-loop and leave it.
+      Right: what runs most often, inside work-loop. Implement opens a pull request, review-pr comments, answer-review fixes or pushes back, repeat until approved.
+      The writer and the reviewer are different agents, the same separation we use between two developers.
+      Footnote: I split about evenly between Sonnet 5.5 and Opus 5.5. Auto-compact at 200k tokens means the conversation is summarized when it reaches 200k tokens, so long runs keep going.
+    </aside>
+  </section>
+
+  <!-- 8. Questions -->
+  <section class="q">
+    <h1>Questions?</h1>
+    <p class="link">github.com/Hammerstad/skills</p>
+    <aside class="notes">The skills are public in this repo and install as a Claude Code plugin.</aside>
+  </section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+  // Each cell item: ['who', icon, label, dim?] | ['chip', name, role or '', dim?] | ['note', text] | ['you', text]
+  const BOARDS = {
+    classic: {
+      issueAt: 0,
+      cols: [
+        { name: 'Idea', phase: '--idea', items: [['who', 'i-person', 'User'], ['who', 'i-target', 'PM'], ['who', 'i-pen', 'UX', true]] },
+        { name: 'Refine', phase: '--decide', items: [['who', 'i-target', 'PM'], ['who', 'i-pen', 'UX'], ['who', 'i-graph', 'Tech lead']] },
+        { name: 'Build', phase: '--build', items: [['who', 'i-code', 'Developer']] },
+        { name: 'Review', phase: '--review', items: [['who', 'i-code', 'Developer 2'], ['who', 'i-check', 'QA']] },
+        { name: 'Merge', phase: '--ship', items: [['who', 'i-graph', 'Tech lead'], ['who', 'i-pulse', 'DevOps', true]] },
+      ],
+    },
+    skills: {
+      issueAt: 2,
+      loop: [4, 7],
+      cols: [
+        { name: 'Idea', phase: '--idea', items: [['you', 'the idea']] },
+        { name: 'Refine', phase: '--decide', items: [['note', 'one of'], ['chip', 'grill-me', ''], ['chip', 'plan-epic', ''], ['chip', 'diagnose', ''], ['you', 'the decisions']] },
+        { name: 'Issues', phase: '--capture', items: [['chip', 'to-issues', ''], ['note', 'sometimes'], ['chip', 'create-issue', '', true], ['chip', 'triage', '', true]] },
+        { name: 'Build', phase: '--build', items: [['chip', 'implement', '']] },
+        { name: 'Review', phase: '--review', items: [['chip', 'review-pr', ''], ['chip', 'answer-review', '']] },
+        { name: 'Merge', phase: '--ship', items: [['chip', 'finish-pr', '']] },
+      ],
+    },
+  };
+
+  const icon = id => `<svg class="ic"><use href="#${id}"/></svg>`;
+
+  function item([kind, a, b, dim], pc) {
+    const cls = dim ? ' dim' : '';
+    if (kind === 'who') return `<div class="who${cls}">${icon(a)}<span>${b}</span></div>`;
+    if (kind === 'chip') return `<div class="chip${cls}" style="--pc:${pc}"><div class="n">${a}</div>${b ? `<div class="r">${b}</div>` : ''}</div>`;
+    if (kind === 'note') return `<div class="note">${a}</div>`;
+    if (kind === 'you') return `<span class="you">${icon('i-person')}you: ${a}</span>`;
+  }
+
+  document.querySelectorAll('.board').forEach(board => {
+    const cfg = BOARDS[board.dataset.board];
+    const n = cfg.cols.length;
+    board.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+    board.style.setProperty('--n', n);
+    let html = '';
+    cfg.cols.forEach((c, i) => {
+      const pc = `var(${c.phase})`;
+      html += `<div class="colbg" data-col="${i}" style="grid-column:${i + 1}"></div>`;
+      html += `<div class="colhead" data-col="${i}" style="grid-column:${i + 1};--pc:${pc}">${c.name}</div>`;
+      html += `<div class="cell" style="grid-column:${i + 1}">${c.items.map(it => item(it, pc)).join('')}</div>`;
+    });
+    html += `<div class="lane"><div class="card"><div class="card-inner"><div class="num"><span class="id"></span><span class="merged">✓ merged</span></div><div class="t">Export report as CSV</div></div></div></div>`;
+    if (cfg.loop) {
+      html += `<div class="loopbar fragment" style="grid-column:${cfg.loop[0]} / ${cfg.loop[1]}">${icon('i-loop')}<span><span class="mono">work-loop</span> <span class="muted">runs these on its own</span></span></div>`;
+    }
+    // One hidden fragment per column after the first: each click moves the card one column.
+    html = Array.from({ length: n - 1 }, () => '<span class="fragment step"></span>').join('') + html;
+    board.innerHTML = html;
+  });
+
+  function updateBoard() {
+    const slide = Reveal.getCurrentSlide();
+    const board = slide && slide.querySelector('.board');
+    if (!board) return;
+    const cfg = BOARDS[board.dataset.board];
+    const step = board.querySelectorAll('.fragment.step.visible').length;
+    board.style.setProperty('--step', step);
+    board.style.setProperty('--pc', `var(${cfg.cols[step].phase})`);
+    board.classList.toggle('done', step === cfg.cols.length - 1);
+    board.querySelector('.card .id').textContent = step >= cfg.issueAt ? '#42' : 'idea';
+    board.querySelectorAll('[data-col]').forEach(el => el.classList.toggle('active', +el.dataset.col === step));
+  }
+
+  Reveal.initialize({
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    hash: true,
+    center: true,
+    slideNumber: 'c/t',
+    transition: 'fade',
+    backgroundTransition: 'none',
+    plugins: [RevealNotes],
+  });
+  ['ready', 'slidechanged', 'fragmentshown', 'fragmenthidden'].forEach(e => Reveal.on(e, updateBoard));
+</script>
+</body>
+</html>
