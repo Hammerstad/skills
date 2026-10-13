@@ -142,6 +142,8 @@
   .loopsvg { width: 100%; height: auto; display: block; margin-top: 30px; }
   .caption { font-size: 16px; color: var(--muted); margin-top: 30px !important; display: flex; gap: 8px; align-items: center; }
 
+  .footnote { font-size: 15px; color: var(--muted); margin-top: 20px !important; }
+
   /* Questions */
   .q { text-align: center; }
   .q h1 { font-size: 110px; }
@@ -358,20 +360,20 @@ answer before asking the next one.</pre>
           </defs>
           <g fill="none" stroke="#8b949e" stroke-width="2">
             <path d="M150 34 H196" marker-end="url(#ah)"/>
-            <path d="M370 34 H426" marker-end="url(#ah)"/>
+            <path d="M350 34 H426" marker-end="url(#ah)"/>
             <path d="M255 58 V166" marker-end="url(#ah)"/>
             <path d="M315 168 V60" marker-end="url(#ah)"/>
           </g>
           <g font-family="Inter, sans-serif" font-size="13" fill="#8b949e">
             <text x="243" y="118" text-anchor="end">comments</text>
             <text x="327" y="118">fixes</text>
-            <text x="399" y="24" text-anchor="middle">approved</text>
+            <text x="388" y="24" text-anchor="middle">approved</text>
           </g>
           <g font-family="JetBrains Mono, monospace" font-size="17" font-weight="600" text-anchor="middle">
             <rect x="10" y="10" width="140" height="48" rx="10" fill="#1c2330" stroke="#3fb950" stroke-width="2"/>
             <text x="80" y="40" fill="#e6edf3">implement</text>
-            <rect x="200" y="10" width="170" height="48" rx="10" fill="#1c2330" stroke="#f0883e" stroke-width="2"/>
-            <text x="285" y="40" fill="#e6edf3">review-pr</text>
+            <rect x="200" y="10" width="150" height="48" rx="10" fill="#1c2330" stroke="#f0883e" stroke-width="2"/>
+            <text x="275" y="40" fill="#e6edf3">review-pr</text>
             <rect x="200" y="170" width="170" height="48" rx="10" fill="#1c2330" stroke="#f0883e" stroke-width="2"/>
             <text x="285" y="200" fill="#e6edf3">answer-review</text>
             <rect x="430" y="10" width="120" height="48" rx="10" fill="#1c2330" stroke="#39c5cf" stroke-width="2" stroke-dasharray="5 4"/>
@@ -381,11 +383,13 @@ answer before asking the next one.</pre>
         <p class="caption"><svg class="ic"><use href="#i-person"/></svg>The reviewer is a separate agent that has not seen the code being written.</p>
       </div>
     </div>
+    <p class="footnote">Models: Sonnet 5.5 and Opus 5.5, about 50% each. Auto-compact at 200k tokens.</p>
     <aside class="notes">
       Left: what I type. Most of my own time goes to grill-me and plan-epic: deciding what to build.
       Then I start work-loop and leave it.
       Right: what runs most often, inside work-loop. Implement opens a pull request, review-pr comments, answer-review fixes or pushes back, repeat until approved.
       The writer and the reviewer are different agents, the same separation we use between two developers.
+      Footnote: I split about evenly between Sonnet 5.5 and Opus 5.5. Auto-compact at 200k tokens means the conversation is summarized when it reaches 200k tokens, so long runs keep going.
     </aside>
   </section>
 
