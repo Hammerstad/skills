@@ -335,7 +335,7 @@ answer before asking the next one.</pre>
     <aside class="notes">
       The same piece of work. It starts with me and an idea, and a grill session: grill-me, plan-epic for big work, or diagnose for a bug.
       I make the decisions. to-issues splits the result into small issues. create-issue and triage are used sometimes, not always.
-      From build to merge, work-loop runs on its own. Each skill is tagged with the role it stands in for.
+      From build to merge, work-loop runs on its own.
       The reviewer is a separate agent that has not seen the code being written.
     </aside>
   </section>
@@ -402,7 +402,7 @@ answer before asking the next one.</pre>
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
 <script>
-  // Each cell item: ['who', icon, label, dim?] | ['chip', name, role, dim?] | ['note', text] | ['you', text]
+  // Each cell item: ['who', icon, label, dim?] | ['chip', name, role or '', dim?] | ['note', text] | ['you', text]
   const BOARDS = {
     classic: {
       issueAt: 0,
@@ -419,11 +419,11 @@ answer before asking the next one.</pre>
       loop: [4, 7],
       cols: [
         { name: 'Idea', phase: '--idea', items: [['you', 'the idea']] },
-        { name: 'Refine', phase: '--decide', items: [['note', 'one of'], ['chip', 'grill-me', 'PM · tech lead'], ['chip', 'plan-epic', 'PM · architect'], ['chip', 'diagnose', 'developer'], ['you', 'the decisions']] },
-        { name: 'Issues', phase: '--capture', items: [['chip', 'to-issues', 'tech lead'], ['note', 'sometimes'], ['chip', 'create-issue', 'PM', true], ['chip', 'triage', 'PM', true]] },
-        { name: 'Build', phase: '--build', items: [['chip', 'implement', 'developer']] },
-        { name: 'Review', phase: '--review', items: [['chip', 'review-pr', 'reviewer'], ['chip', 'answer-review', 'developer']] },
-        { name: 'Merge', phase: '--ship', items: [['chip', 'finish-pr', 'tech lead']] },
+        { name: 'Refine', phase: '--decide', items: [['note', 'one of'], ['chip', 'grill-me', ''], ['chip', 'plan-epic', ''], ['chip', 'diagnose', ''], ['you', 'the decisions']] },
+        { name: 'Issues', phase: '--capture', items: [['chip', 'to-issues', ''], ['note', 'sometimes'], ['chip', 'create-issue', '', true], ['chip', 'triage', '', true]] },
+        { name: 'Build', phase: '--build', items: [['chip', 'implement', '']] },
+        { name: 'Review', phase: '--review', items: [['chip', 'review-pr', ''], ['chip', 'answer-review', '']] },
+        { name: 'Merge', phase: '--ship', items: [['chip', 'finish-pr', '']] },
       ],
     },
   };
@@ -433,7 +433,7 @@ answer before asking the next one.</pre>
   function item([kind, a, b, dim], pc) {
     const cls = dim ? ' dim' : '';
     if (kind === 'who') return `<div class="who${cls}">${icon(a)}<span>${b}</span></div>`;
-    if (kind === 'chip') return `<div class="chip${cls}" style="--pc:${pc}"><div class="n">${a}</div><div class="r">${b}</div></div>`;
+    if (kind === 'chip') return `<div class="chip${cls}" style="--pc:${pc}"><div class="n">${a}</div>${b ? `<div class="r">${b}</div>` : ''}</div>`;
     if (kind === 'note') return `<div class="note">${a}</div>`;
     if (kind === 'you') return `<span class="you">${icon('i-person')}you: ${a}</span>`;
   }
