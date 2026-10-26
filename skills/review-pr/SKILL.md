@@ -1,6 +1,6 @@
 ---
 name: review-pr
-description: Review a GitHub pull request with inline comments posted on the PR itself. Use when the user says "review PR 98", "/review-pr 98", "review this pull request", or pastes a PR URL for review. Comments inline on exact file/lines, puts PR-wide findings in the review body, resolves addressed comment chains, approves when clean.
+description: Review a GitHub pull request with inline comments posted on the PR itself. Use when the user says "review PR 98", "/review-pr 98", "review this pull request", or pastes a PR URL for review. Comments inline on exact file/lines, puts PR-wide findings in the review body, resolves addressed comment chains, labels the PR ready-to-merge when clean.
 ---
 
 # Review PR
@@ -24,7 +24,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - **Full scope.** Correctness, edge cases, security, design, tests, and also style, naming, and consistency with the codebase's idioms when they are real improvements. Prefix small or taste-level findings with `nit:` so that the author can prioritize.
 - **Ask for the small fix rather than deferring it.** A finding whose fix is smaller than the issue that would describe it belongs in this PR. Say that on the thread instead of writing "worth a follow-up": a rename, an unused parameter, a comment that states the wrong thing. Defer only what genuinely does not fit the PR. `finish-pr` drops the rest rather than filing it, so a small fix you defer as a reminder is lost.
 - **One review submission.** All inline comments and the body go out as a single review, so that the author gets one notification. Do not post a separate summary comment.
-- **Verdict.** Zero new findings and no open threads that still apply means submit as `APPROVE`. Otherwise submit as `COMMENT`. Never `REQUEST_CHANGES`.
+- **Verdict.** Findings mean a `COMMENT` review. Zero new findings and no open threads that still apply mean no review at all: the `ready-to-merge` label is the verdict. Never send `APPROVE` or `REQUEST_CHANGES`. The reviewer runs under the PR author's account, and GitHub rejects an approval of your own PR with HTTP 422.
 - **Resolve threads that are done.** For each existing unresolved review thread whose concern is now addressed or no longer applies, post a short reply saying why (for example "Addressed in `a1b2c3d`.") and then resolve it, regardless of who opened it. Threads that still have merit stay open and count as findings for the verdict.
 
 ## Workflow
@@ -74,11 +74,9 @@ An author's reply saying "Fixed in `<sha>`" is a claim, and you need to check it
 
 ### 5. Submit
 
-Build one review payload: `event` (`APPROVE` if clean per the rules, otherwise `COMMENT`), `body` (PR-wide findings only, or empty), and `comments` (all inline findings). Submit it, then post the thread replies and resolutions. Exact API calls: `reference/github-api.md`.
+With findings, build one review payload: `event` `COMMENT`, `body` (PR-wide findings only, or empty), and `comments` (all inline findings), and submit it. With none, submit nothing. Then post the thread replies and resolutions. Exact API calls: `reference/github-api.md`.
 
-GitHub rejects approving your own PR. If that happens, report in the terminal that the PR is clean instead.
-
-Then change the PR's state label as the `labels` skill describes. With findings: `gh pr edit <n> --add-label review-feedback --remove-label ready-for-review`. Approved or clean: `--add-label ready-to-merge --remove-label ready-for-review`, and also remove `review-feedback` if present. "Findings" means findings from this round: new comments posted now, or threads left open because they still apply. Comments from an earlier round whose threads you just resolved are done and do not count, so do not change the label to `review-feedback` because of them. If the repo does not have these labels, still do the full review, skip the label change, and note "workflow labels not set up in this repo (see `setup-repo`)" in the terminal report.
+Then change the PR's state label as the `labels` skill describes. With findings: `gh pr edit <n> --add-label review-feedback --remove-label ready-for-review`. Clean: `--add-label ready-to-merge --remove-label ready-for-review`, and also remove `review-feedback` if present. "Findings" means findings from this round: new comments posted now, or threads left open because they still apply. Comments from an earlier round whose threads you just resolved are done and do not count, so do not change the label to `review-feedback` because of them. If the repo does not have these labels, still do the full review, skip the label change, and note "workflow labels not set up in this repo (see `setup-repo`)" in the terminal report.
 
 ### 6. Report
 

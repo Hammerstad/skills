@@ -80,7 +80,7 @@ Alternate a sub-agent reviewer and `answer-review` in this session until the PR 
    and one line per finding.
    ```
 
-2. Re-read the PR yourself: `gh pr view <P> --json labels,reviewDecision,mergeStateStatus` plus the unresolved-thread query from `review-pr`'s `reference/github-api.md`.
+2. Re-read the PR yourself: `gh pr view <P> --json labels,mergeStateStatus` plus the unresolved-thread query from `review-pr`'s `reference/github-api.md`.
    - `ready-to-merge` and no unresolved threads: go to step 4.
    - `review-feedback` or unresolved threads: continue.
 

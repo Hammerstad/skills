@@ -20,7 +20,7 @@ One set of labels shared by all repos, designed around the skill pipeline. Each 
 
 ## Blocked: added alongside a state
 
-`blocked` sits alongside a state label (for example `blocked` plus `needs-grilling`) when the issue depends on another open issue. The body must name the dependency: `Blocked by #N`. Remove `blocked` when #N closes.
+`blocked` sits alongside a state label (for example `blocked` plus `needs-grilling`) when the issue depends on another open issue. The body must name the dependency: `Blocked by #N`, or `Blocked by owner/repo#N` for an issue in another repo. Remove `blocked` when #N closes. Check a blocker in another repo with `gh issue view N --repo owner/repo`, since a search of this repo does not see it.
 
 - `blocked` and `ready-for-agent` never appear together, by definition.
 - `needs-input` does not count as blocked. Waiting for a human's answer is the normal flow.
@@ -43,7 +43,7 @@ GitHub's built-in `bug` and `enhancement` may be added for filtering. They are n
 |---|---|---|
 | `ready-for-review` | The author considers it complete | `/review-pr` |
 | `review-feedback` | The review left unresolved findings | `/answer-review` |
-| `ready-to-merge` | The review came back clean or approved | `/finish-pr` |
+| `ready-to-merge` | The review came back clean | `/finish-pr` |
 
 The loop: open PR → `ready-for-review` → review finds issues → `review-feedback` → author responds → `ready-for-review` → … → clean review → `ready-to-merge` → merged.
 
@@ -54,7 +54,7 @@ The loop: open PR → `ready-for-review` → review finds issues → `review-fee
 - **After grilling**: the spec is decided, so `ready-for-agent` (or `needs-input` if a question came up).
 - **After diagnosis**: the cause is known, so `ready-for-agent` if the fix is now clear and specified, otherwise `needs-grilling` for a design discussion.
 - **Opening a PR**: `ready-for-review`.
-- **`review-pr`**: findings mean `review-feedback`; approval means `ready-to-merge`.
+- **`review-pr`**: findings mean `review-feedback`; a clean review means `ready-to-merge`.
 - **`answer-review`**: after responding, `ready-for-review`.
 - **`finish-pr`**: merges `ready-to-merge` PRs and labels any follow-up issues it files.
 
