@@ -32,7 +32,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 ### 1. Assess
 
 ```sh
-gh pr view <n> --json number,title,state,headRefName,baseRefName,mergeStateStatus,mergeable,author,url
+gh pr view <n> --json number,title,state,headRefName,baseRefName,reviewDecision,mergeStateStatus,mergeable,author,url
 gh pr checks <n>
 ```
 
@@ -40,7 +40,7 @@ Also fetch the unresolved review threads, with the same GraphQL query the `revie
 
 - If CI is still running, run `gh pr checks <n> --watch` and wait for it.
 - If `gh pr checks` reports no checks at all, the repo has no CI, so nothing has verified the branch since the last push. Check out the PR head in a worktree (as below) and run the repo's build and tests there. A failure is outstanding and stops the merge.
-- If CI is failing or threads are unresolved, fixing that is not this skill's job. Report what is outstanding and stop. The fix path is `answer-review` and the review loop.
+- If CI is failing, threads are unresolved, or `reviewDecision` is `CHANGES_REQUESTED`, fixing that is not this skill's job. Report what is outstanding and stop. The fix path is `answer-review` and the review loop.
 - If `mergeStateStatus` is `DIRTY` (conflicts), rebase in a worktree, never in the shared checkout: `git worktree add --detach <scratchpad>/pr-<n> origin/<base>`, then `gh pr checkout <n>` inside it and `git rebase origin/<base>`. If the conflicts do not resolve trivially, stop and ask. If they do, `git push --force-with-lease`, remove the worktree, and wait for CI again.
 
 ### 2. Collect follow-ups
@@ -69,11 +69,11 @@ If anything above needs the user's call (a debatable follow-up, a non-trivial co
 gh pr merge <n> --rebase --delete-branch
 ```
 
-This deletes the remote branch. When the branch is checked out locally it also switches back to the base branch and deletes the local one. If the branch lives in a leftover worktree (`implement`'s, or this skill's rebase worktree; check `git worktree list`), remove that worktree first, because a branch checked out in a worktree cannot be deleted. Verify the local side with `git branch --list <headRefName>`. If the local branch is still there (for example because you ran this from another branch), run `git branch -D <headRefName>`. Finish with `git pull` on the base branch. Delete no other branch: a `pr-assets/*` branch holds the images of a merged PR (see `implement`).
+This deletes the remote branch. When the branch is checked out locally it also switches back to the base branch and deletes the local one. If the branch lives in a leftover worktree (`implement`'s, or this skill's rebase worktree; check `git worktree list`), remove that worktree first, because a branch checked out in a worktree cannot be deleted. Verify the local side with `git branch --list <headRefName>`. If the local branch is still there (for example because you ran this from another branch), run `git branch -D <headRefName>`. Finish with `git pull` on the base branch.
 
 ### 5. Suggest next work
 
-The `ready-to-merge` label is the signal that review passed; GitHub has no approval on these PRs, since the reviewer runs under the author's account. Steps 1-4 do not depend on the labels (threads, CI, and conflicts all work without them). This step does. If the repo does not have the workflow labels: in an interactive session, offer to run `setup-repo`; when running unattended, say plainly that no suggestions are possible until the repo is set up. Do not present an empty list as "nothing to do".
+A note on solo repos: GitHub does not allow approving your own PR, so `reviewDecision` never reads `APPROVED` on your own PRs. The `ready-to-merge` label is the signal that review passed, and the approval state only means something when a second account reviews. Steps 1-4 do not depend on the labels (threads, CI, and conflicts all work without them). This step does. If the repo does not have the workflow labels: in an interactive session, offer to run `setup-repo`; when running unattended, say plainly that no suggestions are possible until the repo is set up. Do not present an empty list as "nothing to do".
 
 ```sh
 gh issue list --state open --label ready-for-agent --json number,title,labels,createdAt,body,url

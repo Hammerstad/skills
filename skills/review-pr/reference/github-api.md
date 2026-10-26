@@ -67,11 +67,15 @@ gh api repos/<owner>/<repo>/pulls/<n>/reviews --input payload.json
 
 Rules:
 
-- `event` is always `COMMENT`. A clean round submits no review (see the Verdict rule in `SKILL.md`).
+- `event` is `COMMENT` or `APPROVE` (this skill never sends `REQUEST_CHANGES`).
+- For `APPROVE` with no findings, omit `comments` and send an empty `body`.
 - `line`/`side: "RIGHT"` = line numbers in the **new** file version; use
   `side: "LEFT"` only to comment on deleted lines. Lines must appear in the
   diff, or GitHub rejects the comment — findings on undiffed lines belong in
   `body`.
+- Approving your own PR fails with HTTP 422. Compare `gh api user --jq .login`
+  with the PR's `author.login` before sending `APPROVE`, and send nothing on a
+  clean round when they match.
 
 ## Reply to a thread, then resolve it (GraphQL)
 

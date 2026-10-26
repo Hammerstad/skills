@@ -90,7 +90,17 @@ Closes #<n>"
 gh pr edit --add-label ready-for-review   # skip, without a message, if the repo lacks the label
 ```
 
-Images for the PR body (screenshots, before and after): GitHub has no API for attaching an image, so push them to an orphan branch named `pr-assets/<issue>-<short-name>`, made in a scratch worktree with `git switch --orphan`, and link each as `https://github.com/<owner>/<repo>/raw/pr-assets/<issue>-<short-name>/<file>`. A `raw.githubusercontent.com` link shows a broken image when the repo is private. The branch stays after the merge, since the PR's images load from it; only the PR's head branch is deleted.
+Images for the PR body (screenshots, before and after): upload each one as the web editor does when an image is dragged into a PR, and put the URL it returns in the body as `![<what it shows>](<url>)`:
+
+```sh
+id=$(gh api repos/<owner>/<repo> --jq .id)
+curl -s -X POST "https://uploads.github.com/user-attachments/assets?name=<file>&content_type=image/png&repository_id=$id" \
+  -H "Authorization: Bearer $(gh auth token)" -H "Accept: application/json" -H "Content-Type: image/png" \
+  --data-binary @<path>
+# {"url":"https://github.com/user-attachments/assets/<uuid>"}
+```
+
+GitHub does not document this endpoint. An image uploaded to a private repo is shown only to people who can read the repo. If the upload fails, say so in the report with the response, and leave the image out of the body.
 
 4. Remove the worktree. The branch still exists on the remote and locally; only the checkout goes:
 
