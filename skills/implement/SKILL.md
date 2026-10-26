@@ -90,6 +90,8 @@ Closes #<n>"
 gh pr edit --add-label ready-for-review   # skip, without a message, if the repo lacks the label
 ```
 
+Images for the PR body (screenshots, before and after): GitHub has no API for attaching an image, so push them to an orphan branch named `pr-assets/<issue>-<short-name>`, made in a scratch worktree with `git switch --orphan`, and link each as `https://github.com/<owner>/<repo>/raw/pr-assets/<issue>-<short-name>/<file>`. A `raw.githubusercontent.com` link shows a broken image when the repo is private. The branch stays after the merge, since the PR's images load from it; only the PR's head branch is deleted.
+
 4. Remove the worktree. The branch still exists on the remote and locally; only the checkout goes:
 
 ```sh
