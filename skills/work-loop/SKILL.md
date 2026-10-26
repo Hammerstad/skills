@@ -46,7 +46,7 @@ gh pr list --state open --json number,title,headRefName,body,labels        # wha
 Filter the candidates:
 
 - Drop any issue that an open PR already closes (`Closes #<n>` in a PR body, or an `<n>-…` branch name). That issue is partway through the pipeline, and it gets picked up at step 3 rather than step 2.
-- Drop wrongly labeled issues and fix their labels as the `labels` skill describes: `blocked` alongside `ready-for-agent`, or a body naming `Blocked by #N` or `Depends on #N` with #N still open. Correcting the label is part of the sweep.
+- Drop wrongly labeled issues and fix their labels as the `labels` skill describes: `blocked` alongside `ready-for-agent`, or a body naming `Blocked by #N` or `Depends on #N` with #N still open. Check a blocker written `owner/repo#N` in that repo with `gh issue view N --repo owner/repo --json state`. Correcting the label is part of the sweep.
 
 If the repo has none of the workflow labels, there is no queue to trust. Offer `setup-repo` and stop. Never read an empty list as "backlog done".
 

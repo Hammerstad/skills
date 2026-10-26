@@ -80,8 +80,8 @@ gh issue list --state open --label ready-for-agent --json number,title,labels,cr
 ```
 
 - Apply the user's prioritization if they gave one; otherwise oldest first.
-- Verify that each candidate really can start: no `blocked` label, and no `Blocked by #N` or `Depends on #N` in the body pointing at an issue that is still open. Fix a wrongly labeled one (swap `ready-for-agent` for `blocked` as the `labels` skill describes) and skip it.
-- If this PR closed an issue, check what that issue was blocking with `gh issue list --state open --label blocked --search "Blocked by #<closed>"`. Any issue whose blockers have now all closed loses the `blocked` label, and if it carries no `needs-*` state it becomes `ready-for-agent` and joins this round's candidates. Blocked issues unrelated to this merge are for `triage` to sweep up.
+- Verify that each candidate really can start: no `blocked` label, and no `Blocked by #N` or `Depends on #N` in the body pointing at an issue that is still open, in this repo or, for `owner/repo#N`, in that one. Fix a wrongly labeled one (swap `ready-for-agent` for `blocked` as the `labels` skill describes) and skip it.
+- If this PR closed an issue, check what that issue was blocking with `gh issue list --state open --label blocked --search "Blocked by #<closed>"`. Any issue whose blockers have now all closed loses the `blocked` label, and if it carries no `needs-*` state it becomes `ready-for-agent` and joins this round's candidates. Do the same for the owner's other repos, whose issues name this one as `Blocked by <owner>/<repo>#<closed>`: list them with `gh search issues --owner <owner> --state open --label blocked --json repository,number,body` and fix their labels in their own repo. Blocked issues unrelated to this merge are for `triage` to sweep up.
 - Pick up to three to present, and one of them to recommend. The reason for the recommendation is one clause.
 - Collect the open `needs-input` issues and the one question each is waiting on. The user can unblock these with an answer.
 
