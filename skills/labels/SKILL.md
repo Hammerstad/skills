@@ -43,7 +43,7 @@ GitHub's built-in `bug` and `enhancement` may be added for filtering. They are n
 |---|---|---|
 | `ready-for-review` | The author considers it complete | `/review-pr` |
 | `review-feedback` | The review left unresolved findings | `/answer-review` |
-| `ready-to-merge` | The review came back clean | `/finish-pr` |
+| `ready-to-merge` | The review came back clean or approved | `/finish-pr` |
 
 The loop: open PR → `ready-for-review` → review finds issues → `review-feedback` → author responds → `ready-for-review` → … → clean review → `ready-to-merge` → merged.
 
@@ -54,7 +54,7 @@ The loop: open PR → `ready-for-review` → review finds issues → `review-fee
 - **After grilling**: the spec is decided, so `ready-for-agent` (or `needs-input` if a question came up).
 - **After diagnosis**: the cause is known, so `ready-for-agent` if the fix is now clear and specified, otherwise `needs-grilling` for a design discussion.
 - **Opening a PR**: `ready-for-review`.
-- **`review-pr`**: findings mean `review-feedback`; a clean review means `ready-to-merge`.
+- **`review-pr`**: findings mean `review-feedback`; approval means `ready-to-merge`.
 - **`answer-review`**: after responding, `ready-for-review`.
 - **`finish-pr`**: merges `ready-to-merge` PRs and labels any follow-up issues it files.
 
