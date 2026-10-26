@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Sweep the issue tracker and give existing issues the correct workflow label - unlabeled issues, needs-input issues that got an answer, stale states, blockers that have closed. Use when the user says "triage", "what needs my attention on the tracker", "go through the issues", or names an issue to triage.
+description: Sweep the issue tracker and give existing issues the correct workflow label - unlabeled issues, needs-input issues that got an answer, stale states, blockers that have closed, in this repo or another. Use when the user says "triage", "what needs my attention on the tracker", "go through the issues", or names an issue to triage.
 ---
 
 # Triage
@@ -38,6 +38,14 @@ Present four groups, oldest first. Each group is a count and one line per issue 
 3. **Stale**: `needs-grilling` and `needs-diagnosis` issues that have sat untouched long enough to go out of date, and `ready-for-agent` issues that are older than the rest of the pool (are they still true?).
 4. **Blockers that have closed**: `blocked` issues whose named blockers are closed, plus any label combination that should not exist (two states, or `blocked` plus `ready-for-agent`). Fix these directly as the `labels` skill describes; they need no discussion.
 
+Blockers cross repos. A body can name `Blocked by owner/repo#N`, and an issue in another repo of the same owner can be blocked by an issue here. Group 4 covers every repo of the owner, not only this one:
+
+```sh
+gh search issues --owner <owner> --state open --label blocked --json repository,number,title,body
+```
+
+Check each named blocker with `gh issue view N --repo owner/repo --json state`. A plain `#N` means the issue's own repo. A search of this repo's issues does not see a blocker in another repo. Fix the labels of an issue in another repo the same way, and list it with its `owner/repo#N`.
+
 ## Triaging one issue
 
 1. **Gather**: the full body, all comments, labels, author, and dates. Read any earlier triage notes so that nothing gets asked twice. Check the codebase (the project's vocabulary, and the ADRs in the area).
@@ -48,7 +56,7 @@ Present four groups, oldest first. Each group is a count and one line per issue 
    - `needs-grilling` or `needs-diagnosis`: the label.
    - `needs-input`: the label, plus a comment with the questions (template below).
    - **Close**: rejected or already implemented. A polite one-paragraph explanation (with a pointer to the existing implementation when that is the reason), then close.
-   - `blocked`: the label plus `Blocked by #N` in the body, as the `labels` skill describes.
+   - `blocked`: the label plus `Blocked by #N` in the body, or `Blocked by owner/repo#N` for a blocker in another repo, as the `labels` skill describes.
 
 ## When to comment
 
