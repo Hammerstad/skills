@@ -30,6 +30,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - **Decide from the PR's labels.** Do not rely on the reviewer's account of what it did. After the reviewer returns and after every `answer-review` run, re-read the PR's labels and threads yourself. `ready-to-merge` is the only thing that lets `finish-pr` run. Never merge because a review "looked clean".
 - **Do not touch code outside the skills.** This session edits, commits, and pushes only inside an `implement` or `answer-review` run. If something needs fixing, the skill that owns it fixes it.
 - **Only work on issues that are ready.** Do not move `needs-grilling`, `needs-diagnosis`, or `needs-input` issues into the queue, do not implement an issue that does not meet the `ready-for-agent` definition, and do not invent work. An empty queue is a successful finish.
+- **Owner decisions are the user's.** The `labels` skill defines them. No skill in the loop picks a limit, a default, a retention period, or any other owner decision the issue does not state, and no agent-filed issue enters the queue without the user labeling it `ready-for-agent`.
 - **When one issue gets stuck, move on to the next.** If `implement` halts, or CI fails for reasons outside this PR, record it, leave the labels and threads in a state that matches reality, and move to the next issue.
 - **The loop ends when the queue is empty**, never on a round count or a clock.
 - **Do not pause between issues.** Do not end a turn to announce the next step, to offer to continue, to list decisions that block nothing, or to report after a milestone. Put a status note in the same message as the next tool call. Stop only where the steps below say to. After an interruption (a session limit, a reboot, a permission prompt), resume by rebuilding the queue at step 0; the labels and threads on GitHub hold all the state.
@@ -92,6 +93,8 @@ The reviewer and `answer-review` each work in their own worktree, so the shared 
 
 **There is no round limit.** Keep alternating until the PR reaches `ready-to-merge`. The one exception is a deadlock: a round with no new commits in which `answer-review` pushes back on the same threads with the same reasons as the round before. Then ask the user one question about the disputed points and wait for the answer, even in an unattended run. Apply the answer in the next `answer-review` run and continue the same PR.
 
+An open thread about an owner decision the diff makes is handled the same way, without waiting for a second round: ask the user, wait, and apply the answer.
+
 ### 4. Finish
 
 When the PR is `ready-to-merge` with nothing outstanding, invoke `finish-pr` for it in this session: it merges, files follow-ups, and its next-work suggestions feed straight back into this loop. If it stops on something outstanding, that contradicts step 3's re-read. Trust `finish-pr`, log the discrepancy, and treat the PR as stuck as the rules above describe.
@@ -112,6 +115,7 @@ An empty queue ends the run. One terminal summary for the whole thing, one line 
 - Per issue: number, PR link, merge status, and how many review rounds it took.
 - Skipped issues, each with its reason (spec gap, wrong label, failed implement) and what was left behind.
 - Stuck PRs, each with the reason and the state left on GitHub.
-- Follow-up issues filed during the run.
+- Follow-up issues filed during the run, each with the question it asks the user.
+- Owner decisions the user answered during the run.
 - The deferred triage questions from step 5.
 - What remains open and is not `ready-for-agent`, as the answer to "what is left".

@@ -49,7 +49,7 @@ Each issue is a thin slice that goes through every layer it touches (schema, API
 
 For each slice, pick the state label as the `labels` skill defines them:
 
-- **`ready-for-agent`**: the grill session decided everything this slice needs, and no other slice has to be merged first. This should be the case for most slices.
+- **`ready-for-agent`**: the grill session decided everything this slice needs, and no other slice has to be merged first. This should be the case for most slices. Before using it, check the body for owner decisions as the `labels` skill defines them: every limit, default, retention period, or deletion it mentions has a stated value, and every setting it refers to exists or is defined in the body.
 - **`needs-input`**: one named decision is still open, and the issue body states the exact question.
 - **`needs-grilling`**: the slice brought up design questions the session did not cover.
 - **`blocked`**: another slice has to be merged first, and the body says `Blocked by #N`. If the slice is fully specified and only waiting on the dependency, it carries `blocked` alone; it becomes `ready-for-agent` when the blocker closes (`finish-pr` does this automatically). If it is blocked and also under-specified, it carries `blocked` plus the fitting `needs-*` state. Never `blocked` together with `ready-for-agent`.

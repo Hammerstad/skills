@@ -18,6 +18,20 @@ One set of labels shared by all repos, designed around the skill pipeline. Each 
 
 `ready-for-agent` means exactly this: everything needed to implement is in the issue or its linked docs, and the issue depends on no open issue. If either stops being true, remove the label at once.
 
+## Owner decisions
+
+An owner decision is a choice about what the product does, as opposed to how the code does it. Only the user makes these. They include:
+
+- numbers that set behavior: limits, caps, quotas, timeouts, sizes, rates, retention periods, and their default values,
+- deleting, expiring, or pruning anything the user or their users stored,
+- who may see or do what,
+- new user-visible behavior, settings, or pages,
+- new services, dependencies, or infrastructure the product has to run.
+
+A decision counts as made only when the issue, a linked ADR, `CONTEXT.md`, or the existing code states it. Choosing a "sensible default" is making the decision. An issue that refers to something that does not exist yet ("the organization's retention period" when no such setting exists) leaves an owner decision open.
+
+An issue with an open owner decision is not `ready-for-agent`. It is `needs-input`, with the decision written as a question.
+
 ## Blocked: added alongside a state
 
 `blocked` sits alongside a state label (for example `blocked` plus `needs-grilling`) when the issue depends on another open issue. The body must name the dependency: `Blocked by #N`, or `Blocked by owner/repo#N` for an issue in another repo. Remove `blocked` when #N closes. Check a blocker in another repo with `gh issue view N --repo owner/repo`, since a search of this repo does not see it.
@@ -56,7 +70,7 @@ The loop: open PR → `ready-for-review` → review finds issues → `review-fee
 - **Opening a PR**: `ready-for-review`.
 - **`review-pr`**: findings mean `review-feedback`; approval means `ready-to-merge`.
 - **`answer-review`**: after responding, `ready-for-review`.
-- **`finish-pr`**: merges `ready-to-merge` PRs and labels any follow-up issues it files.
+- **`finish-pr`**: merges `ready-to-merge` PRs and labels any follow-up issues it files `needs-input`, asking the user whether the work is wanted. Only the user moves an agent-filed issue to `ready-for-agent`.
 
 Change labels with:
 

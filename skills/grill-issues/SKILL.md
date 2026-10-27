@@ -79,7 +79,7 @@ Anything the user cannot answer themselves (it needs the original reporter, or a
 Everything this session produces goes on GitHub:
 
 - **Rewrite the issue body** as the agreed spec: what should happen, the decisions made and why, and what is out of scope on purpose. Keep the original description below a `---` if it is worth keeping.
-- **Relabel** as the `labels` skill describes: `ready-for-agent` once the body meets that label's definition (everything needed to implement is in it, and it depends on no open issue), otherwise `needs-input` with the specific question in a comment.
+- **Relabel** as the `labels` skill describes: `ready-for-agent` once the body meets that label's definition (everything needed to implement is in it, no owner decision is left open, and it depends on no open issue), otherwise `needs-input` with the specific question in a comment.
 - **Split if it grew.** If grilling turned one issue into several pieces of work, hand it to `to-issues` and close or narrow the original.
 - `grill-with-docs` already writes agreed terms into `CONTEXT.md` and hard-to-reverse trade-offs into ADRs. Check that it happened rather than assuming.
 
