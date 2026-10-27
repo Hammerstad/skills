@@ -25,6 +25,7 @@ Write like an engineer reporting to a colleague who is short on time. These rule
 - **Tests are part of each task.** Each task includes the tests that prove its behavior. Do not claim a task is done until a real check has exercised the change: its tests, the build, or running the code. A syntax-only check does not count, and neither does a check that failed to start. If a declared dependency is missing, install it with the project's package manager and lockfile, never with `sudo` or the system package manager. If a check still cannot run, say which one and why.
 - **Build only what the issue asks for.** Do not add features, files, docs, or refactors the issue does not need. Improvements you notice along the way are listed in the PR body as candidates for follow-up issues, and are not implemented.
 - **Spec gaps.** If a real ambiguity blocks a decision partway through: in an interactive session, ask the user and continue. When running unattended, post the question as an issue comment, change the label to `needs-input`, push the branch as it is without opening a PR, and stop.
+- **Never make an owner decision.** The `labels` skill defines them: limits, defaults, retention, deletion, access, new user-visible behavior. If the code needs one that the issue, an ADR, `CONTEXT.md`, or the existing code does not state, that is a spec gap, even when a default looks obvious. Do not pick a value and note it as an assumption.
 - **Keep going until the issue is done.** Do not stop to confirm the plan, to ask something you can find out yourself, or to ask whether to continue after one task. Stop only for a spec gap (above) or before a risky or irreversible step.
 - **Do not start your own review.** When the tasks are done and their checks pass, open the PR and stop. Do not start extra review or hardening rounds and do not launch reviewer sub-agents; `review-pr` reviews the PR.
 - **Open the PR at the end.** Work stays local until everything is done and green. Then push once and open one PR labeled `ready-for-review`.
@@ -38,6 +39,8 @@ gh issue view <n> --json title,body,labels,url,comments
 ```
 
 Read the whole issue including comments, since later comments often amend the spec. Read `CONTEXT.md` if it exists and any ADRs for the area. Then do the label check from the rules above.
+
+As part of the label check, list every setting, value, and policy the issue mentions or the change will need, and find where each one is decided: in the issue, an ADR, `CONTEXT.md`, or the code. Anything the issue refers to that does not exist yet, and has no definition in the issue, is an open owner decision. Handle it as a spec gap before writing code.
 
 If the repo has none of the workflow labels at all (`gh label list` shows none of them), no label can say whether the issue is ready. In an interactive session, offer to run `setup-repo` and to triage this issue properly first. If the user explicitly confirms, you may proceed anyway, treating the issue body as the spec at their risk. When running unattended, stop and report. Never treat an unlabeled issue as ready.
 
@@ -117,7 +120,7 @@ One report in the terminal, in this shape:
 ```text
 PR #<n> <title>: <url>
 <k> commits. Build, tests, and format green.     (or: <which> failing, with the output)
-Assumed: <one line>.                             (omit if none)
+Assumed: <one line>.                             (omit if none; never an owner decision)
 Follow-ups in the PR body: #<n> <title>.         (omit if none)
 ```
 

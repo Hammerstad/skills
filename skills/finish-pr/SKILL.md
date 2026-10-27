@@ -55,7 +55,7 @@ gh issue list --state open --search "<the words a duplicate would use>" --json n
 
 - The fix is smaller than the issue that would describe it. Do not file an issue. Either the fix belongs in this PR, in which case say so and let the review loop take one more round, or it is not worth doing and the report says it was dropped.
 - It shares a cause with an issue that is already open. Comment on that issue instead, naming this PR and what it adds.
-- It is real work that was deferred. Draft an issue: a title, a 2-5 line body with context, a `From #<pr>` link, and a state label as the `labels` skill describes (`ready-for-agent` if the review thread fully specified it, otherwise `needs-grilling`).
+- It is real work that was deferred. Draft an issue: a title, a 2-5 line body with context, a `From #<pr>` link, and the label `needs-input`. The body ends with the question for the user: whether the work is wanted, and what need it serves. Never label a follow-up `ready-for-agent`, even when the review thread specified it. The user did not ask for it, and `work-loop` would build it without them seeing it.
 
 File the clear-cut ones with `gh issue create --title ... --body ... --label ...`. If it is unclear whether something deserves an issue, put it in the step 3 question.
 
