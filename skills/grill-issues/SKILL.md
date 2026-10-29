@@ -1,7 +1,6 @@
 ---
 name: grill-issues
 description: Work through the needs-grilling issues one at a time, oldest first - explain each in plain English, grill it into a spec, and write the outcome back to the issue. Use when the user says "grill the backlog", "/grill-issues", "grill all needs-grilling issues", or asks to get the tracker's under-specified issues spec'd.
-disable-model-invocation: true
 ---
 
 # Grill Issues

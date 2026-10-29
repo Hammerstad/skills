@@ -1,7 +1,6 @@
 ---
 name: grill-me
-description: Interview the user about a plan or design until every decision has been made and the two of you share the same understanding. Only invoked explicitly by the user via /grill-me.
-disable-model-invocation: true
+description: Interview the user about a plan or design until every decision has been made and the two of you share the same understanding. Use when the user says "grill me", "/grill-me", or wants a plan stress-tested in conversation without writing CONTEXT.md or ADRs.
 ---
 
 ## How to talk to the user

@@ -1,7 +1,6 @@
 ---
 name: work-loop
-description: Work through the ready-for-agent backlog end to end - pick the oldest ready issue, implement it, run the review loop with a sub-agent reviewer, merge the PR, triage, and repeat until nothing is ready. Only invoked explicitly by the user via /work-loop.
-disable-model-invocation: true
+description: Work through the ready-for-agent backlog end to end - pick the oldest ready issue, implement it, run the review loop with a sub-agent reviewer, merge the PR, triage, and repeat until nothing is ready. Use when the user says "work the backlog", "/work-loop", or asks to keep implementing ready issues until none are left.
 ---
 
 # Work Loop
