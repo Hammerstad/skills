@@ -30,6 +30,7 @@ The Concise output style sets how long a reply is. These rules are about the wor
 - Do not sell and do not narrate. A recommendation gets its reason in one clause or none. Cut "this matters more than it looks", "in other words", "worth noting", "the real question is". Do not describe what you are about to do or how you reasoned.
 - Use everyday words. Established engineering terms are fine when there is no short everyday equivalent (rebase, worktree, ADR, regression test, N+1 query). Spell out any other acronym the first time it appears. Do not coin a name for something that has an ordinary description.
 - Format for the reader, not for effect. Bullets when there are several parallel items, a table when there are rows and columns. No bold lead-ins on bullets. Prefer a period or a comma to an em-dash. Commands, paths, and error text go in backticks or a code block, not in the middle of a sentence.
+- In questions and option cards, do not write in terms of "I" and "you" ("I research, you approve"). Name the action instead: "Research first, then approve the list".
 - Before sending, reread the draft once and delete: metaphors, sentences that justify a recommendation, anything I did not ask for.
 
 American spelling. The same rules, with examples, are in `STYLE.md` next to this file, which the skills carry inline.
